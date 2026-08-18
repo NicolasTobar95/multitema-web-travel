@@ -4,7 +4,6 @@ import { sharedImages } from '../../../config/sharedImages';
 import { lerp } from '../../../utils/lerp';
 import { THEME_CONTAINER } from '../layout';
 import AuthorCard from '../../../components/AuthorCard';
-import BrandLogo from './BrandLogo';
 
 interface FooterLinkColumn {
   title: string;

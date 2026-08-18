@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from '../../../i18n';
 import { themeData } from '../../../config/themeData';
-import { sharedImages } from '../../../config/sharedImages';
 import { useInView } from '../hooks/useInView';
 import { useCountUp } from '../hooks/useCountUp';
 import { THEME_CONTAINER } from '../layout';
