@@ -39,7 +39,7 @@ const NimbusTheme: React.FC = () => {
         <div
           className="absolute inset-0 z-0 pointer-events-none"
           style={{
-            backgroundImage: 'url(/src/webp/backgrounds/1.jpg)',
+            backgroundImage: 'url(/webp/backgrounds/1.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             opacity: 0.1,

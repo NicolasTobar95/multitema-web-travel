@@ -135,7 +135,7 @@ const Testimonials: React.FC = () => {
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none"
-        style={{ backgroundImage: 'url(/src/webp/backgrounds/6.jpg)' }}
+        style={{ backgroundImage: 'url(/webp/backgrounds/6.jpg)' }}
       />
       <div className="relative max-w-[1400px] mx-auto flex flex-col items-center">
         {/* Cabecera Central */}

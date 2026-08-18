@@ -25,7 +25,7 @@ const Testimonials: React.FC = () => {
     }>;
   };
   const items: TestimonialItem[] = data.items;
-  const bgImage = '/src/webp/backgrounds/8.jpg';
+  const bgImage = '/webp/backgrounds/8.jpg';
   const avatars = sharedImages.avatars;
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.15 });
 

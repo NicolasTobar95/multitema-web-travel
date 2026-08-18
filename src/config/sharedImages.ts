@@ -1,8 +1,8 @@
 /**
  * Shared local images (WebP format)
  *
- * All images are now served from /src/webp/ (local).
- * Components consume the arrays by index:
+ * All images are served from /webp/ (public/webp/, copied verbatim to dist root
+ * by Vite at build time). Components consume the arrays by index:
  *   - destinations[0..3] for destination cards
  *   - narrative[0..2] for narrative images
  *   - panoramas[0..2] for wide banners
@@ -13,9 +13,9 @@
  * or panoramas). Avatars are 6 local files.
  */
 
-// Paths to the webp images in src/webp/
-const DEST = '/src/webp/destinations/';
-const AV = '/src/webp/avatars/';
+// Paths to the webp images in public/webp/ (Vite copies public/* to dist root).
+const DEST = '/webp/destinations/';
+const AV = '/webp/avatars/';
 
 export const sharedImages = {
   // Destination cards (mountain, beach, canyon, temple + 4 extra local ones)

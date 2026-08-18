@@ -118,7 +118,7 @@ const TourPackages: React.FC = () => {
       {/* Section background: backgrounds/2.webp very subtle (5%), no veil. */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <img
-          src="/src/webp/backgrounds/2.webp"
+          src="/webp/backgrounds/2.webp"
           alt=""
           className="w-full h-full object-cover object-center opacity-5"
           loading="lazy"

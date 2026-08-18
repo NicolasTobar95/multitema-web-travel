@@ -1,8 +1,10 @@
 /**
  * Local Image Metadata
  *
- * This file contains all metadata for local images stored in /src/webp/
- * Each image has descriptions in both Spanish (es) and English (en) for i18n support.
+ * This file contains all metadata for local images stored in /public/webp/
+ * (Vite copies the contents of public/ verbatim to the dist root, so URLs are
+ * absolute from the site root.) Each image has descriptions in both Spanish
+ * (es) and English (en) for i18n support.
  *
  * Structure:
  * - Headers: One image per theme (Waypoint, Aura, Aeria, Nimbus)
@@ -33,7 +35,7 @@ export const headerMetadata: HeaderImageMetadata[] = [
   {
     id: 'waypoint-hero',
     fileName: 'Waypoint.webp',
-    url: '/src/webp/headers/Waypoint.webp',
+    url: '/webp/headers/Waypoint.webp',
     alt: {
       es: 'Picos de montaña nevados con amanecer dorado',
       en: 'Snow-capped mountain peaks with golden sunrise'
@@ -47,7 +49,7 @@ export const headerMetadata: HeaderImageMetadata[] = [
   {
     id: 'aura-hero',
     fileName: 'Aura.webp',
-    url: '/src/webp/headers/Aura.webp',
+    url: '/webp/headers/Aura.webp',
     alt: {
       es: 'Bosque místico con luces etéreas',
       en: 'Mystical forest with ethereal lights'
@@ -61,7 +63,7 @@ export const headerMetadata: HeaderImageMetadata[] = [
   {
     id: 'aeria-hero',
     fileName: 'Aeria.webp',
-    url: '/src/webp/headers/Aeria.webp',
+    url: '/webp/headers/Aeria.webp',
     alt: {
       es: 'Montañas envueltas en neblina con puestas de sol dramáticas',
       en: 'Mountains shrouded in mist with dramatic sunsets'
@@ -75,7 +77,7 @@ export const headerMetadata: HeaderImageMetadata[] = [
   {
     id: 'nimbus-hero',
     fileName: 'Nimbus.webp',
-    url: '/src/webp/headers/Nimbus.webp',
+    url: '/webp/headers/Nimbus.webp',
     alt: {
       es: 'Bosque denso con caída de luz dramática',
       en: 'Dense forest with dramatic light fall'
@@ -112,7 +114,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '01-swiss-alps',
     fileName: 'Suiza - Alpes.webp',
-    url: '/src/webp/destinations/Suiza - Alpes.webp',
+    url: '/webp/destinations/Suiza - Alpes.webp',
     location: {
       es: 'Suiza',
       en: 'Switzerland'
@@ -127,7 +129,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '02-bali-island',
     fileName: 'Bali, Indonesia - Isla paradisíaca.webp',
-    url: '/src/webp/destinations/Bali, Indonesia - Isla paradisíaca.webp',
+    url: '/webp/destinations/Bali, Indonesia - Isla paradisíaca.webp',
     location: {
       es: 'Bali, Indonesia',
       en: 'Bali, Indonesia'
@@ -142,7 +144,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '03-gili-trawangan',
     fileName: 'Gili Trawangan - Playa cristalina.webp',
-    url: '/src/webp/destinations/Gili Trawangan - Playa cristalina.webp',
+    url: '/webp/destinations/Gili Trawangan - Playa cristalina.webp',
     location: {
       es: 'Gili Trawangan, Indonesia',
       en: 'Gili Trawangan, Indonesia'
@@ -157,7 +159,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '04-machu-picchu',
     fileName: 'Perú - Machu Picchu.webp',
-    url: '/src/webp/destinations/Perú - Machu Picchu.webp',
+    url: '/webp/destinations/Perú - Machu Picchu.webp',
     location: {
       es: 'Perú',
       en: 'Peru'
@@ -172,7 +174,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '05-maldives',
     fileName: 'Maldivas - Lujo tropical.webp',
-    url: '/src/webp/destinations/Maldivas - Lujo tropical.webp',
+    url: '/webp/destinations/Maldivas - Lujo tropical.webp',
     location: {
       es: 'Maldivas',
       en: 'Maldives'
@@ -187,7 +189,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '06-northern-lights',
     fileName: 'Islandia - Aurora boreal.webp',
-    url: '/src/webp/destinations/Islandia - Aurora boreal.webp',
+    url: '/webp/destinations/Islandia - Aurora boreal.webp',
     location: {
       es: 'Islandia',
       en: 'Iceland'
@@ -202,7 +204,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '07-kyoto',
     fileName: 'Kyoto, Japón - Cultura tradicional.webp',
-    url: '/src/webp/destinations/Kyoto, Japón - Cultura tradicional.webp',
+    url: '/webp/destinations/Kyoto, Japón - Cultura tradicional.webp',
     location: {
       es: 'Kyoto, Japón',
       en: 'Kyoto, Japan'
@@ -217,7 +219,7 @@ export const destinationMetadata: DestinationImageMetadata[] = [
   {
     id: '08-fiji',
     fileName: 'Fiji - Islas vírgenes.webp',
-    url: '/src/webp/destinations/Fiji - Islas vírgenes.webp',
+    url: '/webp/destinations/Fiji - Islas vírgenes.webp',
     location: {
       es: 'Fiji',
       en: 'Fiji'
@@ -257,7 +259,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-01',
     fileName: 'Emily Chen - Cocinera exploradora.webp',
-    url: '/src/webp/avatars/Emily Chen - Cocinera exploradora.webp',
+    url: '/webp/avatars/Emily Chen - Cocinera exploradora.webp',
     name: {
       es: 'Emily Chen',
       en: 'Emily Chen'
@@ -274,7 +276,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-02',
     fileName: 'James Wilson - Montañista profesional.webp',
-    url: '/src/webp/avatars/James Wilson - Montañista profesional.webp',
+    url: '/webp/avatars/James Wilson - Montañista profesional.webp',
     name: {
       es: 'James Wilson',
       en: 'James Wilson'
@@ -291,7 +293,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-03',
     fileName: 'María García - Ecoturista.webp',
-    url: '/src/webp/avatars/María García - Ecoturista.webp',
+    url: '/webp/avatars/María García - Ecoturista.webp',
     name: {
       es: 'María García',
       en: 'María García'
@@ -308,7 +310,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-04',
     fileName: 'Michael Brown - Fotógrafo de viajes.webp',
-    url: '/src/webp/avatars/Michael Brown - Fotógrafo de viajes.webp',
+    url: '/webp/avatars/Michael Brown - Fotógrafo de viajes.webp',
     name: {
       es: 'Michael Brown',
       en: 'Michael Brown'
@@ -325,7 +327,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-05',
     fileName: 'Nicolas Tobar - Full Stack Developer.webp',
-    url: '/src/webp/avatars/Nicolas Tobar - Full Stack Developer.webp',
+    url: '/webp/avatars/Nicolas Tobar - Full Stack Developer.webp',
     name: {
       es: 'Nicolas Tobar',
       en: 'Nicolas Tobar'
@@ -342,7 +344,7 @@ export const avatarMetadata: AvatarMetadata[] = [
   {
     id: 'avatar-06',
     fileName: 'Sofía Martínez - Viajera apasionada.webp',
-    url: '/src/webp/avatars/Sofía Martínez - Viajera apasionada.webp',
+    url: '/webp/avatars/Sofía Martínez - Viajera apasionada.webp',
     name: {
       es: 'Sofía Martínez',
       en: 'Sofía Martínez'

@@ -109,7 +109,7 @@ const RouteMap = () => {
       {/* Section background: backgrounds/4.jpg very subtle (12%) full screen width */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <img
-          src="/src/webp/backgrounds/4.jpg"
+          src="/webp/backgrounds/4.jpg"
           alt=""
           className="w-full h-full object-cover object-center opacity-[0.12]"
           loading="lazy"

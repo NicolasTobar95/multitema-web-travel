@@ -23,7 +23,7 @@ interface OlympicData {
 const OlympicNational = () => {
   const { t } = useTranslation();
   const olympicData = t('Waypoint.olympic') as OlympicData;
-  const bgImage = '/src/webp/backgrounds/2.webp';
+  const bgImage = '/webp/backgrounds/2.webp';
 
   const [sectionRef, inView] = useInView<HTMLElement>();
 

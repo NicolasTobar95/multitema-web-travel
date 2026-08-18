@@ -11,7 +11,7 @@ const Discover: React.FC = () => {
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-cover bg-center opacity-10"
-        style={{ backgroundImage: 'url(/src/webp/backgrounds/7.jpg)' }}
+        style={{ backgroundImage: 'url(/webp/backgrounds/7.jpg)' }}
       ></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-[10.92rem] md:py-[14.56rem] flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
@@ -47,7 +47,7 @@ const Discover: React.FC = () => {
         <div className="w-full lg:w-1/2">
           <div
             className="w-full h-[320px] md:h-[440px] lg:h-[520px] rounded-[2.5rem] bg-cover bg-center shadow-xl"
-            style={{ backgroundImage: 'url(/src/webp/backgrounds/6.jpg)' }}
+            style={{ backgroundImage: 'url(/webp/backgrounds/6.jpg)' }}
             aria-label="Discover"
           ></div>
         </div>

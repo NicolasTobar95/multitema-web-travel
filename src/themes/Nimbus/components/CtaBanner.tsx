@@ -33,7 +33,7 @@ const CtaBanner: React.FC = () => {
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-cover bg-center opacity-75 pointer-events-none"
-          style={{ backgroundImage: 'url(/src/webp/backgrounds/5.jpg)' }}
+          style={{ backgroundImage: 'url(/webp/backgrounds/5.jpg)' }}
         ></div>
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40 z-0"></div>
