@@ -4,24 +4,24 @@ import { themeData } from '../../../config/themeData';
 import { useFloatTilt } from '../hooks/useFloatTilt';
 
 /**
- * Hero de Nimbus — pieza diferencial #1 del doc.
+ * Nimbus Hero — differential piece #1 from the doc.
  *
- * Estructura intacta de Trevilo: tarjeta `rounded-[3rem]` con foto gigante,
- * overlay `black/20`, textos centrales con drop-shadow, y el contenedor del
- * buscador flotante `absolute bottom-10 z-20` con pestañas `-top-14` y la caja
- * `bg-white rounded-[2.5rem] shadow-2xl`.
+ * Trevilo structure kept intact: `rounded-[3rem]` card with a giant photo,
+ * `black/20` overlay, central texts with drop-shadow, and the floating search
+ * container `absolute bottom-10 z-20` with `-top-14` tabs and the
+ * `bg-white rounded-[2.5rem] shadow-2xl` box.
  *
- * Lo nuevo:
- *   - La caja del buscador tiene **float vertical continuo** (translateY ±4px,
- *     4s ease-in-out) pausado en hover, y **tilt 3D** que sigue el cursor
- *     (perspective + rotateX/rotateY, máx 4°) — hook `useFloatTilt` variante
- *     default `float+tilt`. Es la diferencia entre una caja que "parece"
- *     flotar y una que efectivamente lo hace.
- *   - El CTA del buscador (`bg-[#1ea0ff]`) es **magnético**: se desplaza
- *     unos px hacia el cursor dentro de su radio de influencia — variante
- *     `magnetic` del mismo hook. Sombra teñida cian al hover.
+ * What's new:
+ *   - The search box has **continuous vertical float** (translateY ±4px,
+ *     4s ease-in-out) paused on hover, and **3D tilt** that follows the cursor
+ *     (perspective + rotateX/rotateY, max 4°) — `useFloatTilt` hook in the
+ *     default `float+tilt` variant. That is the difference between a box that
+ *     "looks" like it floats and one that actually does.
+ *   - The search CTA (`bg-[#1ea0ff]`) is **magnetic**: it moves a few px
+ *     toward the cursor within its influence radius — `magnetic` variant of
+ *     the same hook. Cyan-tinted shadow on hover.
  *
- * TODO el texto via `t('Nimbus.hero.*')` — cero strings hardcoded.
+ * All text goes through `t('Nimbus.hero.*')` — zero hardcoded strings.
  */
 interface HeroSearch {
   destination: string;
@@ -42,7 +42,7 @@ interface HeroData {
   search: HeroSearch;
 }
 
-// Íconos dinámicos por pestaña (mismos SVGs de Trevilo, sin cambios).
+// Per-tab dynamic icons (same Trevilo SVGs, unchanged).
 const TAB_ICONS: React.ReactNode[] = [
   <svg key="0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>,
   <svg key="1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>,
@@ -54,25 +54,25 @@ const Hero: React.FC = () => {
   const { t } = useTranslation();
   const heroData = t('Nimbus.hero') as HeroData;
 
-  // Caja del buscador: tilt 3D imperativo (sin re-render). El float/magnetismo
-  // continuo del doc Nimbus se simplificó en la P1 perf a un tilt puro porque
-  // los RAF causaban 60+ re-renders/s en el componente raíz.
+  // Search box: imperative 3D tilt (no re-render). The continuous float/magnetism
+  // from the Nimbus doc was simplified in the P1 perf pass to pure tilt because
+  // the RAFs caused 60+ re-renders/s in the root component.
   const { ref: searchBoxRef, onMouseMove: onSearchBoxMove, onMouseLeave: onSearchBoxLeave } = useFloatTilt<HTMLDivElement>(4);
 
-  // CTA del buscador: tilt imperativo (magnetismo removido en P1 perf).
+  // Search CTA: imperative tilt (magnetism removed in P1 perf).
   const { ref: ctaRef, onMouseMove: onCtaMove, onMouseLeave: onCtaLeave } = useFloatTilt<HTMLButtonElement>(4);
 
   return (
     <section className="w-full px-4 md:px-6 pt-2 md:pt-3 font-sans">
-      {/* Tarjeta Fotográfica Gigante */}
+      {/* Giant Photo Card */}
       <div
         className="relative w-full h-[714px] md:h-[814px] rounded-[3rem] bg-cover bg-center flex flex-col items-center overflow-hidden"
         style={{ backgroundImage: `url(${themeData.Nimbus.heroImageUrl})` }}
       >
-        {/* Gradiente oscuro suave para legibilidad */}
+        {/* Soft dark gradient for readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/30 z-0"></div>
 
-        {/* Textos Centrales */}
+        {/* Central Texts */}
         <div className="relative z-10 flex flex-col items-center text-center px-4 mt-24">
           <span className="text-white/80 text-xs font-bold tracking-[0.2em] uppercase mb-4">
             {heroData.tag}
@@ -85,9 +85,9 @@ const Hero: React.FC = () => {
           </p>
         </div>
 
-        {/* CONTENEDOR DEL BUSCADOR FLOTANTE */}
+        {/* FLOATING SEARCH CONTAINER */}
         <div className="absolute bottom-8 w-[95%] max-w-[1100px] z-20">
-          {/* Pestañas flotantes (sobresalen del buscador principal) */}
+          {/* Floating tabs (stick out of the main search box) */}
           <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center p-1.5 -mt-4 mb-4 bg-white/40 backdrop-blur-md rounded-full shadow-md border border-white/20">
             {heroData.tabs.map((tab: string, index: number) => (
               <button
@@ -102,7 +102,7 @@ const Hero: React.FC = () => {
             ))}
           </div>
 
-          {/* Caja principal del Buscador — tilt 3D imperativo */}
+          {/* Main Search Box — imperative 3D tilt */}
           <div
             ref={searchBoxRef}
             onMouseMove={onSearchBoxMove}

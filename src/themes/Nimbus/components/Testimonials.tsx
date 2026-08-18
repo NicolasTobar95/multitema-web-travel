@@ -4,22 +4,22 @@ import { sharedImages } from '../../../config/sharedImages';
 import { useFloatTilt } from '../hooks/useFloatTilt';
 
 /**
- * Testimonials de Nimbus — premium redesign idea #4: "Modo Gravedad Cero".
+ * Nimbus Testimonials — premium redesign idea #4: "Zero Gravity Mode".
  *
- * Correcciones previas respecto de Trevilo:
- *   - Estrellas siempre 5 → ahora `rating` llenas + `5 - rating` vacías.
- *   - `avatars[idx % 3]` → `idx % avatars.length` dinámico.
+ * Previous fixes vs Trevilo:
+ *   - Stars always 5 → now `rating` filled + `5 - rating` empty.
+ *   - `avatars[idx % 3]` → dynamic `idx % avatars.length`.
  *
  * Premium (redesign):
- *   - Cada tarjeta flota de forma INDEPENDIENTE y asincrónica: distinto
- *     `animation-delay` y `amplitud` por tarjeta (offset determinista por
- *     idx), creado via estilos inline + keyframes CSS. La sensación es de
- *     tarjetas suspendidas en gravedad cero, cada una con su propio ritmo.
- *   - Al hover, el float se pausa y la tarjeta adquiere un **tilt 3D suave**
- *     que sigue al cursor (perspective + rotateX/rotateY, máx 6°) vía el
- *     hook `useFloatTilt` en variante `'tilt-only'`.
+ *   - Each card floats INDEPENDENTLY and asynchronously: a different
+ *     `animation-delay` and `amplitude` per card (deterministic offset by
+ *     idx), created via inline styles + CSS keyframes. The feeling is of
+ *     cards suspended in zero gravity, each with its own rhythm.
+ *   - On hover, the float pauses and the card gets a **smooth 3D tilt**
+ *     that follows the cursor (perspective + rotateX/rotateY, max 6°) via
+ *     the `useFloatTilt` hook in `'tilt-only'` variant.
  *
- * Mantiene `bg-nimbus-testimonialsBg`, `rounded-[2rem]`, `shadow-sm→xl`.
+ * Keeps `bg-nimbus-testimonialsBg`, `rounded-[2rem]`, `shadow-sm→xl`.
  */
 interface Review {
   quote: string;
@@ -34,30 +34,30 @@ interface TestData {
   reviews: Review[];
 }
 
-/** Sub-componente: tarjeta individual con su propio hook useFloatTilt.
- *  Necesitamos un componente separado porque los hooks NO pueden llamarse
- *  dentro de un `.map()` — cada tarjeta tiene su propia instancia del hook
- *  (ref + bindings + estado de transform) y eso requiere un componente.
+/** Sub-component: individual card with its own useFloatTilt hook.
+ *  We need a separate component because hooks CANNOT be called inside a
+ *  `.map()` — each card has its own hook instance (ref + bindings + transform
+ *  state), which requires a component.
  *
- *  Arquitectura de capas:
- *    - DIV EXTERIOR: animation CSS `nimbus-zerog-float` (translateY oscilante
- *      independiente por idx). Se pausa al hover.
- *    - DIV INTERIOR: hook useFloatTilt `'tilt-only'` (perspective + rotateX/Y
- *      que sigue al cursor, máx 6°). brotherl el float pausado.
- *  Separar las capas evita que el `transform` del tilt sobrescriba el
- *  `transform` del float (o viceversa). */
+ *  Layer architecture:
+ *    - OUTER DIV: CSS animation `nimbus-zerog-float` (oscillating translateY,
+ *      independent per idx). Pauses on hover.
+ *    - INNER DIV: useFloatTilt `'tilt-only'` hook (perspective + rotateX/Y
+ *      following the cursor, max 6°). Layers the paused float.
+ *  Separating the layers prevents the tilt `transform` from overwriting the
+ *  float `transform` (or vice versa). */
 const ReviewCard: React.FC<{ review: Review; idx: number }> = ({ review, idx }) => {
   const { ref: cardRef, onMouseMove: onCardMove, onMouseLeave: onCardLeave } = useFloatTilt<HTMLDivElement>(6);
   const avatarsLen = sharedImages.avatars.length;
   const rating = Math.max(0, Math.min(5, Math.round(review.rating)));
 
-  // Offset determinista por idx — cada tarjeta tiene delay y amplitud distintas.
-  // No usamos Math.random() para evitar re-renders con valores distintos.
+  // Deterministic offset per idx — each card has a different delay and amplitude.
+  // No Math.random() to avoid re-renders with different values.
   const floatDelay = `${idx * 0.8}s`;
   const floatDuration = `${4 + idx * 0.5}s`;
 
   return (
-    // DIV EXTERIOR — float CSS independiente asincrónico, se pausa al hover.
+    // OUTER DIV — independent asynchronous CSS float, pauses on hover.
     <div
       style={{
         animation: `nimbus-zerog-float ${floatDuration} ease-in-out infinite`,
@@ -65,7 +65,7 @@ const ReviewCard: React.FC<{ review: Review; idx: number }> = ({ review, idx }) 
       }}
       className="will-change-transform hover:[animation-play-state:paused]"
     >
-      {/* DIV INTERIOR — tilt imperativo del hook useFloatTilt. */}
+      {/* INNER DIV — imperative tilt from the useFloatTilt hook. */}
       <div
         ref={cardRef}
         onMouseMove={onCardMove}
@@ -83,7 +83,7 @@ const ReviewCard: React.FC<{ review: Review; idx: number }> = ({ review, idx }) 
         </div>
 
         <div className="flex flex-col">
-          {/* Estrellas según review.rating real */}
+          {/* Stars based on the real review.rating */}
           <div className="flex items-center gap-2 mb-4">
             <div className="flex">
               {Array.from({ length: 5 }).map((_, starIdx) => (
@@ -104,12 +104,13 @@ const ReviewCard: React.FC<{ review: Review; idx: number }> = ({ review, idx }) 
             <span className="text-xs font-bold text-neutral-900">{review.rating.toFixed(1)}</span>
           </div>
 
-          {/* Usuario — avatar dinámico idx % avatars.length */}
+          {/* User — dynamic avatar idx % avatars.length */}
           <div className="flex items-center gap-3">
             <img
               src={sharedImages.avatars[idx % avatarsLen]}
               alt={review.name}
               className="w-10 h-10 rounded-full object-cover bg-neutral-200"
+              loading="lazy"
             />
             <div className="flex flex-col">
               <span className="text-sm font-bold text-neutral-900">{review.name}</span>
@@ -128,7 +129,7 @@ const Testimonials: React.FC = () => {
 
   return (
     <section className="relative w-full bg-nimbus-testimonialsBg py-24 px-6 md:px-12">
-      {/* Fondo: backgrounds/6.jpg al 40% de opacidad, detrás del contenido.
+      {/* Background: backgrounds/6.jpg at 40% opacity, behind the content.
           pointer-events-none para no bloquear clics; opacity-40 para que la
           imagen se mezcle con el fondo claro y el texto oscuro siga legible. */}
       <div
@@ -148,8 +149,8 @@ const Testimonials: React.FC = () => {
           {testData.subtitle}
         </p>
 
-        {/* Grid de Reseñas — cada tarjeta es un ReviewCard con su propio
-            hook useFloatTilt y su propio animation-delay. */}
+        {/* Reviews Grid — each card is a ReviewCard with its own
+            useFloatTilt hook and its own animation-delay. */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
           {testData.reviews.map((review: Review, idx: number) => (
             <ReviewCard key={idx} review={review} idx={idx} />
@@ -157,9 +158,9 @@ const Testimonials: React.FC = () => {
         </div>
       </div>
 
-      {/* Keyframes inline — evita tocar index.css (regla del proyecto).
-          nimbus-zerog-float: oscilación translateY independiente por tarjeta
-          (cada una tiene distinto delay y amplitud via style inline). */}
+      {/* Inline keyframes — avoids touching index.css (project rule).
+          nimbus-zerog-float: independent translateY oscillation per card
+          (each one has a different delay and amplitude via inline style). */}
       <style>{`
         @keyframes nimbus-zerog-float {
           0%, 100% { transform: translateY(0px); }

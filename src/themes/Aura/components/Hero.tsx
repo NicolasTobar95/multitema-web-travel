@@ -4,13 +4,17 @@ import { themeData } from '../../../config/themeData';
 
 const Hero: React.FC = () => {
   const { t } = useTranslation();
-  const heroData = t('Aura.hero');
+  const heroData = t('Aura.hero') as {
+    title: string;
+    subtitle: string;
+    search: { date: string; budget: string; guest: string; button: string };
+  };
   const [activeSearchCol, setActiveSearchCol] = useState<number | null>(null);
 
   return (
     <header className="relative w-full font-sans overflow-hidden">
-      {/* Filtro SVG para efecto líquido orgánico — debe estar en el DOM
-          global para que `filter:url(#liquid-filter)` lo encuentre al hover. */}
+      {/* SVG filter for the organic liquid effect — must be in the DOM
+          globally so `filter:url(#liquid-filter)` finds it on hover. */}
       <svg width="0" height="0" className="absolute" aria-hidden="true">
         <defs>
           <filter id="liquid-filter">
@@ -37,11 +41,11 @@ const Hero: React.FC = () => {
             {heroData.subtitle}
           </p>
 
-          {/* Buscador interactivo de cristal con resplandor ámbar */}
+          {/* Interactive glass search bar with amber glow */}
           <div className="mt-10 md:mt-14 w-full md:w-[900px] bg-stone-950/25 md:bg-white/10 backdrop-blur-2xl border border-white/10 md:border-white/20 rounded-3xl md:rounded-full p-2.5 flex flex-col md:flex-row items-center justify-between shadow-2xl transition-all duration-500">
             <div className="flex-1 flex flex-col md:flex-row w-full md:w-auto divide-y md:divide-y-0 md:divide-x divide-white/10 md:divide-white/20 text-white">
               
-              {/* Fecha */}
+              {/* Date */}
               <div 
                 onMouseEnter={() => setActiveSearchCol(0)}
                 onMouseLeave={() => setActiveSearchCol(null)}
@@ -58,7 +62,7 @@ const Hero: React.FC = () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`group-hover:transtone-y-0.5 transition-transform ${activeSearchCol === 0 ? 'text-amber-400' : 'text-white/60'}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
 
-              {/* Presupuesto */}
+              {/* Budget */}
               <div 
                 onMouseEnter={() => setActiveSearchCol(1)}
                 onMouseLeave={() => setActiveSearchCol(null)}
@@ -75,7 +79,7 @@ const Hero: React.FC = () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`group-hover:transtone-y-0.5 transition-transform ${activeSearchCol === 1 ? 'text-amber-400' : 'text-white/60'}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
 
-              {/* Huéspedes */}
+              {/* Guests */}
               <div 
                 onMouseEnter={() => setActiveSearchCol(2)}
                 onMouseLeave={() => setActiveSearchCol(null)}
@@ -94,7 +98,7 @@ const Hero: React.FC = () => {
               
             </div>
             
-            {/* Botón con filtro de distorsión líquida SVG en Hover */}
+            {/* Button with SVG liquid distortion filter on hover */}
             <button className="bg-white text-stone-900 rounded-full md:rounded-full rounded-2xl px-10 py-4 md:py-4 text-base font-extrabold shadow-xl hover:scale-105 active:scale-95 active:bg-amber-600 transition-all w-full md:w-auto mt-3 md:mt-0 min-h-[44px] hover:bg-amber-500 hover:text-stone-950 hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:[filter:url(#liquid-filter)] relative overflow-hidden group hover:-translate-y-0.5">
               <span className="relative z-10">{heroData.search.button}</span>
             </button>

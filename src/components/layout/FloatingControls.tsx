@@ -34,7 +34,7 @@ const FloatingControls: React.FC<FloatingControlsProps> = ({ currentTheme, onThe
       {/* Selector de Tema */}
       <div className="bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg border border-neutral-100 flex flex-col items-end gap-2">
         <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mr-1">
-          {t('controls.theme') || 'Theme'}
+          {t('controls.theme') as string || 'Theme'}
         </span>
         <div className="flex flex-wrap justify-end gap-2 max-w-[250px] md:max-w-none">
           <button

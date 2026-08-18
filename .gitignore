@@ -31,8 +31,10 @@ ANALYSIS.md
 Proyecto.md
 UPGRADE_GUIDE.md
 temas-plan/
-1
-cambie
+CLEANUP_TODO.md
+
+# Internal design sources (Astro snippets / raw SVG, referenced in comments only)
+src/docs/
 
 # Migration artifacts (obsolete)
 src/assets/images/

@@ -1,6 +1,6 @@
 import { useTranslation } from '../../../i18n';
 import { sharedImages } from '../../../config/sharedImages';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 import { THEME_CONTAINER, IMG_PORTRAIT, IMG_TALL } from '../layout';
 
 interface TimelineStop {
@@ -47,6 +47,7 @@ const Timeline = () => {
               src={stopsData[0].image1}
               alt={stopsText[0].title}
               className={`w-full ${IMG_PORTRAIT} object-cover rounded-sm shadow-xl`}
+              loading="lazy"
             />
             <h2 className="text-3xl md:text-5xl font-serif italic text-zinc-800 leading-snug mt-4 pr-10">
               {stopsText[0].subtitle}
@@ -71,6 +72,7 @@ const Timeline = () => {
                   src={stopsData[0].image2}
                   alt={stopsText[0].title}
                   className="w-full aspect-[4/3] object-cover rounded-sm shadow-md"
+                  loading="lazy"
                 />
               </div>
             )}
@@ -103,6 +105,7 @@ const Timeline = () => {
               src={stopsData[1].image1}
               alt={stopsText[1].title}
               className={`w-full ${IMG_TALL} object-cover rounded-sm shadow-2xl`}
+              loading="lazy"
             />
           </div>
         </div>

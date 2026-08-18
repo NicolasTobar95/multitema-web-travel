@@ -4,7 +4,13 @@ import { sharedImages } from '../../../config/sharedImages';
 
 const HowItWorks: React.FC = () => {
   const { t } = useTranslation();
-  const howData = t('Aura.howItWorks');
+  const howData = t('Aura.howItWorks') as {
+    steps: StepItem[];
+    widget: { date: string; budget: string; search: string };
+    overlayText: string;
+    subtitle: string;
+    title: string;
+  };
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
 
   const mainImage = sharedImages.narrative[0];
@@ -34,42 +40,42 @@ const HowItWorks: React.FC = () => {
   return (
     <section className="w-full max-w-[1400px] mx-auto px-4 md:px-10 py-16 md:py-24 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center font-sans">
       
-      {/* Contenedor izquierdo inmersivo interactivo */}
+      {/* Immersive interactive left container */}
       <div className="w-full lg:w-1/2 relative h-[600px] md:h-[750px] rounded-[3rem] overflow-hidden shadow-2xl shadow-stone-200/50 group">
-        <img src={mainImage} alt="Traveler" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+        <img src={mainImage} alt="Traveler enjoying a scenic destination" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" loading="lazy" />
         
         <div className="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/20 to-transparent"></div>
         
         <div className="absolute bottom-0 left-0 w-full p-8 md:p-10 flex flex-col gap-6 z-20">
           
-          {/* Widget interactivo de cristal que cambia visualmente según el Step activo */}
+          {/* Interactive glass widget that changes visually with the active step */}
           <div className="relative w-full max-w-md">
             
-            {/* Animación del widget según step activo */}
+            {/* Widget animation per active step */}
             <div className="bg-amber-500/10 backdrop-blur-xl border border-amber-500/30 rounded-2xl md:rounded-full p-2 flex flex-col sm:flex-row items-center justify-between shadow-2xl transition-all duration-500">
               
               <div className="flex-1 flex w-full sm:w-auto divide-y sm:divide-y-0 sm:divide-x divide-white/10 text-white text-xs sm:text-sm">
                 
-                {/* Indicador de Fecha - Resalta en Step 1 */}
+                {/* Date Indicator - Highlights on Step 1 */}
                 <div className={`flex-1 px-4 py-3 sm:py-2 flex items-center justify-between transition-all duration-300 ${
                   activeStepIndex === 0 
                     ? 'text-amber-400 font-bold scale-105 bg-white/5 rounded-t-xl sm:rounded-l-full sm:rounded-r-none' 
                     : 'opacity-70'
                 }`}>
-                  <span className="tracking-wide">{t('Aura.howItWorks.widget.date')}</span>
+                  <span className="tracking-wide">{t('Aura.howItWorks.widget.date') as string}</span>
                   {activeStepIndex === 0 && (
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping absolute right-2 top-2" />
                   )}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
                 
-                {/* Indicador de Presupuesto - Resalta en Step 2 */}
+                {/* Budget Indicator - Highlights on Step 2 */}
                 <div className={`flex-1 px-4 py-3 sm:py-2 flex items-center justify-between border-t sm:border-t-0 sm:border-l border-white/15 transition-all duration-300 ${
                   activeStepIndex === 1 
                     ? 'text-amber-400 font-bold scale-105 bg-white/5' 
                     : 'opacity-70'
                 }`}>
-                  <span className="tracking-wide">{t('Aura.howItWorks.widget.budget')}</span>
+                  <span className="tracking-wide">{t('Aura.howItWorks.widget.budget') as string}</span>
                   {activeStepIndex === 1 && (
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping absolute right-2 top-2" />
                   )}
@@ -78,7 +84,7 @@ const HowItWorks: React.FC = () => {
 
               </div>
 
-              {/* Botón interactivo - Cambia texto y color en Step 3 (Pago/Confirmar) */}
+              {/* Interactive button - Changes text and color on Step 3 (Pay/Confirm) */}
               <button className={`w-full sm:w-auto px-6 py-3 sm:py-2 rounded-xl sm:rounded-full text-xs font-extrabold ml-0 sm:ml-2 mt-2 sm:mt-0 transition-all duration-500 shadow-lg ${
                 activeStepIndex === 2 
                   ? 'bg-amber-500 text-stone-950 scale-105 shadow-[0_0_15px_rgba(245,158,11,0.5)]' 
@@ -90,12 +96,12 @@ const HowItWorks: React.FC = () => {
                   ? '¡Confirmar! ✓' 
                   : activeStepIndex === 3
                     ? '¡Listo! ✈'
-                    : t('Aura.howItWorks.widget.search')
+                    : t('Aura.howItWorks.widget.search') as string
                 }
               </button>
             </div>
 
-            {/* Micro-tarjeta de éxito flotante que brilla en el Step Final */}
+            {/* Floating success micro-card that glows on the final step */}
             {activeStepIndex >= 2 && (
               <div className="absolute top-[-70px] left-1/2 -transtone-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-2xl border border-amber-500/20 flex items-center gap-3 animate-bounce z-30">
                 <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-stone-900 font-extrabold text-sm shadow-md">✓</div>

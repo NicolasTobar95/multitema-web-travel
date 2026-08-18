@@ -3,17 +3,17 @@ import { useTranslation } from '../../../i18n';
 import AuthorCard from '../../../components/AuthorCard';
 
 /**
- * Footer de Nimbus — simplificación de deuda #3 del doc.
+ * Nimbus Footer — simplification of debt #3 from the doc.
  *
- * Cambios respecto de Trevilo:
- *   - El CTA gigante (39 líneas superiores) → extraído a `CtaBanner`
- *     hermano componente. El `Footer` queda como footer puro: 4 columnas de
- *     enlaces + línea de demo del autor al pie.
- *   - Logo duplicado (JSX idéntico a Navbar) → `<BrandLogo />` compartido.
- *   - Texto "Trevilo" hardcodeado → `t('Nimbus.brand')` (color zinc blanco).
+ * Changes vs Trevilo:
+ *   - The giant CTA (39 upper lines) → extracted to `CtaBanner`, a sibling
+ *     component. The `Footer` is now a pure footer: 4 link columns + the
+ *     author demo line at the bottom.
+ *   - Duplicated logo (JSX identical to Navbar) → shared `<BrandLogo />`.
+ *   - Hardcoded "Trevilo" text → `t('Nimbus.brand')` (zinc-white color).
  *
- * Mantiene `bg-nimbus-footerBg` (zinc-900-ish, única isla oscura) y la
- * malla 4 columnas — eran decisión afinada.
+ * Keeps `bg-nimbus-footerBg` (zinc-900-ish, the only dark island) and the
+ * 4-column grid — those were fine-tuned decisions.
  */
 interface FooterCol {
   title: string;
@@ -31,16 +31,16 @@ const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-nimbus-footerBg pt-12 pb-16 px-6 md:px-12 text-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto flex flex-col">
-        {/* ENLACES DEL PIE DE PÁGINA */}
+        {/* FOOTER LINKS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-16 border-b border-white/10">
 
-          {/* Col 1: Logo y Redes */}
+          {/* Col 1: Logo and Social */}
           <div className="flex flex-col items-start lg:col-span-2 pr-12">
-            {/* Tarjeta de presentación del autor — arriba de las redes.
-                Clickeable: abre el portfolio externo en nueva pestaña.
-                innerBgBase coincide con el color del footer para que la
-                capa opaca base sea invisible sobre el fondo; innerBg
-                bg-white/10 simula un 10% de blanco sobre el color del footer. */}
+            {/* Author presentation card — above the socials.
+                Clickable: opens the external portfolio in a new tab.
+                innerBgBase matches the footer color so the opaque base layer
+                is invisible on the background; innerBg
+                bg-white/10 simulates 10% white over the footer color. */}
             <a
               href="https://portfolio-218.pages.dev/"
               target="_blank"
@@ -70,14 +70,14 @@ const Footer: React.FC = () => {
               <h4 className="text-white text-sm font-bold mb-6">{col.title}</h4>
               <ul className="flex flex-col gap-4">
                 {col.items.map((item: string, i: number) => (
-                  <li key={i}><a href="#" onClick={(e) => e.preventDefault()} className="text-neutral-400 text-sm hover:text-white transition-colors">{item}</a></li>
+                  <li key={i}><button type="button" onClick={(e) => e.preventDefault()} className="text-neutral-400 text-sm hover:text-white transition-colors bg-transparent border-0 p-0 cursor-pointer text-left">{item}</button></li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
 
-        {/* Línea de demo — autor del tema */}
+        {/* Demo line — theme author */}
         <div className="text-center text-xs text-neutral-500 pt-6">
           {(t('shared.footerNotice') as string).replace('{year}', String(new Date().getFullYear()))}
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../../../i18n';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 
 type Service = {
   id: string;
@@ -23,16 +23,16 @@ interface ServiceCardProps {
   iconColor: string;
 }
 
-// Íconos superiores derechos por tarjeta: avión (Flight Finder),
-// hotel (Hotels Service), visa (Visa processing). Altura = badge del
-// número (3rem) + gap mb-6 (1.5rem) + línea del título (1.75rem).
+// Top-right icons per card: plane (Flight Finder),
+// hotel (Hotels Service), visa (Visa processing). Height = number badge
+// (3rem) + mb-6 gap (1.5rem) + title line (1.75rem).
 const SERVICE_ICONS: React.ReactNode[] = [
   <svg key="plane" className="h-[6.25rem] w-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>,
   <svg key="hotel" className="h-[6.25rem] w-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>,
   <svg key="visa" className="h-[6.25rem] w-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h4"/><path d="M15 12h4"/><path d="M7 16h10"/></svg>,
 ];
 
-// Color del trazo del ícono: #f3e8ff (purple-100), #e9d5ff (purple-200).
+// Icon stroke color: #f3e8ff (purple-100), #e9d5ff (purple-200).
 const ICON_COLORS = ['text-[#f3e8ff]', 'text-[#e9d5ff]', 'text-[#f3e8ff]'];
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ card, bg, btn, icon, iconColor }) => {

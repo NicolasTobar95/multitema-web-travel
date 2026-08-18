@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from '../../../i18n';
 import { themeData } from '../../../config/themeData';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 import { useCountUp } from '../hooks/useCountUp';
 import { THEME_CONTAINER } from '../layout';
 import GrainOverlay from './GrainOverlay';
@@ -32,7 +32,7 @@ const OlympicNational = () => {
   const mileageCount = useCountUp(numericStats.mileage, inView);
   const elevationCount = useCountUp(numericStats.elevation, inView);
 
-  // Estados para el perfil de elevación interactivo
+  // State for the interactive elevation profile
   const [activeProfilePoint, setActiveProfilePoint] = useState<number | null>(null);
   const profilePoints = [
     { name: "Day 1: Mt. Garibaldi Trailhead", distance: "0 mi", elevation: "1,200 ft", desc: "Arranque en el bosque templado lluvioso." },
@@ -96,7 +96,7 @@ const OlympicNational = () => {
           </div>
         </div>
 
-        {/* PERFIL DE ELEVACIÓN INTERACTIVO (NUEVO COMPONENTE DE DISEÑO) */}
+        {/* INTERACTIVE ELEVATION PROFILE (NEW DESIGN COMPONENT) */}
         <div 
           className={`w-full bg-white/5 backdrop-blur-md rounded-sm border border-white/10 p-6 transition-all duration-700 delay-100 ${
             inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
@@ -108,7 +108,7 @@ const OlympicNational = () => {
           </div>
 
           <div className="relative h-28 w-full flex items-end">
-            {/* Gráfico SVG de elevación */}
+            {/* Elevation SVG chart */}
             <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="profileGrad" x1="0" y1="0" x2="0" y2="1">
@@ -116,13 +116,13 @@ const OlympicNational = () => {
                   <stop offset="100%" stopColor="#ef4444" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              {/* Relleno bajo la curva */}
+              {/* Fill under the curve */}
               <path d="M 0 112 Q 280 80, 560 50 T 1120 10 L 1120 112 Z" fill="url(#profileGrad)" className="w-full" />
-              {/* Línea de perfil */}
+              {/* Profile line */}
               <path d="M 0 112 Q 280 80, 560 50 T 1120 10" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" className="w-full" />
             </svg>
 
-            {/* Puntos interactivos flotando en el gráfico */}
+            {/* Interactive points floating on the chart */}
             <div className="absolute inset-0 flex justify-between px-10 md:px-20 items-end pb-1.5 z-20">
               {profilePoints.map((_pt, idx) => (
                 <div 
@@ -136,13 +136,13 @@ const OlympicNational = () => {
                     transform: `translateY(${idx === 0 ? '-10px' : idx === 1 ? '-40px' : '-80px'})`
                   }}
                 >
-                  {/* Punto vertical pulsante */}
+                  {/* Pulsing vertical dot */}
                   <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center transition-all ${
                     activeProfilePoint === idx ? 'bg-red-500 scale-125 shadow-[0_0_12px_#ef4444]' : 'bg-white border border-red-500'
                   }`}>
                     <div className="w-1.5 h-1.5 rounded-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  {/* Etiqueta vertical micro */}
+                  {/* Micro vertical label */}
                   <span className={`text-[9px] font-mono tracking-[0.25em] mt-2 px-1.5 py-0.5 rounded-sm transition-all ${
                     activeProfilePoint === idx ? 'bg-red-500 text-white font-bold' : 'text-zinc-400 bg-transparent'
                   }`}>
@@ -153,7 +153,7 @@ const OlympicNational = () => {
             </div>
           </div>
 
-          {/* Información interactiva del punto activo */}
+          {/* Interactive info for the active point */}
           <div className="h-12 mt-4 flex items-center justify-between border-t border-white/10 pt-4">
             {activeProfilePoint !== null ? (
               <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 animate-fade-in w-full transition-all">

@@ -1,17 +1,17 @@
 import { getHeaderImageByTheme } from './imageMetadata';
 
 export const themeData = {
-  // Waypoint: retoque editorial de PacificNW. heroImageUrl cambiado a picos de
-  // montaña (más dramático y editorial) — la View Transition precargará el nuevo
-  // URL al navegar desde temas que ya usan esta imagen (Aura/Aeria).
-  // stats=numéricos para useCountUp / Navbar.
+  // Waypoint: editorial retake of PacificNW. heroImageUrl switched to mountain
+  // peaks (more dramatic and editorial) — the View Transition will preload the
+  // new URL when navigating from themes that already use this image (Aura/Aeria).
+  // stats=numeric for useCountUp / Navbar.
   Waypoint: {
     heroImageUrl: getHeaderImageByTheme('Waypoint')!.url,
     stats: {
       likes: 1124,
       comments: 35,
-      // Valores numéricos puros para alimentar useCountUp en Olympic.
-      // Migrados desde dictionaries PacificNW.olympic.stats.*.value
+      // Pure numeric values to feed useCountUp in Olympic.
+      // Migrated from the PacificNW.olympic.stats.*.value dictionaries.
       olympic: {
         days: 3,
         mileage: 104,
@@ -19,17 +19,17 @@ export const themeData = {
       },
     },
   },
-  // Aura: retoque editorial de Indotravi. heroImageUrl idéntico al de Indotravi para
-  // no romper la precarga de la View Transition.
+  // Aura: editorial retake of Indotravi. heroImageUrl identical to Indotravi so
+  // the View Transition preload is not broken.
   Aura: {
     heroImageUrl: getHeaderImageByTheme('Aura')!.url,
   },
   Aeria: {
     heroImageUrl: getHeaderImageByTheme('Aeria')!.url,
   },
-  // Nimbus: retoque editorial de Trevilo. heroImageUrl idéntico al de Trevilo
-  // para no romper la precarga de la View Transition y conservar el bookend
-  // visual Hero→CtaBanner (el doc marca el reuso como decisión intencional).
+  // Nimbus: editorial retake of Trevilo. heroImageUrl identical to Trevilo
+  // so the View Transition preload is not broken and the Hero→CtaBanner
+  // visual bookend is preserved (the doc marks the reuse as an intentional decision).
   Nimbus: {
     heroImageUrl: getHeaderImageByTheme('Nimbus')!.url,
   },

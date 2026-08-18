@@ -62,8 +62,8 @@ const CTA: React.FC = () => {
                 key={idx}
                 className={`group relative break-inside-avoid rounded-2xl md:rounded-[2rem] overflow-hidden shadow-lg hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-500 ${spanClasses[idx % spanClasses.length]}`}
               >
-                <img src={img} alt={ctaData.labels[idx] ?? 'Gallery'} className="w-full h-full object-cover" />
-                {/* Nombre del destino al pasar el cursor — overlay degradado inferior */}
+                <img src={img} alt={ctaData.labels[idx] ?? 'Gallery'} className="w-full h-full object-cover" loading="lazy" />
+                {/* Destination name on hover — bottom gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <span className="absolute bottom-3 left-3 md:bottom-5 md:left-5 text-white font-bold text-sm md:text-lg tracking-wide translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   {ctaData.labels[idx] ?? ''}

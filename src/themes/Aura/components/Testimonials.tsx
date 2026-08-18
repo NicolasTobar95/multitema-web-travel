@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from '../../../i18n';
 import { sharedImages } from '../../../config/sharedImages';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 
 interface TestimonialItem {
   id: string;
@@ -36,14 +36,15 @@ const Testimonials: React.FC = () => {
         inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      {/* Fondo de sección: imagen en capa absoluta (confiable en todos los
-          navegadores, a diferencia de background-attachment: fixed) + velo
-          oscuro suave para legibilidad del texto blanco. */}
+      {/* Section background: image in an absolute layer (reliable in all
+          browsers, unlike background-attachment: fixed) + soft dark veil
+          for white text readability. */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <img
           src={bgImage}
           alt=""
           className="w-full h-full object-cover object-center"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-stone-950/60"></div>
       </div>
@@ -61,8 +62,8 @@ const Testimonials: React.FC = () => {
           </h2>
         </div>
 
-        {/* Grid de 3 columnas: 1 col en mobile, 2 en tablet, 3 en desktop.
-            Sin scroll horizontal, sin snap, sin flex-shrink. */}
+        {/* 3-column grid: 1 col on mobile, 2 on tablet, 3 on desktop.
+            No horizontal scroll, no snap, no flex-shrink. */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
           {items.map((item) => (
             <div
@@ -92,6 +93,7 @@ const Testimonials: React.FC = () => {
                   src={avatars[item.avatarIdx % avatars.length]}
                   alt={item.author}
                   className="w-12 h-12 rounded-full object-cover border-2 border-white/20 group-hover:border-amber-500/40 transition-all duration-500 group-hover:scale-105"
+                  loading="lazy"
                 />
                 <div>
                   <p className="text-white font-bold group-hover:text-amber-300 transition-colors">{item.author}</p>

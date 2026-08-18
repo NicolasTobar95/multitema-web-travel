@@ -4,7 +4,13 @@ import BrandLogo from '../../../components/BrandLogo';
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
-  const navData = t('Aura.nav');
+  const navData = t('Aura.nav') as {
+    about: string;
+    services: string;
+    tour: string;
+    contact: string;
+    login: string;
+  };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -12,16 +18,16 @@ const Navbar: React.FC = () => {
       <div className="relative w-full flex items-center justify-between">
         
         <div className="flex-1 flex justify-start">
-          <a href="#" onClick={(e) => e.preventDefault()} className="flex items-center gap-2 group transition-transform hover:scale-105">
-            <BrandLogo />
-          </a>
+          <button type="button" onClick={(e) => e.preventDefault()} className="flex items-center gap-2 group transition-transform hover:scale-105 bg-transparent border-0 p-0 cursor-pointer">
+            <BrandLogo brand="Aura" className="h-8 md:h-9 w-auto" textClassName="text-2xl font-bold text-stone-900 tracking-wide" />
+          </button>
         </div>
 
         <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-8 bg-white/10 backdrop-blur-md px-10 py-3.5 rounded-full border border-white/20 text-white text-base font-semibold shadow-inner">
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors">{navData.about}</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors">{navData.services}</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors">{navData.tour}</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors">{navData.contact}</a>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors bg-transparent border-0 p-0 cursor-pointer">{navData.about}</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors bg-transparent border-0 p-0 cursor-pointer">{navData.services}</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors bg-transparent border-0 p-0 cursor-pointer">{navData.tour}</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-white/70 transition-colors bg-transparent border-0 p-0 cursor-pointer">{navData.contact}</button>
         </div>
 
         <div className="flex-1 flex justify-end items-center gap-3">
@@ -46,10 +52,10 @@ const Navbar: React.FC = () => {
       {isMobileMenuOpen && (
         <div className="absolute top-full left-4 right-4 mt-3 bg-stone-950/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 flex flex-col gap-6 md:hidden shadow-2xl origin-top animate-in fade-in slide-in-from-top-4">
           <div className="flex flex-col gap-4 text-white font-medium text-lg divide-y divide-white/10">
-            <a href="#" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70">{navData.about}</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70">{navData.services}</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70">{navData.tour}</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70">{navData.contact}</a>
+            <button type="button" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70 bg-transparent border-0 cursor-pointer text-left">{navData.about}</button>
+            <button type="button" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70 bg-transparent border-0 cursor-pointer text-left">{navData.services}</button>
+            <button type="button" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70 bg-transparent border-0 cursor-pointer text-left">{navData.tour}</button>
+            <button type="button" onClick={(e) => e.preventDefault()} className="px-2 py-3 hover:text-white/70 bg-transparent border-0 cursor-pointer text-left">{navData.contact}</button>
           </div>
           <button className="w-full bg-white text-stone-900 px-6 py-4 rounded-xl text-base font-bold shadow-lg hover:bg-stone-100 active:scale-95 transition-all">
             {navData.login}

@@ -6,17 +6,14 @@ export const useInView = <T extends HTMLElement>(
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
 
-  const optionsRef = useRef(options);
-
-  useEffect(() => {
-    optionsRef.current = options;
-  }, [options]);
+  // Snapshot serializable para reaccionar a cambios de options sin escribir refs durante el render.
+  const optsKey = JSON.stringify(options ?? null);
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
 
-    const userOpts = optionsRef.current ?? {};
+    const userOpts = options ?? {};
     const threshold = userOpts.threshold ?? 0.2;
     const rootMargin = userOpts.rootMargin ?? '0px 0px -10% 0px';
     const root = userOpts.root ?? null;
@@ -31,7 +28,8 @@ export const useInView = <T extends HTMLElement>(
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [optsKey]);
 
   return [ref, inView];
 };

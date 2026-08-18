@@ -5,7 +5,7 @@ export type Theme = 'Waypoint' | 'Aura' | 'Aeria' | 'Nimbus';
 
 export interface LanguageContextType {
   language: Language;
-  t: (key: string) => any;
+  t: (key: string) => unknown;
   switchLanguage: (lang: Language) => void;
 }
 

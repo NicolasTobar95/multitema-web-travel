@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { useTranslation } from '../../../i18n';
 import { THEME_CONTAINER } from '../layout';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 
 interface TimelineStop {
   coords: string;
@@ -17,14 +17,14 @@ const RouteMap = () => {
   const pathRef = useRef<SVGPathElement>(null);
   const [progress, setProgress] = useState(0);
 
-  // Estados para la mira telescópica (crosshair reticle)
+  // State for the telescopic crosshair reticle
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [geoData, setMouseGeoData] = useState({ lat: "45.0000° N", lng: "122.0000° W", elev: "120m" });
 
-  const stopsText = (t('Waypoint.timeline') ?? []) as TimelineStop[];
-  const olympicCoords: string = t('Waypoint.olympic.coords') ?? '';
-  const olympicTitle: string = t('Waypoint.olympic.title') ?? '';
+  const stopsText = (t('Waypoint.timeline') as TimelineStop[] | undefined) ?? [];
+  const olympicCoords: string = (t('Waypoint.olympic.coords') as string) ?? '';
+  const olympicTitle: string = (t('Waypoint.olympic.title') as string) ?? '';
 
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -75,7 +75,7 @@ const RouteMap = () => {
     return () => cancelAnimationFrame(rafId);
   }, [inView]);
 
-  // Manejo del movimiento del mouse sobre el contenedor del mapa
+  // Mouse movement handling over the map container
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const container = containerRef.current;
     if (!container) return;
@@ -85,13 +85,13 @@ const RouteMap = () => {
     const y = e.clientY - rect.top;
     setMousePos({ x, y });
 
-    // Calcular coordenadas geográficas falsas en base a la posición del cursor para dar realismo
-    const latBase = 47.9; // Coordenadas del Pacific NW (cerca de Washington/Olympic)
+    // Compute fake geographic coordinates from the cursor position for realism
+    const latBase = 47.9; // Pacific NW coordinates (near Washington/Olympic)
     const lngBase = -123.5;
     const calculatedLat = (latBase - (y / rect.height) * 0.4).toFixed(4);
     const calculatedLng = (lngBase + (x / rect.width) * 0.6).toFixed(4);
     
-    // Elevación falsa basada en la altura del cursor
+    // Fake elevation based on the cursor height
     const calculatedElev = Math.round((1 - (y / rect.height)) * 8200);
 
     setMouseGeoData({
@@ -106,22 +106,23 @@ const RouteMap = () => {
       ref={sectionRef}
       className="relative w-full bg-white py-24"
     >
-      {/* Fondo de sección: backgrounds/4.jpg muy sutil (12%) a todo el ancho de pantalla */}
+      {/* Section background: backgrounds/4.jpg very subtle (12%) full screen width */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <img
           src="/src/webp/backgrounds/4.jpg"
           alt=""
           className="w-full h-full object-cover object-center opacity-[0.12]"
+          loading="lazy"
         />
       </div>
 
       <div className={`relative z-10 ${THEME_CONTAINER}`}>
       <div className="flex flex-col items-start mb-10">
         <span className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-2">
-          {t('Waypoint.routeMap.label')}
+          {t('Waypoint.routeMap.label') as string}
         </span>
         <h2 className="text-3xl md:text-5xl font-serif italic text-zinc-800 leading-snug max-w-2xl">
-          {t('Waypoint.routeMap.title')}
+          {t('Waypoint.routeMap.title') as string}
         </h2>
       </div>
 
@@ -137,20 +138,20 @@ const RouteMap = () => {
           background: 'linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%)',
         }}
       >
-        {/* Mira Telescópica (Retículo) que sigue al cursor de forma sutil */}
+        {/* Telescopic Reticle following the cursor subtly */}
         {isHovered && (
           <div className="absolute inset-0 pointer-events-none z-30">
-            {/* Línea horizontal */}
+            {/* Horizontal line */}
             <div 
               className="absolute left-0 right-0 border-t border-dashed border-red-500/20"
               style={{ top: `${mousePos.y}px` }}
             />
-            {/* Línea vertical */}
+            {/* Vertical line */}
             <div 
               className="absolute top-0 bottom-0 border-l border-dashed border-red-500/20"
               style={{ left: `${mousePos.x}px` }}
             />
-            {/* Badge de coordenadas GPS en tiempo real junto al cursor */}
+            {/* Real-time GPS coordinates badge next to the cursor */}
             <div 
               className="absolute bg-zinc-900/90 text-white text-[9px] font-mono p-2 rounded-sm shadow-xl flex flex-col gap-0.5"
               style={{ 
@@ -173,21 +174,21 @@ const RouteMap = () => {
           preserveAspectRatio="xMidYMid meet"
           aria-label={t('Waypoint.routeMap.title') as string}
         >
-          {/* Contornos decorativos del terreno (curvas de nivel topográficas realzadas) */}
+          {/* Decorative terrain contours (enhanced topographic contour lines) */}
           <g stroke="#e5e5e5" strokeWidth="1" fill="none">
-            {/* Curvas topográficas cerradas de fondo */}
+            {/* Closed background topographic curves */}
             <path d="M 450 150 C 490 120, 520 180, 480 200 C 440 220, 410 180, 450 150" strokeWidth="0.8" opacity="0.6" />
             <path d="M 450 150 C 510 100, 550 200, 480 220 C 410 240, 390 200, 450 150" strokeWidth="0.6" opacity="0.4" />
             <path d="M 120 320 C 80 300, 70 340, 100 360 C 130 380, 160 340, 120 320" strokeWidth="0.8" opacity="0.6" />
             
-            {/* Líneas generales de elevación */}
+            {/* General elevation lines */}
             <path d="M 40 380 Q 160 340 280 360 T 540 340 T 800 360" stroke="#d4d4d4" strokeWidth="1.2" />
             <path d="M 40 360 Q 150 320 260 340 T 520 320 T 800 340" stroke="#d4d4d4" strokeWidth="1" opacity="0.7" />
             <path d="M 60 300 Q 180 260 320 280 T 580 260 T 780 280" stroke="#d4d4d4" strokeWidth="0.8" opacity="0.5" />
             <path d="M 80 240 Q 200 200 360 220 T 600 200 T 760 220" stroke="#d4d4d4" strokeWidth="0.8" opacity="0.35" />
           </g>
 
-          {/* Líneas de cuadrícula sutiles */}
+          {/* Subtle grid lines */}
           <g stroke="#f0f0f0" strokeWidth="0.8">
             {[80, 160, 240, 320, 400, 480, 560, 640, 720].map((x) => (
               <line key={`v-${x}`} x1={x} y1={40} x2={x} y2={380} />
@@ -197,7 +198,7 @@ const RouteMap = () => {
             ))}
           </g>
 
-          {/* Ruta animada */}
+          {/* Animated route */}
           <path
             ref={pathRef}
             d={pathD}
@@ -210,7 +211,7 @@ const RouteMap = () => {
             strokeDashoffset="0"
           />
 
-          {/* Nodos */}
+          {/* Waypoints */}
           {waypoints.map((wp, i) => (
             <g key={i}>
               <circle
@@ -246,7 +247,7 @@ const RouteMap = () => {
             </g>
           ))}
 
-          {/* Etiqueta del destino final */}
+          {/* Final destination label */}
           <text
             x={waypoints[2].x + 14}
             y={waypoints[2].y + 32}

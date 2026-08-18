@@ -5,25 +5,26 @@ import Companies from './components/Companies';
 import Destinations from './components/Destinations';
 import Packages from './components/Packages';
 import Testimonials from './components/Testimonials';
-import CtaBanner from './components/CtaBanner'; // <-- EXTRAÍDO del Footer original de Trevilo
-import Footer from './components/Footer';     // <-- SIMPLIFICADO (sin CTA gigante)
+import CtaBanner from './components/CtaBanner'; // <-- EXTRACTED from the original Trevilo Footer
+import Footer from './components/Footer';     // <-- SIMPLIFIED (no giant CTA)
 
 /**
- * NimbusTheme — retoque editorial de Trevilo.
+ * NimbusTheme — editorial retake of Trevilo.
  *
- * Conserva el ADN de Trevilo: esquinas agresivamente redondeadas que escalan
- * con importancia (`rounded-[3rem]` en Hero, Packages base y CtaBanner), jerarquía
- * de sombras `shadow-sm`→`shadow-lg`→`shadow-xl/2xl`, y la paleta light con
- * cian como único acento, centralizada en `tailwind.config` como `colors.nimbus`.
+ * Keeps the Trevilo DNA: aggressively rounded corners that scale with
+ * importance (`rounded-[3rem]` in Hero, Packages base and CtaBanner), the
+ * `shadow-sm`→`shadow-lg`→`shadow-xl/2xl` shadow hierarchy, and the light
+ * palette with cyan as the only accent, centralized in `tailwind.config`
+ * as `colors.nimbus`.
  *
- * Lo nuevo: float + tilt real en la caja del buscador del Hero y en la tarjeta
- * "Bali Island" de Packages (hook `useFloatTilt`), botón magnético en el CTA
- * del Hero, Navbar sticky con backdrop-blur condicional, CtaBanner extraído
- * como pieza independiente, BrandLogo compartido, y todas las deudas de
- * Trevilo cerradas (i18n, tipado, a11y, SVG duplicado, etc).
+ * What's new: real float + tilt in the Hero search box and the "Bali Island"
+ * card in Packages (hook `useFloatTilt`), magnetic button in the Hero CTA,
+ * sticky Navbar with conditional backdrop-blur, CtaBanner extracted as an
+ * independent piece, shared BrandLogo, and all Trevilo debt closed
+ * (i18n, typing, a11y, duplicated SVG, etc).
  *
- * Layout apila 8 componentes verticalmente sin container global — cada uno
- * gestiona su ancho y padding, igual que Trevilo intencionalmente.
+ * Layout stacks 8 components vertically without a global container — each one
+ * manages its own width and padding, just like Trevilo intentionally did.
  */
 const NimbusTheme: React.FC = () => {
   return (
@@ -31,9 +32,9 @@ const NimbusTheme: React.FC = () => {
       <Navbar />
       <Hero />
 
-      {/* Banda con fondo compartido: marquee de Companies + Destinations.
-          El fondo (backgrounds/1.jpg) cubre AMBOS controles a ancho completo,
-          con opacidad reducida (10%). */}
+      {/* Band with shared background: Companies marquee + Destinations.
+          The background (backgrounds/1.jpg) covers BOTH sections at full width,
+          with reduced opacity (10%). */}
       <div className="relative w-full overflow-hidden">
         <div
           className="absolute inset-0 z-0 pointer-events-none"

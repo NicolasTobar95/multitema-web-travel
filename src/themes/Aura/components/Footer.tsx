@@ -8,17 +8,22 @@ interface LinkGroup {
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
-  const data = t('Aura.footer');
+  const data = t('Aura.footer') as {
+    links: LinkGroup[];
+    newsletter: { title: string; description: string; placeholder: string; button: string };
+    contact: { title: string; items: string[] };
+    copyright: string;
+  };
 
   return (
     <footer className="w-full bg-stone-900 text-white font-sans">
       <div className="max-w-[1400px] mx-auto px-4 md:px-10 py-16 md:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           
-          {/* Col 1: Tarjeta de presentación del autor (más ancha) —
-              clickeable: abre el portfolio externo en nueva pestaña.
-              innerBgBase coincide con el color del footer (stone-900) para
-              que la capa opaca base sea invisible sobre el fondo. */}
+          {/* Col 1: Author presentation card (wider) —
+              clickable: opens the external portfolio in a new tab.
+              innerBgBase matches the footer color (stone-900) so the
+              opaque base layer is invisible over the background. */}
           <div className="lg:col-span-5">
             <a
               href="https://portfolio-218.pages.dev/"
@@ -37,7 +42,7 @@ const Footer: React.FC = () => {
               <ul className="flex flex-col gap-3">
                 {group.items.map((item) => (
                   <li key={item}>
-                    <a href="#" onClick={(e) => e.preventDefault()} className="text-stone-300 hover:text-amber-500 transition-colors text-sm">{item}</a>
+                    <button type="button" onClick={(e) => e.preventDefault()} className="text-stone-300 hover:text-amber-500 transition-colors text-sm bg-transparent border-0 p-0 cursor-pointer text-left">{item}</button>
                   </li>
                 ))}
               </ul>
@@ -76,7 +81,7 @@ const Footer: React.FC = () => {
         <div className="mt-16 pt-8 border-t border-white/10 text-center text-stone-400 text-sm">
           {data.copyright.replace('{year}', String(new Date().getFullYear()))}
         </div>
-        {/* Línea de demo debajo del copyright — autor del tema */}
+        {/* Demo line below the copyright — theme author */}
         <div className="mt-4 text-center text-xs text-stone-500">
           {(t('shared.footerNotice') as string).replace('{year}', String(new Date().getFullYear()))}
         </div>

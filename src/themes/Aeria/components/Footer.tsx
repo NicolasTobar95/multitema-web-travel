@@ -21,10 +21,11 @@ const Footer: React.FC = () => {
     <footer className="w-full border-t border-neutral-100 pt-20 pb-8 px-6 md:px-12 mt-10 bg-purple-100/70">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 mb-16">
         <div className="flex-1 lg:flex-[2] flex flex-col items-start">
-          {/* Tarjeta de presentación del autor — misma que en Nimbus.
-              Clickeable: abre el portfolio externo en nueva pestaña.
-              Fondo purple-100 (un tono más claro que el purple-200 anterior,
-              casi igual al footer) con texto oscuro para legibilidad. */}
+          {/* Author presentation card — same as in Nimbus.
+              Clickable: opens the external portfolio in a new tab.
+              purple-100 background (one shade lighter than the previous
+              purple-200, almost equal to the footer) with dark text for
+              readability. */}
           <a
             href="https://portfolio-218.pages.dev/"
             target="_blank"
@@ -46,7 +47,7 @@ const Footer: React.FC = () => {
           <h4 className="text-xs font-bold text-neutral-900 tracking-[0.2em] uppercase mb-6">{fData.linksTitle}</h4>
           <ul className="flex flex-col gap-4">
             {fData.links.map((link: string, i: number) => (
-              <li key={i}><a href="#" onClick={(e) => e.preventDefault()} className="text-neutral-500 text-sm hover:text-purple-600 transition-colors">{link}</a></li>
+              <li key={i}><button type="button" onClick={(e) => e.preventDefault()} className="text-neutral-500 text-sm hover:text-purple-600 transition-colors bg-transparent border-0 p-0 cursor-pointer text-left">{link}</button></li>
             ))}
           </ul>
         </div>
@@ -89,7 +90,7 @@ const Footer: React.FC = () => {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="hover:text-purple-600 cursor-pointer transition-colors"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></svg>
         </div>
       </div>
-      {/* Línea de demo debajo del copyright — autor del tema */}
+      {/* Demo line below the copyright — theme author */}
       <div className="max-w-7xl mx-auto mt-6 text-center text-xs text-neutral-400">
         {(t('shared.footerNotice') as string).replace('{year}', String(new Date().getFullYear()))}
       </div>

@@ -13,7 +13,7 @@ interface AuthorData {
 const Author = () => {
   const { t } = useTranslation();
   const authorData = t('Waypoint.author') as AuthorData;
-  const avatarUrl = sharedImages.avatars[0]; // Nicolas Tobar (tu foto) como autor principal
+  const avatarUrl = sharedImages.avatars[0]; // Nicolas Tobar (your photo) as main author
 
   const stats = themeData.Waypoint.stats;
   const [saved, setSaved] = useState(false);
@@ -30,6 +30,7 @@ const Author = () => {
             src={avatarUrl}
             alt={authorData.name}
             className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-lg"
+            loading="lazy"
           />
         </div>
         <div className="flex-1 flex flex-col items-start">

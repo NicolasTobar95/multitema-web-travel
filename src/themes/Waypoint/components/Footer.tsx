@@ -22,7 +22,7 @@ interface FooterData {
   links: Record<string, FooterLinkColumn>;
 }
 
-// Imágenes disponibles para el cursor-follow (ciclo sobre narrative)
+// Images available for the cursor-follow (cycle over narrative)
 const previewImages = [
   sharedImages.narrative[0],
   sharedImages.narrative[1],
@@ -68,7 +68,7 @@ const Footer = () => {
 
   return (
     <footer className="w-full bg-white pt-24 pb-12 overflow-hidden">
-      {/* Cursor-follow preview (fixed, fuera del flujo) */}
+      {/* Cursor-follow preview (fixed, out of flow) */}
       <div
         ref={previewRef}
         className={`fixed top-0 left-0 z-50 w-40 h-52 pointer-events-none transition-opacity duration-200 ${
@@ -81,11 +81,12 @@ const Footer = () => {
             src={getPreviewImage(Math.floor(hoveredIndex / 10), hoveredIndex % 10)}
             alt=""
             className="w-full h-full object-cover rounded-sm shadow-2xl"
+            loading="lazy"
           />
         )}
       </div>
 
-      {/* Bloque TOP — excepción documentada: conserva max-w-[1400px] por el label rotado */}
+      {/* TOP block — documented exception: keeps max-w-[1400px] because of the rotated label */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col xl:flex-row items-start gap-12 mb-32">
         <div className="hidden xl:flex shrink-0 pt-32">
           <span className="text-[10px] tracking-[0.25em] text-zinc-400 font-bold uppercase -rotate-90 origin-left whitespace-nowrap">
@@ -103,6 +104,7 @@ const Footer = () => {
                   src={cardImages[index]}
                   alt={card.title}
                   className="w-full h-[300px] md:h-[400px] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
                 />
               </div>
               <h4 className="text-xl md:text-2xl font-display text-zinc-900 mb-2 group-hover:text-red-500 transition-colors">
@@ -117,11 +119,11 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bloque BOTTOM — AuthorCard (col 1 grande) + 3 columnas de links con cursor-follow */}
+      {/* BOTTOM block — AuthorCard (large col 1) + 3 link columns with cursor-follow */}
       <div className={`${THEME_CONTAINER} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 border-t border-zinc-100 pt-12`}>
-        {/* Col 1 (grande): tarjeta de presentación del autor — clickeable al portfolio externo.
-            innerBgBase coincide con el fondo blanco del footer para que la
-            capa opaca base sea invisible; texto oscuro sobre blanco. */}
+        {/* Col 1 (large): author presentation card — clickable to the external portfolio.
+            innerBgBase matches the footer's white background so the opaque
+            base layer is invisible; dark text on white. */}
         <div className="lg:col-span-8 flex flex-col items-start gap-4 text-zinc-900">
           <a
             href="https://portfolio-218.pages.dev/"
@@ -142,15 +144,15 @@ const Footer = () => {
                   const flatIndex = colIdx * 10 + itemIdx;
                   return (
                     <li key={itemIdx}>
-                      <a
-                        href="#"
+                      <button
+                        type="button"
                         onClick={(e) => e.preventDefault()}
-                        className="text-xs text-red-500 hover:text-red-400 active:text-red-600 transition-colors font-medium inline-block"
+                        className="text-xs text-red-500 hover:text-red-400 active:text-red-600 transition-colors font-medium inline-block bg-transparent border-0 p-0 cursor-pointer text-left"
                         onMouseEnter={() => setHoveredIndex(flatIndex)}
                         onMouseLeave={() => setHoveredIndex(null)}
                       >
                         {item}
-                      </a>
+                      </button>
                     </li>
                   );
                 })}
@@ -159,7 +161,7 @@ const Footer = () => {
           ))}
         </div>
       </div>
-      {/* Línea de demo debajo del bloque inferior — autor del tema */}
+      {/* Demo line below the bottom block — theme author */}
       <div className={`${THEME_CONTAINER} mt-8 text-center text-[10px] tracking-[0.25em] text-zinc-400 uppercase font-bold`}>
         {(t('shared.footerNotice') as string).replace('{year}', String(new Date().getFullYear())).replace('—', '·')}
       </div>

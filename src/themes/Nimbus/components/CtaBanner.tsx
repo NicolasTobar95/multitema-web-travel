@@ -2,16 +2,15 @@ import React from 'react';
 import { useTranslation } from '../../../i18n';
 
 /**
- * CtaBanner de Nimbus — extracción de cohesión #3 del doc.
+ * Nimbus CtaBanner — cohesion extraction #3 from the doc.
  *
- * Contiene EXACTAMENTE lo que antes vivía dentro del `Footer.tsx` original
- * de Trevilo (las 39 líneas superiores): tarjeta `h-[500px] md:h-[600px]
- * rounded-[3rem]` con fondo `backgrounds/5.jpg`, overlay `black/40`,
- * tag pill + h2 + 2 botones.
+ * Contains EXACTLY what used to live inside the original Trevilo `Footer.tsx`
+ * (the 39 upper lines): a `h-[500px] md:h-[600px] rounded-[3rem]` card with
+ * `backgrounds/5.jpg` background, `black/40` overlay, tag pill + h2 + 2 buttons.
  *
- * Es una extracción de cohesión, NO un rediseño visual. El `Footer` queda
- * como footer puro (sin CTA gigante). Margen superior `pt-12` igual al
- * inferior `pb-12` (el espacio con el Footer), para que respire simétrico.
+ * It is a cohesion extraction, NOT a visual redesign. The `Footer` stays as a
+ * pure footer (no giant CTA). Top margin `pt-12` matches the bottom `pb-12`
+ * (the space with the Footer), so it breathes symmetrically.
  */
 interface FooterData {
   ctaTag: string;
@@ -29,14 +28,14 @@ const CtaBanner: React.FC = () => {
       <div
         className="relative w-full h-[500px] md:h-[600px] rounded-[3rem] flex flex-col items-center justify-center overflow-hidden shadow-2xl"
       >
-        {/* Fondo: backgrounds/5.jpg al 75% de opacidad, detrás del contenido.
-            Capa separada para no volver translúcido el texto del CTA. */}
+        {/* Background: backgrounds/5.jpg at 75% opacity, behind the content.
+            Separate layer so the CTA text does not become translucent. */}
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-cover bg-center opacity-75 pointer-events-none"
           style={{ backgroundImage: 'url(/src/webp/backgrounds/5.jpg)' }}
         ></div>
-        {/* Overlay oscuro */}
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40 z-0"></div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-4">

@@ -4,21 +4,26 @@ import { sharedImages } from '../../../config/sharedImages';
 
 const ClientReview: React.FC = () => {
   const { t } = useTranslation();
-  const revData = t('Aeria.review');
+  const revData = t('Aeria.review') as {
+    label: string;
+    title: string;
+    quote: string;
+    author: string;
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
 
-  // Estados para destello de lente (Lens Flare) interactivo
+  // State for interactive Lens Flare
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
-  // Rastrear el scroll de la página para el parallax de profundidad (split-depth)
+  // Track page scroll for the split-depth parallax
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      // Calcular la distancia relativa al centro del viewport
+      // Compute the distance relative to the viewport center
       const offset = window.innerHeight / 2 - (rect.top + rect.height / 2);
       setScrollY(offset);
     };
@@ -46,7 +51,7 @@ const ClientReview: React.FC = () => {
         ref={containerRef}
         className="w-full max-w-7xl mx-auto px-6 md:px-12 py-24 flex flex-col md:flex-row items-center gap-16 lg:gap-24 overflow-hidden"
       >
-      {/* Columna Izquierda con texto lateral moviéndose sutilmente de forma parallax contraria */}
+      {/* Left Column with text moving subtly in counter-parallax */}
       <div 
         className="w-full md:w-1/2 flex flex-col items-start transition-transform duration-200 ease-out"
         style={{ transform: `translateY(${scrollY * -0.04}px)` }}
@@ -68,15 +73,15 @@ const ClientReview: React.FC = () => {
         </div>
         <div className="flex -space-x-4">
           {[0, 1, 2].map((i) => (
-            <img key={i} src={sharedImages.avatars[i % sharedImages.avatars.length]} className="w-14 h-14 rounded-full border-4 border-white object-cover shadow-md" alt="User" />
+            <img key={i} src={sharedImages.avatars[i % sharedImages.avatars.length]} className="w-14 h-14 rounded-full border-4 border-white object-cover shadow-md" alt="Reviewer avatar" loading="lazy" />
           ))}
         </div>
       </div>
 
-      {/* Columna Derecha con Holograma de Tres Capas (Split-Depth) */}
+      {/* Right Column with Three-Layer Hologram (Split-Depth) */}
       <div className="w-full md:w-1/2 relative flex justify-end">
         
-        {/* Capa 1: Sombra ghost con parallax más rápido */}
+        {/* Layer 1: Ghost shadow with faster parallax */}
         <div
           className="absolute top-8 right-12 w-[80%] h-[400px] md:h-[500px] rounded-[2.5rem] bg-cover bg-center opacity-30 blur-2xl z-0 shadow-[0_0_80px_rgba(168,85,247,0.4)] transition-transform duration-200 ease-out"
           style={{ 
@@ -85,7 +90,7 @@ const ClientReview: React.FC = () => {
           }}
         />
 
-        {/* Capa 2: Foto frontal con parallax más lento + Flare de lente interactivo */}
+        {/* Layer 2: Front photo with slower parallax + interactive lens flare */}
         <div 
           onMouseMove={handleMouseMove}
           onMouseEnter={() => setIsHovered(true)}
@@ -97,19 +102,20 @@ const ClientReview: React.FC = () => {
         >
           <img
             src={sharedImages.avatars[0]}
-            alt="Client"
+            alt="Happy traveler portrait"
             className="w-full h-full object-cover select-none"
+            loading="lazy"
           />
 
-          {/* Destello de lente interactivo SVG */}
+          {/* Interactive SVG lens flare */}
           {isHovered && (
             <div className="absolute inset-0 pointer-events-none mix-blend-screen z-20 overflow-hidden">
-              {/* Círculo de brillo central */}
+              {/* Central brightness circle */}
               <div 
                 className="absolute w-32 h-32 rounded-full bg-gradient-radial from-white via-purple-500/20 to-transparent -translate-x-1/2 -translate-y-1/2 opacity-70"
                 style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
               />
-              {/* Aro de refracción */}
+              {/* Refraction ring */}
               <div 
                 className="absolute w-48 h-48 rounded-full border border-purple-500/10 -translate-x-1/2 -translate-y-1/2"
                 style={{ 
@@ -118,7 +124,7 @@ const ClientReview: React.FC = () => {
                   animation: 'lens-pulse 2s ease-in-out infinite'
                 }}
               />
-              {/* Haz de luz diagonal */}
+              {/* Diagonal light beam */}
               <div 
                 className="absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent via-purple-400/40 to-transparent -translate-x-1/2 -translate-y-1/2 rotate-45"
                 style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}

@@ -1,52 +1,52 @@
 /**
- * Imágenes compartidas locales (formato WebP)
+ * Shared local images (WebP format)
  *
- * Todas las imágenes ahora se sirven desde /src/webp/ (locales).
- * Los componentes consumen los arrays por índice:
- *   - destinations[0..3] para cards de destinos
- *   - narrative[0..2] para imágenes narrativas
- *   - panoramas[0..2] para banners anchos
- *   - avatars[0..5] para retratos (Nicolas Tobar es idx 0 - avatar principal)
+ * All images are now served from /src/webp/ (local).
+ * Components consume the arrays by index:
+ *   - destinations[0..3] for destination cards
+ *   - narrative[0..2] for narrative images
+ *   - panoramas[0..2] for wide banners
+ *   - avatars[0..5] for portraits (Nicolas Tobar is idx 0 - main avatar)
  *
- * Mapeo: los 8 destinos locales se reparten entre destinations, narrative y
- * panoramas reutilizándolos (no se descargaron imágenes aparte para narrative
- * ni panoramas). Avatars son 6 locales.
+ * Mapping: the 8 local destinations are split between destinations, narrative and
+ * panoramas by reusing them (no separate images were downloaded for narrative
+ * or panoramas). Avatars are 6 local files.
  */
 
-// Rutas a las imágenes webp en src/webp/
+// Paths to the webp images in src/webp/
 const DEST = '/src/webp/destinations/';
 const AV = '/src/webp/avatars/';
 
 export const sharedImages = {
-  // Tarjetas de destinos (montaña, playa, cañón, templo + 4 extra locales)
+  // Destination cards (mountain, beach, canyon, temple + 4 extra local ones)
   destinations: [
-    `${DEST}Suiza - Alpes.webp`,                          // 0: Montaña / Nieve
-    `${DEST}Bali, Indonesia - Isla paradisíaca.webp`,     // 1: Playa / Tropical
-    `${DEST}Gili Trawangan - Playa cristalina.webp`,       // 2: Mar / Cristal
-    `${DEST}Perú - Machu Picchu.webp`,                     // 3: Historia / Montaña
-    `${DEST}Maldivas - Lujo tropical.webp`,                // 4: Lujo / Turquesa
-    `${DEST}Islandia - Aurora boreal.webp`,                // 5: Aurora / Norte
-    `${DEST}Kyoto, Japón - Cultura tradicional.webp`,      // 6: Cultura / Japón
-    `${DEST}Fiji - Islas vírgenes.webp`,                   // 7: Islas / Paraíso
+    `${DEST}Suiza - Alpes.webp`,                          // 0: Mountain / Snow
+    `${DEST}Bali, Indonesia - Isla paradisíaca.webp`,     // 1: Beach / Tropical
+    `${DEST}Gili Trawangan - Playa cristalina.webp`,       // 2: Sea / Crystal
+    `${DEST}Perú - Machu Picchu.webp`,                     // 3: History / Mountain
+    `${DEST}Maldivas - Lujo tropical.webp`,                // 4: Luxury / Turquoise
+    `${DEST}Islandia - Aurora boreal.webp`,                // 5: Aurora / North
+    `${DEST}Kyoto, Japón - Cultura tradicional.webp`,      // 6: Culture / Japan
+    `${DEST}Fiji - Islas vírgenes.webp`,                   // 7: Islands / Paradise
   ],
-  // Imágenes narrativas (excursionistas, paisajes heroicos)
-  // Reutiliza destinos locales con mejor feeling narrativo.
+  // Narrative images (hikers, heroic landscapes)
+  // Reuses local destinations with the best narrative feel.
   narrative: [
-    `${DEST}Maldivas - Lujo tropical.webp`,                // 0: Paisaje tropical heroico
-    `${DEST}Islandia - Aurora boreal.webp`,                // 1: Paisaje nórdico dramático
-    `${DEST}Kyoto, Japón - Cultura tradicional.webp`,       // 2: Cultura / viaje
+    `${DEST}Maldivas - Lujo tropical.webp`,                // 0: Heroic tropical landscape
+    `${DEST}Islandia - Aurora boreal.webp`,                // 1: Dramatic nordic landscape
+    `${DEST}Kyoto, Japón - Cultura tradicional.webp`,       // 2: Culture / travel
   ],
-  // Banners anchos (reutiliza destinos con feeling panorámico)
+  // Wide banners (reuses destinations with a panoramic feel)
   panoramas: [
-    `${DEST}Fiji - Islas vírgenes.webp`,                   // 0: Paraíso amplio
-    `${DEST}Suiza - Alpes.webp`,                           // 1: Montaña panorámica
-    `${DEST}Islandia - Aurora boreal.webp`,                // 2: Aurora boreal wide
+    `${DEST}Fiji - Islas vírgenes.webp`,                   // 0: Wide paradise
+    `${DEST}Suiza - Alpes.webp`,                           // 1: Panoramic mountain
+    `${DEST}Islandia - Aurora boreal.webp`,                // 2: Wide aurora borealis
   ],
-  // Retratos para testimonios/autores.
-  // Nicolas Tobar (tu foto) va PRIMERO en idx 0 para que aparezca como
-  // avatar principal en todos los temas (Author, ClientReview, grids de 3, etc.)
+  // Portraits for testimonials/authors.
+  // Nicolas Tobar (your photo) goes FIRST at idx 0 so it appears as the
+  // main avatar in all themes (Author, ClientReview, 3-grids, etc.)
   avatars: [
-    `${AV}Nicolas Tobar - Full Stack Developer.webp`,      // 0 (TU FOTO - principal)
+    `${AV}Nicolas Tobar - Full Stack Developer.webp`,      // 0 (YOUR PHOTO - main)
     `${AV}Sofía Martínez - Viajera apasionada.webp`,       // 1
     `${AV}Emily Chen - Cocinera exploradora.webp`,          // 2
     `${AV}James Wilson - Montañista profesional.webp`,      // 3

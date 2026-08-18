@@ -8,21 +8,21 @@ const Hero = () => {
 
   return (
     <header className="relative h-screen w-full bg-zinc-950 flex flex-col justify-center px-10 md:px-24 overflow-hidden">
-      {/* Estilos CSS Inline portables para animaciones complejas.
-          El fondo y las letras usan el MISMO Ken Burns (24s, misma curva
-          y amplitud). Como las letras son `background-image` con
-          `background-clip: text`, no pueden animarse con `transform: scale`
-          directamente — pero SÍ pueden simular el mismo efecto animando
-          `background-size` y `background-position` con los mismos valores
-          proporcionales. Resultado: fondo y letras respiran al unísono,
-          como una sola imagen. */}
+      {/* Portable inline CSS styles for complex animations.
+          The background and the letters use the SAME Ken Burns (24s, same curve
+          and amplitude). Since the letters are `background-image` with
+          `background-clip: text`, they cannot be animated with `transform: scale`
+          directly — but they CAN simulate the same effect by animating
+          `background-size` and `background-position` with the same proportional
+          values. Result: background and letters breathe in unison,
+          like a single image. */}
       <style>{`
         @keyframes kenburns {
           0%   { transform: scale(1.05) translate(0px, 0px); }
           50%  { transform: scale(1.15) translate(-10px, 5px); }
           100% { transform: scale(1.05) translate(0px, 0px); }
         }
-        /* Mismo keyframe aplicado a background-size y background-position. */
+        /* Same keyframe applied to background-size and background-position. */
         @keyframes kenburns-letters {
           0%   { background-size: 105% 105%; background-position: 50% 50%; }
           50%  { background-size: 115% 115%; background-position: calc(50% + 5px) calc(50% - 2.5px); }
@@ -45,13 +45,13 @@ const Hero = () => {
         }
       `}</style>
 
-      {/* Contenedor de la foto con efecto Ken Burns */}
+      {/* Photo container with Ken Burns effect */}
       <div
         className="absolute inset-0 bg-cover bg-center animate-ken-burns opacity-60 z-0"
         style={{ backgroundImage: `url(${heroImg})` }}
       />
 
-      {/* Pozo de oscuridad radial centrado sobre el bloque de título y fade inferior */}
+      {/* Radial darkness pit centered on the title block + bottom fade */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -68,24 +68,25 @@ const Hero = () => {
             <circle cx="12" cy="10" r="3"></circle>
             <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"></path>
           </svg>
-          <span className="text-zinc-300">{t('Waypoint.hero.label')}</span>
+          <span className="text-zinc-300">{t('Waypoint.hero.label') as string}</span>
         </div>
 
-        {/* Título gigante con la foto recortada dentro de cada letra.
-            La foto de las letras tiene su PROPIO Ken Burns (14s, dirección
-            y amplitud distintas al fondo de 24s), por lo que las letras
-            parecen "respirar" en una fase distinta al fondo. El filtro
-            brightness/saturate las hace más vivas que el fondo (opacity-60).
-            -mt-2 y tracking-[-0.02em] evitan el recorte que tenía antes con
+        {/* Giant title with the photo clipped inside each letter.
+            The letters' photo has its OWN Ken Burns (14s, different direction
+            and amplitude than the 24s background), so the letters seem to
+            "breathe" in a different phase than the background. The
+            brightness/saturate filter makes them livelier than the background
+            (opacity-60).
+            -mt-2 and tracking-[-0.02em] avoid the clipping it had before with
             "Belleza en abundancia".
-            inline-block para que el background-size se calcule contra el
-            ancho del texto, no contra el contenedor padre. */}
+            inline-block so background-size is computed against the text
+            width, not the parent container. */}
         <h1 className="inline-block text-7xl md:text-[140px] font-display text-clip-bg animate-ken-burns-letters tracking-[-0.02em] leading-[0.85] mb-8 select-none drop-shadow-[0_8px_28px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:scale-[1.01]">
-          {t('Waypoint.hero.title')}
+          {t('Waypoint.hero.title') as string}
         </h1>
 
         <p className="text-zinc-300 text-sm md:text-base font-sans max-w-xl opacity-90 leading-relaxed border-l-2 border-red-500/50 pl-4 transition-all duration-300 hover:scale-[1.01]">
-          {t('Waypoint.hero.subtitle')}
+          {t('Waypoint.hero.subtitle') as string}
         </p>
       </div>
     </header>

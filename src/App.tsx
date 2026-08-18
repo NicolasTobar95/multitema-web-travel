@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { themeData } from './config/themeData';
 import { dictionaries } from './config/dictionaries';
@@ -19,12 +19,12 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>('Waypoint');
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = useMemo(() => (key: string): any => {
+  const t = useMemo(() => (key: string): unknown => {
     const keys = key.split('.');
-    let translation: any = dictionaries[language];
+    let translation: unknown = dictionaries[language];
     for (const k of keys) {
-      if (translation && typeof translation[k] !== 'undefined') {
-        translation = translation[k];
+      if (translation && typeof translation === 'object' && typeof (translation as Record<string, unknown>)[k] !== 'undefined') {
+        translation = (translation as Record<string, unknown>)[k];
       } else {
         return { [key]: key };
       }
@@ -35,6 +35,18 @@ const App: React.FC = () => {
   const switchLanguage = (lang: Language) => {
     setLanguage(lang);
   };
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = t('shared.meta.title') as string;
+    let metaDescription = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.name = 'description';
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.content = t('shared.meta.description') as string;
+  }, [language, t]);
 
   const handleThemeChange = async (newTheme: Theme, event: React.MouseEvent<HTMLButtonElement>) => {
     if (newTheme === theme) return;

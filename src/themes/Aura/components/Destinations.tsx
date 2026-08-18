@@ -57,7 +57,7 @@ const Destinations: React.FC = () => {
 
           return (
             <div key={card.id} className={`${colSpan} h-[300px] sm:h-[400px] relative rounded-[2.5rem] overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-500`}>
-              <img src={images[idx]} alt={card.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+              <img src={images[idx]} alt={card.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" loading="lazy" />
 
               <div className="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
 

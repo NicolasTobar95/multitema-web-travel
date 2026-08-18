@@ -1,85 +1,64 @@
-# React + TypeScript + Vite
+# Travel Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collection of four handcrafted travel website themes — **Waypoint**, **Aura**, **Aeria** and **Nimbus** — built as a single interactive showcase. Switch between themes at runtime with a click, complete with a smooth circular reveal transition.
 
-Currently, two official plugins are available:
+Built with React 19, TypeScript, Vite and Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+- **4 distinct themes** in one SPA, each with its own visual identity, layout and interactions
+- **Runtime theme switching** with a circular clip-path reveal (plus native View Transitions when available)
+- **Bilingual UI** — English and Spanish, switchable on the fly
+- **Interactive details** per theme: Ken Burns hero typography, 3D float/tilt search cards, split-depth parallax, magnetic CTAs, scroll-driven route maps and more
+- **Best-effort preloader** for warm hero-image caching during theme transitions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🧭 Themes
 
-## Expanding the ESLint configuration
+| Theme     | Vibe                              | Highlights                                        |
+| --------- | --------------------------------- | ------------------------------------------------- |
+| Waypoint  | Dark, cinematic, editorial        | Ken Burns letters, SVG route map, hover previews  |
+| Aura      | Warm, amber, premium travel       | Interactive booking widget, sticky stats          |
+| Aeria     | Light, purple, modern SaaS travel | Split-depth hologram, relaxing spots carousel     |
+| Nimbus    | Sky-blue, clean, utility-first    | Floating magnetic search box, 3D tilt cards       |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Install dependencies
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Start the dev server
+npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Type-check + production build
+npm run build
+
+# Lint
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧱 Project structure
 
-## Environment Variables
-
-Copy `.env.example` to `.env.local` and update with your values:
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_URL` | Base URL for your API | `https://api.example.com` |
-| `VITE_GA_TRACKING_ID` | Google Analytics ID | `G-XXXXXXXXXX` |
-| `VITE_SENTRY_DSN` | Sentry DSN for error tracking | `https://xxx@sentry.io/xxx` |
-
-**Important**: Never commit `.env.local` to Git.
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/        # Shared components (PandaLogo, BrandLogo, ErrorBoundary, AuthorCard, ...)
+├── config/            # Theme data, shared images, i18n dictionaries
+├── hooks/             # Shared hooks (useInView)
+├── themes/            # One folder per theme (Waypoint, Aura, Aeria, Nimbus)
+│   └── <theme>/       # Theme entry, layout, components and sections
+├── utils/             # Helpers (preloader)
+├── i18n.tsx           # Translation context (en/es)
+└── App.tsx            # Theme + language state and switching
+```
+
+## 🛠️ Stack
+
+- [React 19](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org)
+- [Vite](https://vite.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [ESLint](https://eslint.org)
+
+## 📄 License
+
+[MIT](./LICENSE) © 2026 Nicolas Tobar

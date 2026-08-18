@@ -1,19 +1,19 @@
 import React from 'react';
 import { useTranslation } from '../../../i18n';
-import BrandLogo from './BrandLogo';
+import BrandLogo from '../../../components/BrandLogo';
 
 /**
- * Navbar de Nimbus — fixed contrast model.
+ * Nimbus Navbar — fixed contrast model.
  *
- * El navbar siempre arranca con texto oscuro sobre fondo blanco translúcido
- * desde el primer paint. Sin listener de scroll, sin "modo transparente que
- * vira a scrolled": la legibilidad es la prioridad y el degradado hacia
- * transparente anterior no resolvía el contraste sobre `bg-nimbus-surface`
- * (#FDFDFD) que existe en el pre-hero gap.
+ * The navbar always starts with dark text over a translucent white background
+ * from the first paint. No scroll listener, no "transparent mode that shifts
+ * to scrolled": readability is the priority and the previous gradient toward
+ * transparent did not solve the contrast over `bg-nimbus-surface`
+ * (#FDFDFD) that exists in the pre-hero gap.
  *
- * Visual: gradiente sutil desde celeste (nimbus-accent con baja opacidad) en
- * la parte superior hacia blanco en la inferior. Caja blanca semi-transparente
- * con blur encima del Hero desde el primer frame.
+ * Visual: subtle gradient from sky-blue (nimbus-accent at low opacity) at
+ * the top toward white at the bottom. A semi-transparent white box with
+ * blur on top of the Hero from the first frame.
  */
 interface NavData {
   home: string;
@@ -32,22 +32,22 @@ const Navbar: React.FC = () => {
     <nav className="sticky top-0 left-0 w-full z-30 px-8 py-2.5 flex items-center justify-between font-sans backdrop-blur-md shadow-sm border-b border-neutral-200/60 bg-gradient-to-b from-sky-200/40 via-white/85 to-white/95">
       {/* Logo */}
       <div className="flex items-center gap-2">
-        <BrandLogo />
+        <BrandLogo brand="Nimbus" className="w-8 h-8" textClassName="text-xl font-bold tracking-wide ml-2" />
       </div>
 
       {/* Center Links */}
       <div className="hidden md:flex items-center gap-10 text-sm font-medium text-neutral-900 opacity-90">
-        <a href="#" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity font-bold">{navData.home}</a>
-        <a href="#" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity">{navData.about}</a>
-        <a href="#" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity">{navData.service}</a>
-        <a href="#" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity">{navData.pricing}</a>
+        <button type="button" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity font-bold bg-transparent border-0 p-0 cursor-pointer">{navData.home}</button>
+        <button type="button" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity bg-transparent border-0 p-0 cursor-pointer">{navData.about}</button>
+        <button type="button" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity bg-transparent border-0 p-0 cursor-pointer">{navData.service}</button>
+        <button type="button" onClick={(e) => e.preventDefault()} className="hover:opacity-100 transition-opacity bg-transparent border-0 p-0 cursor-pointer">{navData.pricing}</button>
       </div>
 
       {/* Right Actions */}
       <div className="flex items-center gap-6">
-        <a href="#" onClick={(e) => e.preventDefault()} className="hidden md:block text-sm font-medium text-neutral-900 hover:opacity-100 transition-opacity">
+        <button type="button" onClick={(e) => e.preventDefault()} className="hidden md:block text-sm font-medium text-neutral-900 hover:opacity-100 transition-opacity bg-transparent border-0 p-0 cursor-pointer">
           {navData.signup}
-        </a>
+        </button>
         <button className="px-6 py-2.5 rounded-full text-sm font-bold transition-colors shadow-lg bg-neutral-900 text-white hover:bg-neutral-800">
           {navData.login}
         </button>

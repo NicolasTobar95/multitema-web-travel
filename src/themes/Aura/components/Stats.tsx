@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../../../i18n';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 
 interface StatItem {
   id: string;
@@ -10,7 +10,7 @@ interface StatItem {
 
 const Stats: React.FC = () => {
   const { t } = useTranslation();
-  const statsData: StatItem[] = t('Aura.stats');
+  const statsData: StatItem[] = t('Aura.stats') as StatItem[];
   const [ref, inView] = useInView<HTMLElement>({ threshold: 0.2 });
 
   return (

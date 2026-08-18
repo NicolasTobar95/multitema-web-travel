@@ -1,12 +1,25 @@
 {
   "name": "travel-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Four handcrafted travel website themes (Waypoint, Aura, Aeria, Nimbus) in a single interactive React showcase.",
+  "author": "Nicolas Tobar",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "tailwindcss",
+    "travel",
+    "portfolio",
+    "themes"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "format": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -25,6 +38,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "postcss": "^8.5.8",
+    "prettier": "^3.9.6",
     "tailwindcss": "^3.4.19",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

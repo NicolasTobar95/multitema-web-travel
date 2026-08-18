@@ -1,65 +1,64 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
-import PandaLogo, { RGB_ANIMATION_STYLES, RGB_TEXT_STYLES } from './PandaLogo';
+import PandaLogo from './PandaLogo';
+import { RGB_ANIMATION_STYLES, RGB_TEXT_STYLES } from './pandaStyles';
 
 /**
- * AuthorCard - Tarjeta de presentación del autor Nicolás Tobar.
+ * AuthorCard - Author presentation card for Nicolas Tobar.
  *
- * QUÉ ES:
- *   Componente reusable, agnóstico al tema, que muestra una tarjeta de
- *   presentación con:
- *     - El panda rojo (PandaLogo, por defecto w-16 h-16, más grande que el
- *       w-8 h-8 usado en navbars) con el gradiente RGB animado.
- *     - El nombre del autor a la derecha del panda (h3 extrabold) con el
- *       MISMO gradiente RGB animado aplicado como relleno (background-clip:
- *       text) — panda, borde y nombre animan EN SINCRONÍA porque los tres
- *       consumen la misma source of truth exportada desde `PandaLogo.tsx`.
- *     - Opcionalmente un rol/título bajo el nombre (span medium opacity-70).
- *     - Un párrafo de bio debajo del bloque nombre+rol (p leading-relaxed
+ * WHAT IT IS:
+ *   Reusable, theme-agnostic component that renders a presentation card with:
+ *     - The red panda (PandaLogo, w-16 h-16 by default, larger than the
+ *       w-8 h-8 used in navbars) with the animated RGB gradient.
+ *     - The author name to the right of the panda (extrabold h3) with the
+ *       SAME animated RGB gradient applied as fill (background-clip: text) —
+ *       panda, border and name animate IN SYNC because all three consume
+ *       the same source of truth exported from `PandaLogo.tsx`.
+ *     - Optionally a role/title under the name (medium span, opacity-70).
+ *     - A bio paragraph below the name+role block (leading-relaxed p,
  *       opacity-80).
  *
  * I18N:
- *   El `name`, `role` y `bio` por defecto se resuelven desde el namespace
- *   `shared.author` del diccionario activo (`dictionaries.ts`), de modo que
- *   la tarjeta responde al idioma (EN/ES). Los props `name`/`role`/`bio`
- *   siguen disponibles por si un tema quiere forzar texto propio; si se
- *   pasan, pisan al i18n.
+ *   The default `name`, `role` and `bio` are resolved from the `shared.author`
+ *   namespace of the active dictionary (`dictionaries.ts`), so the card
+ *   responds to the active language (EN/ES). The `name`/`role`/`bio` props
+ *   remain available for themes that want to force their own text; when
+ *   passed, they override i18n.
  *
- * CÓMO SE USA:
- *   <AuthorCard />                               → defaults i18n, fondo translúcido.
- *   <AuthorCard className="mb-8" />              → spacing extra fuera.
+ * HOW TO USE:
+ *   <AuthorCard />                               → i18n defaults, translucent background.
+ *   <AuthorCard className="mb-8" />              → extra spacing outside.
  *   <AuthorCard innerBg="bg-neutral-950"
- *               textColor="text-white" />        → para temas oscuros.
+ *               textColor="text-white" />        → for dark themes.
  *
- * DEFAULTS DE TEMA OSCURO:
- *   El fondo interno por defecto es `bg-white/20` (blanco translúcido al 20%)
- *   y el texto por defecto es `text-white` — pensados para que la tarjeta
- *   se asiente sobre un footer oscuro (caso Nimbus). El gradiente RGB del
- *   borde recorre el perímetro, y el nombre en RGB recorre el titular;
- *   la bio y el rol queda en blanco con opacidad (0.80 / 0.70) para
- *   jerarquía legible sobre el fondo translúcido.
+ * DARK THEME DEFAULTS:
+ *   The inner background defaults to `bg-white/20` (20% translucent white)
+ *   and the text defaults to `text-white` — designed so the card sits on a
+ *   dark footer (Nimbus case). The RGB border gradient runs along the
+ *   perimeter, and the RGB name runs across the heading; bio and role stay
+ *   white with opacity (0.80 / 0.70) for readable hierarchy over the
+ *   translucent background.
  *
- * BORDE RGB (técnica):
- *   CSS `border-color` NO soporta gradientes, así que el borde animado se
- *   logra con el patrón "gradient-as-border": un wrapper externo con
- *   `p-[2px]` que lleva el gradiente RGB animado como fondo, y un contenido
- *   interno (innerBg) encima, dejando 2px visibles del wrapper a modo
- *   de borde.
+ * RGB BORDER (technique):
+ *   CSS `border-color` does NOT support gradients, so the animated border is
+ *   achieved with the "gradient-as-border" pattern: an outer wrapper with
+ *   `p-[2px]` carrying the animated RGB gradient as background, and an inner
+ *   content (innerBg) on top, leaving 2px of the wrapper visible as border.
  *
- *   CRÍTICO — sincronía panda/borde/nombre:
- *   El borde y el nombre reutilizan EXACTAMENTE los mismos `RGB_ANIMATION_STYLES`
- *   y `RGB_TEXT_STYLES` que el panda (mismo `RGB_GRADIENT`, mismo keyframe
- *   `panda-rgb-scroll`, misma duración 4s linear infinite). Por eso los tres
- *   se animan EN SINCRONÍA — no es magia, es la misma animación aplicada a
- *   tres elementos que comparten la única source of truth exportada desde
- *   `PandaLogo.tsx`. Duplicar el gradiente aquí rompería esa sincronía.
+ *   CRITICAL — panda/border/name sync:
+ *   The border and the name reuse EXACTLY the same `RGB_ANIMATION_STYLES`
+ *   and `RGB_TEXT_STYLES` as the panda (same `RGB_GRADIENT`, same
+ *   `panda-rgb-scroll` keyframe, same 4s linear infinite duration). That is
+ *   why all three animate IN SYNC — not magic, just the same animation applied
+ *   to three elements that share the single source of truth exported from
+ *   `PandaLogo.tsx`. Duplicating the gradient here would break that sync.
  */
 export interface AuthorCardProps {
-  /** Author display name. Default: del i18n `shared.author.name`. */
+  /** Author display name. Default: from i18n `shared.author.name`. */
   name?: string;
-  /** One-line role/title under the name (optional, before the bio). Default: del i18n `shared.author.role`. */
+  /** One-line role/title under the name (optional, before the bio). Default: from i18n `shared.author.role`. */
   role?: string;
-  /** Longer bio paragraph shown under the name+role. Default: del i18n `shared.author.bio`. */
+  /** Longer bio paragraph shown under the name+role. Default: from i18n `shared.author.bio`. */
   bio?: string;
   /** PandaLogo variant: 'text' (animated RGB, default) or 'icon' (solid red). */
   pandaVariant?: 'text' | 'icon';
@@ -68,14 +67,14 @@ export interface AuthorCardProps {
   /** Outer wrapper extra classes (margin, max-width, etc). Default ''. */
   className?: string;
   /**
-   * Capa BASE opaca entre el borde RGB y el contenido translúcido.
-   * Sin esta capa, el gradiente RGB del wrapper se filtraría a través del
-   * `innerBg` translúcido y el fondo se vería RGB. Default: 'bg-neutral-900'
-   * (zinc-black genérico apto para footers oscuros). Los temas con footer
-   * claro deberían pasar su color (p.ej. 'bg-neutral-50').
+   * BASE opaque layer between the RGB border and the translucent content.
+   * Without this layer, the wrapper's RGB gradient would bleed through the
+   * translucent `innerBg` and the background would look RGB. Default: 'bg-neutral-900'
+   * (generic zinc-black, suitable for dark footers). Themes with a light
+   * footer should pass their own color (e.g. 'bg-neutral-50').
    */
   innerBgBase?: string;
-  /** Inner content background class. Default 'bg-white/20' (blanco translúcido, pensado para footer oscuro). */
+  /** Inner content background class. Default 'bg-white/20' (translucent white, designed for dark footers). */
   innerBg?: string;
   /** Inner text color class for role/bio (name uses RGB gradient). Default 'text-white'. */
   textColor?: string;
@@ -84,8 +83,8 @@ export interface AuthorCardProps {
 }
 
 /**
- * Forma del namespace `shared.author` en `dictionaries.ts`.
- * Se usa como default de los props `name`/`role`/`bio` vía i18n.
+ * Shape of the `shared.author` namespace in `dictionaries.ts`.
+ * Used as default for the `name`/`role`/`bio` props via i18n.
  */
 interface AuthorI18n {
   name: string;
@@ -96,11 +95,11 @@ interface AuthorI18n {
 /**
  * AuthorCard - React component (forwarded as default + named export).
  *
- * Ver doc comment del módulo para la técnica del borde RGB, la sincronía
- * con el panda, y el manejo de i18n para bio/role/name.
+ * See the module doc comment for the RGB border technique, the sync with
+ * the panda, and the i18n handling for bio/role/name.
  */
 const AuthorCard: React.FC<AuthorCardProps> = (props) => {
-  // Defaults via i18n — `shared.author` se resuelve según el idioma activo.
+  // Defaults via i18n — `shared.author` is resolved from the active language.
   const { t } = useTranslation();
   const authorI18n = t('shared.author') as AuthorI18n;
 
@@ -117,22 +116,22 @@ const AuthorCard: React.FC<AuthorCardProps> = (props) => {
     rounded = 'rounded-2xl',
   } = props;
 
-  // Wrapper externo: gradiente RGB animado como fondo de 2px que asoma
-  // como borde. `inline-block` para que envuelva al contenido. El hint
-  // `will-change-transform` viaja en RGB_ANIMATION_STYLES ya.
+  // Outer wrapper: animated RGB gradient as a 2px background peeking out
+  // as a border. `inline-block` so it wraps the content. The
+  // `will-change-transform` hint already travels in RGB_ANIMATION_STYLES.
   const outerStyle: React.CSSProperties = {
     ...RGB_ANIMATION_STYLES,
   };
 
-  // Contenido interno: tapona el centro del gradiente y deja 2px de
-  // borde. Mismo `rounded` externo/interno — con radio >= 1rem y padding
-  // de 2px el anidamiento visual es correcto en la práctica.
-  // Capa BASE opaca: tapona por completo el gradiente RGB del wrapper
-  // externo, dejando visibles solo los 2px de padding como borde RGB. Sin
-  // esta capa, el contenido translúcido (bg-white/20) dejaría filtrar el
-  // gradiente y el fondo se vería RGB en vez de blanco translúcido.
-  // Default: bg-neutral-900 (zinc-black genérico) — los temas con footer
-  // oscuro lo pueden dejar así; los de footer claro pasan su propio color.
+  // Inner content: plugs the center of the gradient and leaves 2px of
+  // border. Same outer/inner `rounded` — with radius >= 1rem and 2px
+  // padding the visual nesting is correct in practice.
+  // BASE opaque layer: fully plugs the wrapper's RGB gradient, leaving only
+  // the 2px padding visible as an RGB border. Without this layer, the
+  // translucent content (bg-white/20) would let the gradient bleed through
+  // and the background would look RGB instead of translucent white.
+  // Default: bg-neutral-900 (generic zinc-black) — themes with a dark footer
+  // can leave it as-is; light-footer themes pass their own color.
   const baseLayer = innerBgBase ?? 'bg-neutral-900';
 
   return (
@@ -140,22 +139,22 @@ const AuthorCard: React.FC<AuthorCardProps> = (props) => {
       className={`inline-block p-[2px] ${rounded} ${className}`}
       style={outerStyle}
     >
-      {/* Capa opaca base: tappa el gradiente RGB del wrapper. */}
+      {/* Opaque base layer: plugs the wrapper's RGB gradient. */}
       <div className={`${baseLayer} ${rounded}`}>
-        {/* Capa translúcida de contenido: bg-white/20 sobre la base opaca. */}
+        {/* Translucent content layer: bg-white/20 over the opaque base. */}
         <div className={`p-6 ${innerBg} ${rounded} ${textColor}`}>
           <div className="flex flex-col gap-4">
-            {/* Bloque superior: panda + (nombre / rol) en fila */}
+            {/* Top block: panda + (name / role) in a row */}
             <div className="flex items-center gap-4">
               <PandaLogo
                 variant={pandaVariant}
                 className={pandaClassName ?? 'w-16 h-16'}
               />
               <div className="flex flex-col">
-                {/* Nombre con gradiente RGB animado (background-clip: text).
-                    `textColor` queda en la clase como fallback semántico,
-                    pero RGB_TEXT_STYLES vuelve los glifos transparentes y los
-                    rellena con el gradiente — por eso el color se ignora. */}
+                {/* Name with animated RGB gradient (background-clip: text).
+                    `textColor` stays in the class as a semantic fallback,
+                    but RGB_TEXT_STYLES makes the glyphs transparent and
+                    fills them with the gradient — that is why the color is ignored. */}
                 <h3
                   className={`text-xl font-extrabold tracking-tight leading-tight ${textColor}`}
                   style={RGB_TEXT_STYLES}
@@ -168,7 +167,7 @@ const AuthorCard: React.FC<AuthorCardProps> = (props) => {
               </div>
             </div>
 
-            {/* Bloque inferior: bio debajo del nombre+rol (propia fila) */}
+            {/* Bottom block: bio under the name+role (own row) */}
             {bio ? (
               <p className="text-sm leading-relaxed opacity-80">{bio}</p>
             ) : null}

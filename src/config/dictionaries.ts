@@ -2,6 +2,10 @@ export const dictionaries = {
   en: {
     controls: { language: "Language", theme: "Theme" },
     shared: {
+      meta: {
+        title: "Travel Portfolio — Nicolas Tobar",
+        description: "Four handcrafted travel website themes — Waypoint, Aura, Aeria and Nimbus — built with React, TypeScript and Tailwind CSS."
+      },
       author: {
         name: "Nicolas Tobar",
         role: "Full-Stack Software Engineer",
@@ -233,6 +237,10 @@ export const dictionaries = {
   es: {
     controls: { language: "Idioma", theme: "Tema" },
     shared: {
+      meta: {
+        title: "Travel Portfolio — Nicolas Tobar",
+        description: "Cuatro temas web de viajes hechos a mano — Waypoint, Aura, Aeria y Nimbus — construidos con React, TypeScript y Tailwind CSS."
+      },
       author: {
         name: "Nicolas Tobar",
         role: "Ingeniero de Software Full-Stack",

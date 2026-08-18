@@ -21,7 +21,7 @@ type SpotsData = {
   destinations: Destination[];
 };
 
-// Iconos de clima — copo de nieve (frío) y sol (caliente)
+// Climate icons — snowflake (cold) and sun (hot)
 const ColdIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="12" y1="2" x2="12" y2="22" />
@@ -49,21 +49,21 @@ const RelaxingSpots: React.FC = () => {
   const spotData = t('Aeria.spots') as SpotsData;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Estados para filtros interactivos "magnéticos"
+  // State for interactive "magnetic" filters
   const filters = spotData.filters;
   const [activeFilterIdx, setActiveFilterIdx] = useState(0);
 
-  // Destinos del i18n mapeados
+  // i18n destinations mapped
   const destinations = spotData.destinations;
 
-  // Filtrar o barajar interactivamente los destinos según el botón (por índice, agnóstico al idioma)
+  // Filter or shuffle the destinations interactively by button (by index, language-agnostic)
   const filteredDestinations = destinations.filter((dest, idx) => {
     if (activeFilterIdx === 0) return true;
-    if (activeFilterIdx === 1) return idx === 0 || idx === 2; // Playas / Beaches
-    if (activeFilterIdx === 2) return idx === 1; // Templos / Temples
-    if (activeFilterIdx === 3) return idx === 3; // Ciudades / Cities
-    if (activeFilterIdx === 4) return dest.climate === 'cold'; // Frío / Cold
-    if (activeFilterIdx === 5) return dest.climate === 'hot'; // Caliente / Hot
+    if (activeFilterIdx === 1) return idx === 0 || idx === 2; // Beaches
+    if (activeFilterIdx === 2) return idx === 1; // Temples
+    if (activeFilterIdx === 3) return idx === 3; // Cities
+    if (activeFilterIdx === 4) return dest.climate === 'cold'; // Cold
+    if (activeFilterIdx === 5) return dest.climate === 'hot'; // Hot
     return true;
   });
 
@@ -71,7 +71,7 @@ const RelaxingSpots: React.FC = () => {
     <section className="w-full bg-purple-50/70 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
       
-      {/* Cabecera del Carrusel */}
+      {/* Carousel Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10">
         <div className="flex flex-col">
           <span className="text-xs font-bold tracking-[0.2em] text-purple-600 uppercase mb-2">{spotData.label}</span>
@@ -84,7 +84,7 @@ const RelaxingSpots: React.FC = () => {
         </p>
       </div>
 
-      {/* Píldoras de Filtros Magnéticas */}
+      {/* Magnetic Filter Pills */}
       <div className="flex gap-2.5 mb-10 overflow-x-auto pb-1 scrollbar-hide">
         {filters.map((filter, i) => (
           <button
@@ -103,14 +103,14 @@ const RelaxingSpots: React.FC = () => {
         ))}
       </div>
 
-      {/* Carrusel con física Gliding Slide interactiva */}
+      {/* Carousel with interactive Gliding Slide physics */}
       <div
         ref={scrollRef}
         className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 -mx-2 px-2 scrollbar-thin scrollbar-thumb-purple-100 scrollbar-track-transparent"
         style={{ scrollbarWidth: 'auto' }}
       >
         {filteredDestinations.map((_dest: Destination, idx: number) => {
-          // Obtener el índice original del destino para asociar la imagen correcta
+          // Get the destination's original index to map the correct image
           const originalIdx = destinations.findIndex(d => d.title === _dest.title);
           const imgIdx = originalIdx !== -1 ? originalIdx : idx;
 
@@ -119,12 +119,13 @@ const RelaxingSpots: React.FC = () => {
               key={idx} 
               className="min-w-[280px] md:min-w-[320px] snap-start flex-shrink-0 flex flex-col group cursor-pointer bg-white border border-neutral-100 hover:border-purple-500/20 rounded-[2.5rem] p-4 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/5 hover:-translate-y-2"
             >
-              {/* Imagen con zoom y refracción suave */}
+              {/* Image with zoom and soft refraction */}
               <div className="w-full h-[260px] rounded-[2rem] overflow-hidden mb-4 relative">
                 <img
                   src={sharedImages.destinations[imgIdx % sharedImages.destinations.length]}
                   alt={_dest.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  loading="lazy"
                 />
                 <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-neutral-800 shadow-sm flex items-center gap-1 uppercase tracking-wider">
                   <span className="text-purple-600">✦</span> Recomendado
@@ -139,7 +140,7 @@ const RelaxingSpots: React.FC = () => {
                 )}
               </div>
 
-              {/* Titulo y Rating */}
+              {/* Title and Rating */}
               <div className="flex justify-between items-start mb-1 px-1">
                 <h3 className="text-lg font-bold text-neutral-900 group-hover:text-purple-600 transition-colors duration-300">{_dest.title}</h3>
                 <div className="flex items-center gap-1 text-sm font-bold text-neutral-900 bg-neutral-50 px-2 py-0.5 rounded-full">
@@ -149,7 +150,7 @@ const RelaxingSpots: React.FC = () => {
 
               <p className="text-neutral-500 text-sm mb-4 px-1">{_dest.location}</p>
 
-              {/* Pie de la card con precio */}
+              {/* Card footer with price */}
               <div className="flex justify-between items-center pt-4 border-t border-neutral-100 px-1 mt-auto">
                 <span className="text-xs font-semibold text-neutral-400">{_dest.dates}</span>
                 <div className="text-right">

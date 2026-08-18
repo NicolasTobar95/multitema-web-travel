@@ -1,6 +1,6 @@
 import { useTranslation } from '../../../i18n';
 import { themeData } from '../../../config/themeData';
-import BrandLogo from './BrandLogo';
+import BrandLogo from '../../../components/BrandLogo';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -10,12 +10,12 @@ const Navbar = () => {
     <nav className="absolute top-0 left-0 w-full z-20 flex items-center justify-between px-10 py-6 text-white text-xs font-sans tracking-[0.25em] uppercase">
       <div className="flex items-center gap-10">
         <div className="flex items-center gap-2 text-red-500">
-          <BrandLogo />
+          <BrandLogo brand="Waypoint" className="w-6 h-6" textClassName="text-xs font-bold uppercase tracking-[0.25em]" />
         </div>
         <div className="hidden md:flex gap-8 font-medium">
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors">{t('Waypoint.nav.destinations')}</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors">{t('Waypoint.nav.trips')}</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors">{t('Waypoint.nav.experiences')}</a>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors bg-transparent border-0 p-0 cursor-pointer">{t('Waypoint.nav.destinations') as string}</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors bg-transparent border-0 p-0 cursor-pointer">{t('Waypoint.nav.trips') as string}</button>
+          <button type="button" onClick={(e) => e.preventDefault()} className="hover:text-red-400 transition-colors bg-transparent border-0 p-0 cursor-pointer">{t('Waypoint.nav.experiences') as string}</button>
         </div>
       </div>
 

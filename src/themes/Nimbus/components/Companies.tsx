@@ -2,26 +2,26 @@ import React from 'react';
 import { useTranslation } from '../../../i18n';
 
 /**
- * Companies de Nimbus — premium redesign idea #2: "Infinity Floating Grid".
+ * Nimbus Companies — premium redesign idea #2: "Infinity Floating Grid".
  *
- * Cambios respecto de Trevilo:
- *   - SVG "layers" duplicado entre Layers y Sisyphus → Sisyphus usa ícono
- *     distinto (círculos concéntricos). Deuda #9 cerrada.
- *   - Nombres hardcodeados → migrados a `t('Nimbus.companiesItems[]')`.
+ * Changes vs Trevilo:
+ *   - Duplicated "layers" SVG between Layers and Sisyphus → Sisyphus now uses
+ *     a different icon (concentric circles). Debt #9 closed.
+ *   - Hardcoded names → migrated to `t('Nimbus.companiesItems[]')`.
  *
  * Premium (redesign):
- *   - Banda estática → **ticker marquee infinito** (CSS @keyframes continuo,
- *     translateX 0 → -50%). Duplicamos los logos para loop seamless.
- *   - Cada logo reacciona al hover: se colorea (opacity 100), escala 1.1 y
- *     flota -translate-y-1. El resto se atenúa (opacity-40) para enfocar.
- *   - Pausa la animación al hover sobre el contenedor (`group-hover:[animation-play-state:paused]`).
+ *   - Static band → **infinite marquee ticker** (continuous CSS @keyframes,
+ *     translateX 0 → -50%). We duplicate the logos for a seamless loop.
+ *   - Each logo reacts on hover: gets colored (opacity 100), scales 1.1 and
+ *     floats -translate-y-1. The rest dims (opacity-40) to focus.
+ *   - Pauses the animation on hover over the container (`group-hover:[animation-play-state:paused]`).
  *
- * Mantiene `max-w-5xl`, la paleta por marca (purple/green/blue/indigo/fuchsia-600)
- * — era decisión ya afinada.
+ * Keeps `max-w-5xl`, the per-brand palette (purple/green/blue/indigo/fuchsia-600)
+ * — that was an already-fine-tuned decision.
  */
 type CompaniesProps = Record<string, never>;
 
-// Paleta de color por marca (decisión afinada de Trevilo).
+// Per-brand color palette (fine-tuned Trevilo decision).
 const COLORS = [
   'text-purple-600',
   'text-green-600',
@@ -30,11 +30,11 @@ const COLORS = [
   'text-fuchsia-600',
 ] as const;
 
-// SVGs por marca. Sisyphus (idx 1) con ícono distinto (deuda #9 cerrada).
+// Per-brand SVGs. Sisyphus (idx 1) with a distinct icon (debt #9 closed).
 const ICONS: React.ReactNode[] = [
   // 0: Layers
   <svg key="layers" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>,
-  // 1: Sisyphus — círculos concéntricos
+  // 1: Sisyphus — concentric circles
   <svg key="sisyphus" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="11"/></svg>,
   // 2: Circooles
   <svg key="circooles" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>,
@@ -49,7 +49,7 @@ const Companies: React.FC<CompaniesProps> = () => {
   const heading = t('Nimbus.companies') as string;
   const items = t('Nimbus.companiesItems') as string[];
 
-  // Renderiza un logo individual con hover. Se reutiliza para ambas copias.
+  // Renders a single logo with hover. Reused for both copies.
   const renderLogo = (name: string, idx: number, keyPrefix: string) => (
     <div
       key={`${keyPrefix}-${idx}`}
@@ -66,8 +66,8 @@ const Companies: React.FC<CompaniesProps> = () => {
         {heading}
       </p>
 
-      {/* Contenedor del ticker con mascara de degradado en los bordes.
-          group-hover pausa la animación al inspeccionar los logos. */}
+      {/* Ticker container with gradient mask on the edges.
+          group-hover pauses the animation while inspecting the logos. */}
       <div
         className="group relative w-full overflow-hidden"
         style={{
@@ -75,23 +75,23 @@ const Companies: React.FC<CompaniesProps> = () => {
           WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
         }}
       >
-        {/* Tira infinita: dos juegos de logos consecutivos. El keyframe
-            anima el translateX de 0 a -50%, que es exactamente el ancho
-            de un juego → loop seamless sin salto. */}
+        {/* Infinite strip: two consecutive logo sets. The keyframe
+            animates translateX from 0 to -50%, which is exactly the width
+            of one set → seamless loop without a jump. */}
         <div
           className="flex items-center gap-16 w-max group-hover:[animation-play-state:paused]"
           style={{
             animation: 'nimbus-marquee 30s linear infinite',
           }}
         >
-          {/* Juego 1 */}
+          {/* Set 1 */}
           {items.map((name, idx) => renderLogo(name, idx, 'a'))}
-          {/* Juego 2 — duplicado idéntico para el loop continuo */}
+          {/* Set 2 — identical duplicate for the continuous loop */}
           {items.map((name, idx) => renderLogo(name, idx, 'b'))}
         </div>
       </div>
 
-      {/* Keyframes inline — evita tocar index.css (regla del proyecto). */}
+      {/* Inline keyframes — avoids touching index.css (project rule). */}
       <style>{`
         @keyframes nimbus-marquee {
           0%   { transform: translateX(0); }

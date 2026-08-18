@@ -45,7 +45,7 @@ const AeriaConcierge: React.FC = () => {
 
   const suggestions: Suggestion[] = conciergeData.suggestions;
 
-  // Auto-scroll al final del chat
+  // Auto-scroll to the end of the chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
@@ -119,7 +119,7 @@ const AeriaConcierge: React.FC = () => {
       {expanded && (
         <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(109,40,217,0.3)] border border-purple-100 p-5 mb-4 w-80 md:w-[360px] max-h-[500px] flex flex-col justify-between overflow-hidden animate-in scale-95 duration-200">
 
-          {/* Header del Concierge con punto de estado animado */}
+          {/* Concierge Header with animated status dot */}
           <div className="flex items-center justify-between border-b border-purple-50 pb-3 mb-3 shrink-0">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
@@ -131,12 +131,12 @@ const AeriaConcierge: React.FC = () => {
             <button onClick={() => setExpanded(false)} className="text-neutral-400 hover:text-neutral-600 text-sm font-bold">✕</button>
           </div>
 
-          {/* Historial de Mensajes del Chat */}
+          {/* Chat Message History */}
           <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 scrollbar-thin scrollbar-thumb-purple-100 scrollbar-track-transparent">
             {messages.map((m, idx) => (
               <div key={idx} className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}>
 
-                {/* Burbuja de Texto estándar */}
+                {/* Standard Text Bubble */}
                 <div className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
                   m.sender === 'user'
                     ? 'bg-purple-600 text-white rounded-tr-none font-medium'
@@ -145,7 +145,7 @@ const AeriaConcierge: React.FC = () => {
                   {m.text}
                 </div>
 
-                {/* Tarjeta de Itinerario de Cristal interactiva si existe */}
+                {/* Interactive Glass Itinerary Card if present */}
                 {m.itinerary && (
                   <div className="mt-2.5 w-full bg-gradient-to-br from-purple-500/5 to-purple-600/10 border border-purple-500/20 rounded-2xl p-4 shadow-xl flex flex-col gap-3">
                     <div className="flex justify-between items-start">
@@ -166,7 +166,7 @@ const AeriaConcierge: React.FC = () => {
                       ))}
                     </ul>
 
-                    {/* Botón de Añadir al Itinerario con feedback */}
+                    {/* Add-to-Itinerary button with feedback */}
                     <button
                       onClick={() => {
                         setShowItineraryAdded(true);
@@ -181,7 +181,7 @@ const AeriaConcierge: React.FC = () => {
               </div>
             ))}
 
-            {/* Burbuja de "IA escribiendo..." */}
+            {/* "AI typing..." bubble */}
             {isTyping && (
               <div className="flex items-center gap-1.5 bg-neutral-50 border border-neutral-100 px-3 py-2 rounded-2xl rounded-tl-none self-start">
                 <span className="text-[10px] text-neutral-500 font-semibold italic animate-pulse">{conciergeData.typing}</span>
@@ -195,7 +195,7 @@ const AeriaConcierge: React.FC = () => {
             <div ref={chatEndRef} />
           </div>
 
-          {/* Selector de Destinos rápidos en la parte inferior */}
+          {/* Quick destination selector at the bottom */}
           {messages.length < 3 && !isTyping && (
             <div className="flex flex-col gap-1.5 border-t border-purple-50 pt-3 mt-3 shrink-0">
               <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-neutral-400 px-1">{conciergeData.quickQueries}</span>
@@ -213,7 +213,7 @@ const AeriaConcierge: React.FC = () => {
             </div>
           )}
 
-          {/* Campo de Entrada de Mensaje */}
+          {/* Message Input Field */}
           <div className="flex gap-2 border-t border-purple-50 pt-3 mt-3 shrink-0">
             <input
               type="text"
@@ -233,7 +233,7 @@ const AeriaConcierge: React.FC = () => {
         </div>
       )}
 
-      {/* Notificación flotante de Itinerario Añadido */}
+      {/* Floating Itinerary Added notification */}
       {showItineraryAdded && (
         <div className="fixed bottom-24 right-6 bg-emerald-500 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl border border-emerald-400 flex items-center gap-2 animate-bounce z-50">
           <span className="w-5 h-5 rounded-full bg-white text-emerald-500 flex items-center justify-center font-extrabold text-[10px]">✓</span>
@@ -241,7 +241,7 @@ const AeriaConcierge: React.FC = () => {
         </div>
       )}
 
-      {/* Botón flotante del widget principal (reacciona con scale y rotate) */}
+      {/* Main floating widget button (reacts with scale and rotate) */}
       <button
         onClick={() => setExpanded(!expanded)}
         className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 ${

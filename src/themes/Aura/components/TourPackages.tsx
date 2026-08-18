@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useTranslation } from '../../../i18n';
 import { sharedImages } from '../../../config/sharedImages';
-import { useInView } from '../hooks/useInView';
+import { useInView } from '../../../hooks/useInView';
 
 interface PackageItem {
   id: string;
@@ -11,7 +11,7 @@ interface PackageItem {
   imageIdx: number;
 }
 
-// Subcomponente de tarjeta Bento con efecto Spotlight 3D Tilt
+// Bento card sub-component with 3D Spotlight Tilt effect
 const BentoCard: React.FC<{ item: PackageItem; image: string; isLarge: boolean }> = ({ item, image, isLarge }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
@@ -27,11 +27,11 @@ const BentoCard: React.FC<{ item: PackageItem; image: string; isLarge: boolean }
     const y = e.clientY - rect.top;
     setCoords({ x, y });
 
-    // Calcular tilt 3D (máx 6 grados)
+    // Compute 3D tilt (max 6 degrees)
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const rotateX = ((centerY - y) / centerY) * 5; // rotación vertical
-    const rotateY = ((x - centerX) / centerX) * 5; // rotación horizontal
+    const rotateX = ((centerY - y) / centerY) * 5; // vertical rotation
+    const rotateY = ((x - centerX) / centerX) * 5; // horizontal rotation
     setRotate({ x: rotateX, y: rotateY });
   };
 
@@ -60,10 +60,10 @@ const BentoCard: React.FC<{ item: PackageItem; image: string; isLarge: boolean }
         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
       />
       
-      {/* Overlay gradiente base */}
+      {/* Base gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
       
-      {/* Foco de luz de ámbar interactivo */}
+      {/* Interactive amber spotlight */}
       {isHovered && (
         <div 
           className="absolute inset-0 pointer-events-none z-10 opacity-60"
@@ -73,7 +73,7 @@ const BentoCard: React.FC<{ item: PackageItem; image: string; isLarge: boolean }
         />
       )}
 
-      {/* Badge del precio resplandeciente en Hover */}
+      {/* Shimmering price badge on hover */}
       <div className="absolute top-4 right-4 z-10 transition-transform duration-300 group-hover:scale-110">
         <span className="bg-amber-500 text-stone-900 rounded-full px-4 py-1 font-bold text-sm shadow-lg group-hover:shadow-[0_0_15px_rgba(245,158,11,0.5)] transition-all">
           {item.price}
@@ -115,12 +115,13 @@ const TourPackages: React.FC = () => {
         inView ? 'opacity-100 transtone-y-0' : 'opacity-0 transtone-y-8'
       }`}
     >
-      {/* Fondo de sección: backgrounds/2.webp muy sutil (5%), sin velo. */}
+      {/* Section background: backgrounds/2.webp very subtle (5%), no veil. */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <img
           src="/src/webp/backgrounds/2.webp"
           alt=""
           className="w-full h-full object-cover object-center opacity-5"
+          loading="lazy"
         />
       </div>
 
