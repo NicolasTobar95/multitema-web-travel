@@ -77,6 +77,7 @@ import { NAV } from '../data';
     font-size: 14.5px;
   }
   .nav a {
+    white-space: nowrap;
     color: var(--ink-2);
     transition: color 0.3s;
   }
@@ -146,16 +147,24 @@ import { NAV } from '../data';
   }
   @media (min-width: 960px) {
     .wrap {
-      grid-template-columns: 2fr 5fr 3fr 2fr;
+      grid-template-columns: auto 1fr auto;
+      gap: 32px;
     }
     .nav {
       display: flex;
     }
-    .meta {
-      display: block;
-    }
     .menu {
       display: none;
+    }
+  }
+  /* Con espacio, la temporada entra y el header vuelve a la grilla 2·5·3·2 */
+  @media (min-width: 1240px) {
+    .wrap {
+      grid-template-columns: 2fr 5fr 3fr 2fr;
+      gap: 16px;
+    }
+    .meta {
+      display: block;
     }
   }
   @media (max-width: 959px) {
