@@ -1,0 +1,593 @@
+---
+/**
+ * Hero de Albor: el planificador. La frase tiene 4 selectores que filtran los
+ * viajes de #resultados en vivo (albor.client.ts) y la tarjeta de la derecha
+ * muestra la mejor opción. Sin JS la frase se ve igual y los viajes, completos.
+ */
+import { Image, Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import bg from '@/assets/img/albor/fondo-hero.png';
+import { AGENCY } from '@/lib/catalog';
+import { days, usd } from '@/lib/format';
+import { tripPhoto } from '@/lib/images';
+import { CARD_TEXT, LAND_LABEL, PICKS } from '../data';
+import { icon } from '../images';
+
+type Trip = CollectionEntry<'trips'>;
+interface Props {
+  trips: Trip[];
+  /** Próxima salida: fecha corta, viaje y cupos */
+  next: { date: string; trip: string; seats: number };
+  rating: string;
+}
+const { trips, next, rating } = Astro.props;
+const first = trips[0]!;
+const title = (t: Trip) => CARD_TEXT[t.id]?.title ?? t.data.title;
+const tags = (t: Trip) => [days(t.data.days), LAND_LABEL[t.data.landscape], `Exigencia ${t.data.difficulty.toLowerCase()}`];
+
+const META = [
+  ['grupo', `${AGENCY.maxGroup} personas`, 'máx. por grupo'],
+  ['guia', 'Guías locales', 'en cada ruta'],
+  ['todo-incluido', 'Todo incluido:', 'traslados, refugios y comidas'],
+] as const;
+---
+
+<section class="hero" id="planear" aria-labelledby="planner-title">
+  <div class="bg" aria-hidden="true">
+    <Image src={bg} alt="" widths={[960, 1672]} sizes="100vw" format="avif" quality={60} loading="eager" />
+    <span class="grid-bg"></span>
+  </div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge"><b>Nuevo</b>Planificador de viajes<span class="season"> · Temporada 2026–27</span></span>
+      <p class="kicker">{AGENCY.motto}. Arma tu viaje en una frase:</p>
+      <h1 class="sentence" id="planner-title" transition:name="hero-title" data-sentence>
+        Quiero caminar
+        <span class="pick"><select aria-label={PICKS.days.label} data-pick="days">{PICKS.days.options.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
+        entre
+        <span class="nw"><span class="pick"><select aria-label={PICKS.land.label} data-pick="land">{PICKS.land.options.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>,</span> con exigencia
+        <span class="pick"><select aria-label={PICKS.level.label} data-pick="level">{PICKS.level.options.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>
+        y gastar hasta
+        <span class="nw"><span class="pick"><select aria-label={PICKS.budget.label} data-pick="budget">{PICKS.budget.options.map(([v, l]) => <option value={v}>{l}</option>)}</select></span>.</span>
+      </h1>
+      <div class="result-bar">
+        <a class="count" href="#resultados">
+          <b data-n>{trips.length}</b><span data-n-text>viajes calzan con lo que buscas</span>
+        </a>
+        <a class="btn" href="#resultados">
+          Ver los viajes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+        </a>
+        <button class="reset" type="button" data-reset hidden>Limpiar búsqueda</button>
+      </div>
+      <p class="sr-only" aria-live="polite" data-status></p>
+      <ul class="meta">
+        {
+          META.map(([ic, b, rest]) => (
+            <li>
+              <Image src={icon(ic)} alt="" width={64} height={64} format="webp" />
+              <span>
+                <b>{b}</b> {rest}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <aside class="preview" aria-label="Tu mejor opción" data-preview>
+      <div class="pv-card">
+        <div class="pv-img">
+          {
+            trips.map((t, i) => {
+              const p = tripPhoto(t.id);
+              return (
+                <Picture
+                  src={p.src}
+                  alt={p.alt}
+                  formats={['avif', 'webp']}
+                  fallbackFormat="webp"
+                  widths={[480, 720, 960]}
+                  sizes="(min-width: 1100px) 520px, (min-width: 700px) 70vw, 100vw"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : 'auto'}
+                  pictureAttributes={{ class: i === 0 ? 'pv-pic on' : 'pv-pic', 'data-pv': t.id }}
+                />
+              );
+            })
+          }
+        </div>
+        <span class="pv-top"><span class="pv-flag">Tu mejor opción</span><span class="pv-match" data-pv-match>{trips.length} de {trips.length} calzan</span></span>
+        <div class="pv-body">
+          <div class="pv-tags" data-pv-tags>{tags(first).map((t) => <span>{t}</span>)}</div>
+          <p class="pv-title" data-pv-title>{title(first)}</p>
+          <div class="pv-foot">
+            <span><small>Desde, por persona</small><b data-pv-price>{usd(first.data.priceFrom)}</b></span>
+            <a class="cta pv-cta" href="#resultados" data-pv-link>
+              Ver salida<span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="pv-more" data-pv-more>
+        {
+          trips.map((t, i) => (
+            <Image src={tripPhoto(t.id).src} alt="" width={112} height={112} format="webp" class:list={['thumb', { on: i > 0 && i < 4 }]} data-thumb={t.id} loading="lazy" />
+          ))
+        }
+        <span data-pv-more-text>+{trips.length - 1} opciones más abajo</span>
+      </div>
+      <div class="float f1" aria-hidden="true">
+        <span class="mono">Próxima salida</span><b>{next.date}</b><small>{next.trip} · {next.seats} cupos</small>
+      </div>
+      <div class="float f2" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"></path></svg>
+        <span><b>{rating}</b> promedio de viajeros (ejemplo)</span>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding: 140px 0 70px;
+    overflow: hidden;
+  }
+  .bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(22 21 29 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(22 21 29 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 70%);
+    mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 70%);
+  }
+  .hero-grid {
+    display: grid;
+    gap: 50px;
+    align-items: center;
+  }
+  @keyframes up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px 5px 5px;
+    border-radius: 99px;
+    background: #fff;
+    border: 1px solid var(--line);
+    font-size: 13.5px;
+    color: var(--ink-2);
+    box-shadow: 0 8px 20px -14px rgb(22 21 29 / 0.3);
+    animation: up 0.8s var(--ease) 0.1s both;
+  }
+  .badge b {
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--accent-2);
+    color: var(--ink);
+    font-size: 12px;
+  }
+  .kicker {
+    margin: 22px 0 4px;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(18px, 1.6vw, 22px);
+    color: var(--muted);
+    animation: up 0.8s var(--ease) 0.2s both;
+  }
+  .sentence {
+    margin: 6px 0 26px;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(30px, 3.4vw, 54px);
+    line-height: 1.32;
+    letter-spacing: -0.025em;
+    animation: up 1s var(--ease) 0.3s both;
+  }
+  .pick {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: baseline;
+  }
+  .pick select {
+    -webkit-appearance: none;
+    appearance: none;
+    field-sizing: content;
+    max-width: 100%;
+    font: inherit;
+    line-height: 1.1;
+    color: var(--accent);
+    background: var(--soft);
+    border: 0;
+    border-radius: 18px;
+    padding: 0.02em 0.85em 0.08em 0.35em;
+    cursor: pointer;
+    transition:
+      background-color 0.25s,
+      box-shadow 0.25s;
+  }
+  .pick select:hover {
+    background: var(--soft-hover);
+  }
+  .pick select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  .pick::after {
+    content: '';
+    position: absolute;
+    right: 0.32em;
+    top: 50%;
+    width: 0.22em;
+    height: 0.22em;
+    border-right: 3px solid var(--accent);
+    border-bottom: 3px solid var(--accent);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .pick option {
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .result-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    animation: up 1s var(--ease) 0.45s both;
+  }
+  .count {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 50px;
+    padding: 0 18px;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .count b {
+    font-family: var(--f-display);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .reset {
+    min-height: 44px;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .reset:hover {
+    color: var(--ink);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 30px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .meta li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 0.7);
+    border: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .meta :global(img) {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--soft);
+  }
+  .meta b {
+    color: var(--ink);
+  }
+
+  /* ---------- vista previa ---------- */
+  .preview {
+    position: relative;
+    animation: pv-in 1.2s var(--ease) 0.35s both;
+  }
+  @keyframes pv-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px) rotate(1.5deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .pv-card {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    background: var(--ink);
+    color: #fff;
+    box-shadow:
+      0 40px 80px -40px rgb(91 75 232 / 0.6),
+      0 0 0 8px rgb(255 255 255 / 0.7);
+  }
+  .pv-img {
+    position: relative;
+    aspect-ratio: 4 / 4.3;
+    overflow: hidden;
+  }
+  /* Solo se muestran (y descargan) la foto actual y la que sale */
+  .pv-img :global(.pv-pic) {
+    position: absolute;
+    inset: 0;
+    display: none;
+  }
+  .pv-img :global(.pv-pic.on),
+  .pv-img :global(.pv-pic.out) {
+    display: block;
+  }
+  .pv-img :global(.pv-pic.on) {
+    z-index: 1;
+    animation: pv-fade 0.7s ease both;
+  }
+  .pv-img :global(.pv-pic img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 6s ease;
+  }
+  .pv-card:hover :global(.pv-pic img) {
+    transform: scale(1.05);
+  }
+  @keyframes pv-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  .pv-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(180deg, rgb(22 21 29 / 0.25), transparent 30%, transparent 45%, rgb(22 21 29 / 0.92));
+  }
+  .pv-top {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .pv-flag,
+  .pv-match {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .pv-flag {
+    background: var(--accent-2);
+    color: var(--ink);
+  }
+  .pv-match {
+    background: rgb(22 21 29 / 0.45);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .pv-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    padding: 22px 22px 20px;
+  }
+  .pv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .pv-tags :global(span) {
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.16);
+    font-size: 12.5px;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .pv-title {
+    margin: 10px 0 14px;
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(28px, 2.6vw, 38px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    transition: opacity 0.35s;
+  }
+  .pv-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 12px;
+  }
+  .pv-foot small {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.72);
+  }
+  .pv-foot b {
+    font-family: var(--f-display);
+    font-size: 32px;
+    line-height: 1;
+  }
+  .pv-cta {
+    background: #fff;
+    color: var(--ink);
+  }
+  .pv-cta:hover {
+    background: var(--accent-2);
+  }
+  .pv-more {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    margin-top: 14px;
+  }
+  .pv-more :global(.thumb) {
+    display: none;
+    width: 56px;
+    height: 56px;
+    margin-left: -18px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 18px -10px rgb(22 21 29 / 0.4);
+  }
+  .pv-more :global(.thumb.on) {
+    display: block;
+  }
+  .pv-more {
+    padding-left: 18px;
+  }
+  .pv-more span {
+    margin-left: 8px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .float {
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgb(255 255 255 / 0.86);
+    border: 1px solid #fff;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px -20px rgb(22 21 29 / 0.4);
+    color: var(--ink);
+    font-size: 13.5px;
+    animation: bob 6s ease-in-out infinite;
+  }
+  .f1 {
+    left: 12px;
+    top: -20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .f1 .mono {
+    font-size: 9.5px;
+    color: var(--accent);
+  }
+  .f1 b {
+    font-family: var(--f-display);
+    font-size: 30px;
+    line-height: 1.05;
+  }
+  .f1 small {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .f2 {
+    right: 12px;
+    top: 42%;
+    animation-delay: -3s;
+  }
+  .f2 svg {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    border-radius: 8px;
+    background: var(--accent-2);
+    color: var(--ink);
+  }
+  .f2 b {
+    font-family: var(--f-display);
+    font-size: 18px;
+  }
+  @keyframes bob {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  .nw {
+    white-space: nowrap;
+  }
+  .pv-foot b,
+  .pv-cta {
+    white-space: nowrap;
+  }
+  @media (max-width: 600px) {
+    .hero {
+      padding-top: 116px;
+    }
+    .float {
+      display: none;
+    }
+    .sentence {
+      line-height: 1.4;
+    }
+    .pv-foot b {
+      font-size: 26px;
+    }
+  }
+  @media (max-width: 440px) {
+    .season {
+      display: none;
+    }
+  }
+  @media (min-width: 1100px) {
+    .hero-grid {
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 56px;
+    }
+    .f1 {
+      left: -46px;
+      top: 16%;
+    }
+    .f2 {
+      right: -28px;
+    }
+  }
+</style>

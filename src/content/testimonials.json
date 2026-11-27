@@ -1,0 +1,6 @@
+[
+  { "id": "camila", "quote": "El guía sabía exactamente cuándo apurar el paso y cuándo parar a mirar. Llegamos a la base de las Torres con la primera luz.", "name": "Camila R.", "trip": "Circuito W", "city": "Santiago", "rating": 5 },
+  { "id": "laura", "quote": "Era mi primer trekking de varios días y nunca me sentí sola. Pumalín fue el comienzo perfecto.", "name": "Laura M.", "trip": "Bosques de Pumalín", "city": "Bogotá", "rating": 5 },
+  { "id": "tomas", "quote": "Cerro Castillo es exigente de verdad, pero el grupo chico hizo toda la diferencia. Volvería mañana.", "name": "Tomás V.", "trip": "Cerro Castillo", "city": "Buenos Aires", "rating": 5 },
+  { "id": "martin", "quote": "Quince días sin preocuparme de nada más que caminar. Los traslados entre rutas fueron impecables.", "name": "Martín G.", "trip": "Gran Travesía", "city": "Lima", "rating": 4 }
+]

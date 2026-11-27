@@ -1,0 +1,140 @@
+/* Brisa — piezas de estilo que comparten sus secciones. */
+[data-theme='brisa'] {
+  .mono {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .disp {
+    font-family: var(--f-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 22px;
+    border-radius: 4px;
+    background: var(--mustard);
+    color: var(--ink);
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 19px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .btn.dark {
+    background: var(--forest);
+    color: var(--cream);
+  }
+  a {
+    color: inherit;
+  }
+  section[id] {
+    scroll-margin-top: 68px;
+  }
+
+  /* Encabezado centrado de cada sección */
+  .head {
+    margin-bottom: 46px;
+    text-align: center;
+  }
+  .head .mono {
+    color: var(--teal);
+  }
+  .head h2 {
+    margin: 10px 0 0;
+    font-size: clamp(54px, 7vw, 112px);
+  }
+  .head h2 span {
+    color: var(--teal);
+  }
+  .head p {
+    max-width: 56ch;
+    margin: 14px auto 0;
+    color: var(--ink-2);
+  }
+
+  /* Formularios de demo (ticket y pase) */
+  .field {
+    min-height: 48px;
+    padding: 0 14px;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+  }
+  .field:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 1px;
+  }
+
+  /* Chat: estilo afiche (bordes de tinta y sombra dura) */
+  .chat .chat-btn {
+    background: var(--forest);
+    color: var(--mustard);
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .chat .chat-panel {
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .chat .chat-head p {
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .chat .chat-log p,
+  .chat .chat-qs button {
+    border-radius: 0;
+    border: 1.5px solid var(--ink);
+  }
+  .chat .chat-log .me {
+    background: var(--mustard);
+    color: var(--ink);
+  }
+}
+
+/* Aparición al hacer scroll: solo si hay JS */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-theme='brisa'] .rv {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 1s var(--ease),
+      transform 1s var(--ease);
+  }
+  [data-theme='brisa'] .rv.in {
+    opacity: 1;
+    transform: none;
+  }
+  [data-theme='brisa'] .d1 {
+    transition-delay: 0.1s;
+  }
+  [data-theme='brisa'] .d2 {
+    transition-delay: 0.2s;
+  }
+}

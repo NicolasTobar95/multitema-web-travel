@@ -1,0 +1,116 @@
+---
+/** Testimonios (de ejemplo) desde src/content/testimonials.json. */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items: CollectionEntry<'testimonials'>[];
+}
+const { items } = Astro.props;
+---
+
+<section class="voices" aria-labelledby="voices-title">
+  <div class="wrap">
+    <span class="mono rv">Viajeros</span>
+    <h2 class="disp rv" id="voices-title">Lo que cuentan al volver</h2>
+    <div class="quotes">
+      {
+        items.map((q, i) => (
+          <figure class:list={['q', 'rv', i > 0 && `d${i}`]}>
+            <p class="stars" role="img" aria-label={`${q.data.rating} de 5 estrellas`}>
+              {'★'.repeat(q.data.rating)}
+              <span class="dim">{'★'.repeat(5 - q.data.rating)}</span>
+            </p>
+            <blockquote>“{q.data.quote}”</blockquote>
+            <figcaption>
+              <span class="av" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.8"></circle><path d="M4.5 20c1.2-3.8 4.2-5.8 7.5-5.8s6.3 2 7.5 5.8"></path></svg>
+              </span>
+              <span>
+                {q.data.name}
+                <small>{q.data.trip} · {q.data.city}</small>
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+    <p class="note">Testimonios de ejemplo para el sitio demo.</p>
+  </div>
+</section>
+
+<style>
+  .voices {
+    padding: 110px 0;
+  }
+  .mono {
+    color: var(--accent);
+  }
+  h2 {
+    margin: 12px 0 34px;
+    font-size: clamp(40px, 4.6vw, 68px);
+  }
+  .quotes {
+    display: grid;
+    gap: 16px;
+  }
+  .q {
+    margin: 0;
+    padding: 26px;
+    border-radius: var(--radius);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .stars {
+    margin: 0 0 12px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    font-size: 14px;
+  }
+  .dim {
+    color: color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  blockquote {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  figcaption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  .av {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--soft);
+    color: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .av svg {
+    width: 24px;
+    height: 24px;
+  }
+  small {
+    display: block;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .note {
+    margin: 20px 0 0;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  @media (min-width: 900px) {
+    .quotes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

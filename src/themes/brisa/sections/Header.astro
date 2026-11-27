@@ -1,0 +1,144 @@
+---
+/** Header de Brisa: franja verde bosque fija arriba. En móvil el menú se abre con un botón. */
+import LikeButton from '@/components/shared/LikeButton.astro';
+import { AGENCY } from '@/lib/catalog';
+import { NAV } from '../data';
+---
+
+<header class="hdr">
+  <div class="wrap row">
+    <a href="#inicio" class="logo" aria-label={`${AGENCY.name}, inicio`} transition:name="brand">
+      <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.5" stroke="#E0A93B" stroke-width="2"></circle>
+        <path d="M5 25l8-12 4 6 3-4 9 10z" fill="#F2E8D0"></path>
+        <circle cx="23" cy="11" r="3" fill="#E0A93B"></circle>
+      </svg>
+      {AGENCY.name.toUpperCase()}
+    </a>
+    <nav class="nav" id="br-nav" aria-label="Principal">
+      {NAV.map(([href, label]) => <a href={href}>{label}</a>)}
+    </nav>
+    <div class="tools">
+      <LikeButton class="pill" />
+      <a class="btn" href="#destinos">Reservar</a>
+      <button class="menu" type="button" aria-expanded="false" aria-controls="br-nav" data-menu>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        <span class="sr-only">Menú</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--forest);
+    color: var(--cream);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 68px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .logo svg {
+    width: 34px;
+    height: 34px;
+  }
+  .nav {
+    display: none;
+    gap: 26px;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav a {
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--mustard);
+  }
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hdr :global(.pill) {
+    display: none;
+    min-height: 40px;
+    border: 1.5px solid rgb(242 232 208 / 0.4);
+    border-radius: 4px;
+  }
+  .hdr :global(.pill svg) {
+    color: var(--mustard);
+  }
+  .tools .btn {
+    min-height: 42px;
+    font-size: 18px;
+    box-shadow: 3px 3px 0 #000;
+  }
+  .menu {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid rgb(242 232 208 / 0.4);
+    border-radius: 4px;
+  }
+  .menu svg {
+    width: 22px;
+    height: 22px;
+  }
+  @media (max-width: 420px) {
+    .tools .btn {
+      display: none;
+    }
+  }
+  @media (min-width: 600px) {
+    .hdr :global(.pill) {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 900px) {
+    .nav {
+      display: flex;
+    }
+    .menu {
+      display: none;
+    }
+  }
+  @media (max-width: 899px) {
+    .nav:global(.open) {
+      position: absolute;
+      top: 68px;
+      left: 0;
+      right: 0;
+      display: grid;
+      gap: 0;
+      padding: 4px max(16px, (100% - 1240px) / 2) 12px;
+      background: var(--forest);
+      border-top: 2px solid var(--mustard);
+      box-shadow: 0 8px 0 rgb(0 0 0 / 0.25);
+      font-size: 24px;
+    }
+    .nav:global(.open) a {
+      padding: 12px 0;
+      border-bottom: 1px solid rgb(242 232 208 / 0.15);
+    }
+  }
+</style>

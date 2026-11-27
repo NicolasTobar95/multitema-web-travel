@@ -1,0 +1,103 @@
+---
+/** Galería de postales con las fotos compartidas de los viajes y su latitud. */
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { tripPhoto } from '@/lib/images';
+
+interface Props {
+  trips: CollectionEntry<'trips'>[];
+}
+const { trips } = Astro.props;
+const lat = (v: number) => `${Math.abs(v).toFixed(2)}° S`;
+---
+
+<section class="gallery" aria-labelledby="gal-title">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="mono">Galería</span>
+      <h2 class="disp" id="gal-title">Postales <span>del viaje</span></h2>
+    </div>
+    <div class="cards">
+      {
+        trips.map((t, i) => {
+          const p = tripPhoto(t.id);
+          return (
+            <figure class:list={['pc', 'rv', i % 3 === 1 && 'd1', i % 3 === 2 && 'd2']}>
+              <Picture src={p.src} alt={p.alt} formats={['avif', 'webp']} fallbackFormat="webp" widths={[320, 520]} sizes="(min-width: 900px) 380px, 50vw" loading="lazy" />
+              <figcaption>
+                <b>{t.data.shortTitle}</b>
+                {t.data.coords && <span>{lat(t.data.coords.lat)}</span>}
+              </figcaption>
+            </figure>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    padding: clamp(80px, 10vw, 130px) 0;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 26px;
+  }
+  .pc {
+    position: relative;
+    margin: 0;
+    padding: 10px 10px 14px;
+    background: #fff;
+    box-shadow:
+      0 2px 3px rgb(0 0 0 / 0.06),
+      0 18px 30px -18px rgb(30 43 36 / 0.45);
+    transition: transform 0.5s var(--ease);
+  }
+  .pc:nth-child(3n + 1) {
+    transform: rotate(-2deg);
+  }
+  .pc:nth-child(3n + 2) {
+    transform: rotate(1.5deg) translateY(12px);
+  }
+  .pc:nth-child(3n) {
+    transform: rotate(-0.8deg);
+  }
+  .pc:hover {
+    z-index: 2;
+    transform: rotate(0) scale(1.03);
+  }
+  .pc :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 10px;
+    padding: 10px 4px 0;
+  }
+  b {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  figcaption span {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  @media (min-width: 900px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

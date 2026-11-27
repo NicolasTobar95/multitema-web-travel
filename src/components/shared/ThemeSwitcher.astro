@@ -1,0 +1,108 @@
+---
+/**
+ * Selector de tema fijo abajo. Persiste entre navegaciones (transition:persist),
+ * así no parpadea al cambiar de tema; su aspecto viene de las variables --dock-*
+ * de cada tema. Son enlaces reales: funcionan sin JS.
+ */
+import { THEME_IDS, THEMES, THEME_STORAGE_KEY, type ThemeId } from '@/lib/themes';
+
+interface Props {
+  current: ThemeId;
+}
+const { current } = Astro.props;
+---
+
+<nav class="dock" aria-label="Tema visual" transition:persist="theme-switcher" data-storage-key={THEME_STORAGE_KEY}>
+  {
+    THEME_IDS.map((id) => (
+      <a href={`/${id}`} data-theme-link={id} aria-current={id === current ? 'page' : undefined}>
+        <i aria-hidden="true" />
+        {THEMES[id].label}
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  import { isThemeId } from '@/lib/themes';
+
+  // Al cargar cada página (incluida la primera y tras cada cambio de tema):
+  // marca el enlace activo y recuerda el tema para la redirección de "/".
+  document.addEventListener('astro:page-load', () => {
+    const theme = document.documentElement.dataset['theme'];
+    const dock = document.querySelector<HTMLElement>('.dock');
+    if (!dock || !isThemeId(theme)) return;
+    dock.querySelectorAll<HTMLAnchorElement>('[data-theme-link]').forEach((a) => {
+      if (a.dataset['themeLink'] === theme) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    try {
+      localStorage.setItem(dock.dataset['storageKey'] ?? 'cordada:tema', theme);
+    } catch {
+      /* almacenamiento bloqueado: no pasa nada */
+    }
+  });
+</script>
+
+<style>
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    translate: -50% 0;
+    z-index: 60;
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    max-width: calc(100vw - 16px);
+    border-radius: var(--dock-radius);
+    border: 1px solid var(--dock-border);
+    background: var(--dock-bg);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 40px -12px rgb(0 0 0 / 0.5);
+    font-family: var(--dock-font);
+    transition:
+      background-color 0.5s,
+      border-radius 0.5s,
+      border-color 0.5s;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 clamp(10px, 2.5vw, 16px);
+    border-radius: var(--dock-btn-radius, 999px);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dock-fg);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  a:hover {
+    color: var(--dock-active-bg);
+  }
+  a[aria-current='page'] {
+    background: var(--dock-active-bg);
+    color: var(--dock-active-fg);
+  }
+  a:focus-visible {
+    outline: 2px solid var(--dock-active-bg);
+    outline-offset: 2px;
+  }
+  i {
+    width: 7px;
+    height: 7px;
+    background: currentColor;
+    rotate: 45deg;
+  }
+  @media (max-width: 420px) {
+    i {
+      display: none;
+    }
+  }
+</style>

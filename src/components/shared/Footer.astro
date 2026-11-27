@@ -1,0 +1,283 @@
+---
+/**
+ * Footer compartido, idéntico en los 4 temas (shared/footer.html).
+ * Del tema solo toma el acento, vía --sf-accent. Tiene sus propias fuentes
+ * (Geist y Geist Mono) para verse igual en todos.
+ */
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import { AUTHOR } from '@/lib/author';
+import { num } from '@/lib/format';
+import LikeButton from './LikeButton.astro';
+
+const link = (href: string, prefix = '') => (href ? `${prefix}${href}` : '#contacto');
+const external = (href: string) => (href ? { target: '_blank', rel: 'noopener' } : {});
+
+const COLS = [
+  { title: 'Destinos', links: [['Regiones', '#destinos'], ['Ciudades', '#destinos'], ['Parques', '#destinos']] },
+  { title: 'Viajes', links: [['En ruta', '#destinos'], ['Trekking con noche', '#destinos'], ['Rutas escénicas', '#destinos']] },
+  { title: 'Experiencias', links: [['Comida y bebida', '#destinos'], ['Aire libre', '#destinos'], ['Cultura e historia', '#destinos']] },
+] as const;
+---
+
+<footer class="sf" id="contacto">
+  <div class="sf-wrap">
+    <div class="sf-top">
+      <article class="sf-card" aria-labelledby="sf-name">
+        <div class="sf-id">
+          <div class="sf-avatar" aria-hidden="true">{AUTHOR.initials}</div>
+          <div>
+            <span class="sf-label">Sobre el autor</span>
+            <h2 class="sf-name" id="sf-name">{AUTHOR.name}</h2>
+            <span class="sf-role">{AUTHOR.role}</span>
+          </div>
+        </div>
+        <p class="sf-bio">{AUTHOR.bio}</p>
+        <div class="sf-actions">
+          <a class="sf-chip" href={link(AUTHOR.email, 'mailto:')}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+            {AUTHOR.email || 'Correo'}
+          </a>
+          <a class="sf-chip" href={link(AUTHOR.github)} {...external(AUTHOR.github)}>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"></path></svg>
+            GitHub
+          </a>
+          <a class="sf-chip" href={link(AUTHOR.linkedin)} {...external(AUTHOR.linkedin)}>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9V21H9z"></path></svg>
+            LinkedIn
+          </a>
+          <a class="sf-chip" href={link(AUTHOR.portfolio)} {...external(AUTHOR.portfolio)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"></path></svg>
+            Portafolio
+          </a>
+        </div>
+        <div class="sf-social">
+          <LikeButton variant="footer" />
+          <span class="sf-com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg>
+            {num(AUTHOR.comments)}<span class="sr-only">comentarios</span>
+          </span>
+        </div>
+      </article>
+      <nav class="sf-cols" aria-label="Pie de página">
+        {
+          COLS.map((col) => (
+            <div>
+              <h3>{col.title}</h3>
+              <ul role="list">
+                {col.links.map(([label, href]) => (
+                  <li>
+                    <a href={href}>{label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+    <div class="sf-bot">
+      <span>© 2026 · Tema demo por {AUTHOR.name}</span>
+      <span>Sitio demo · Precios y fechas de ejemplo</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .sf {
+    --sf-ink: #edebe6;
+    --sf-dim: rgb(237 235 230 / 0.66);
+    --sf-mono: 'Geist Mono Variable', ui-monospace, monospace;
+    --focus: var(--sf-accent);
+    background: #0f100f;
+    color: var(--sf-ink);
+    /* Espacio extra abajo para que el selector de tema no tape el pie */
+    padding: 80px 0 112px;
+    font-family: 'Geist Variable', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .sf-wrap {
+    width: min(1200px, 100% - 32px);
+    margin-inline: auto;
+  }
+  @media (min-width: 700px) {
+    .sf-wrap {
+      width: min(1200px, 100% - 96px);
+    }
+  }
+  .sf-top {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 1000px) {
+    .sf-top {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: start;
+    }
+  }
+  .sf-card {
+    position: relative;
+    border-radius: 14px;
+    padding: clamp(24px, 3vw, 36px);
+    background: #171816;
+    border: 1px solid rgb(237 235 230 / 0.12);
+  }
+  .sf-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 15px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--sf-accent), transparent 45%, transparent 60%, var(--sf-accent));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .sf-id {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .sf-avatar {
+    flex: 0 0 72px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #2a2b28;
+    display: grid;
+    place-items: center;
+    font-family: var(--sf-mono);
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    box-shadow:
+      0 0 0 2px #171816,
+      0 0 0 3.5px var(--sf-accent);
+  }
+  .sf-label,
+  .sf-cols h3 {
+    display: block;
+    font-family: var(--sf-mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sf-dim);
+  }
+  .sf-name {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+    margin: 4px 0 2px;
+    letter-spacing: -0.01em;
+  }
+  .sf-role {
+    font-size: 14px;
+    color: rgb(237 235 230 / 0.72);
+  }
+  .sf-bio {
+    margin: 20px 0 22px;
+    color: rgb(237 235 230 / 0.78);
+    max-width: 62ch;
+    font-size: 15px;
+  }
+  .sf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sf-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid rgb(237 235 230 / 0.18);
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--sf-ink);
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+  .sf-chip:hover {
+    border-color: var(--sf-accent);
+    background: rgb(237 235 230 / 0.05);
+  }
+  .sf-chip svg {
+    width: 16px;
+    height: 16px;
+  }
+  .sf-social {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgb(237 235 230 / 0.1);
+  }
+  .sf-com {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 99px;
+    border: 1px solid rgb(237 235 230 / 0.18);
+    font-family: var(--sf-mono);
+    font-size: 13px;
+  }
+  .sf-com svg {
+    width: 17px;
+    height: 17px;
+  }
+  .sf-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .sf-cols h3 {
+    margin-bottom: 14px;
+  }
+  .sf-cols ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .sf-cols a {
+    color: var(--sf-ink);
+    opacity: 0.88;
+    text-decoration: none;
+    transition:
+      opacity 0.2s,
+      color 0.2s;
+  }
+  .sf-cols a:hover {
+    opacity: 1;
+    color: var(--sf-accent);
+  }
+  .sf-bot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(237 235 230 / 0.1);
+    font-family: var(--sf-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: rgb(237 235 230 / 0.6);
+  }
+  @media (max-width: 520px) {
+    .sf-cols {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

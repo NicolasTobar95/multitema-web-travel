@@ -1,0 +1,395 @@
+---
+/**
+ * Hojas de ruta: en escritorio la sección queda fija y las 3 rutas se desplazan
+ * en horizontal con el scroll (JS en cordada.client.ts). En móvil, sin JS o con
+ * movimiento reducido se apilan en vertical.
+ */
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { days, num, shortDate, usd } from '@/lib/format';
+import Topo from '../components/Topo.astro';
+import { coord, lat, lon, pad2, ROUTES } from '../data';
+
+interface Props {
+  trips: Map<string, CollectionEntry<'trips'>['data']>;
+}
+const { trips } = Astro.props;
+---
+
+<section class="exp" id="expediciones" data-exp>
+  <div class="sticky">
+    <Topo peaks={[[1300, 700, 0.7], [200, 150, 4.1]]} rings={14} step={40} class="exp-topo" />
+    <div class="rail" aria-hidden="true">
+      <span class="mono">Próximas salidas</span>
+      <div class="line"><div class="fill" data-rail-fill></div></div>
+      <span class="km">Ruta <b data-rail-n>01</b> / {pad2(ROUTES.length)}</span>
+    </div>
+    <div class="track" data-htrack>
+      {
+        ROUTES.map((r, i) => {
+          const t = trips.get(r.id)!;
+          const c = t.coords!;
+          return (
+            <article class="panel" data-coord={coord(c)} aria-labelledby={`ruta-${r.id}`}>
+              <div class="media">
+                <Picture src={r.image} alt={r.alt} formats={['avif', 'webp']} fallbackFormat="webp" width={900} widths={[600, 900]} sizes="(min-width: 900px) 45vw, 100vw" loading="lazy" />
+                <svg class="cross" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <circle cx="32" cy="32" r="14" />
+                  <path d="M32 0v22M32 42v22M0 32h22M42 32h22" />
+                </svg>
+                <span class="ref mono">{r.sheet}</span>
+                <div class="locator" aria-hidden="true">
+                  <svg viewBox="0 0 110 110">
+                    <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(255,255,255,.25)" />
+                    <path d="M15 55h80M55 15v80" stroke="rgba(255,255,255,.2)" />
+                    <circle cx={r.locator[0]} cy={r.locator[1]} r="5" fill="var(--accent)" />
+                  </svg>
+                </div>
+              </div>
+              <div class="text">
+                <span class="idx">
+                  <b>{pad2(i + 1)}</b>
+                  <i />
+                  <span class="mono">
+                    {days(t.days)} · Exigencia {t.difficulty.toLowerCase()}
+                    {t.tag === 'La más pedida' && ' · La más pedida'}
+                  </span>
+                </span>
+                <h2 class="display" id={`ruta-${r.id}`} transition:name={`trip-${r.id}`}>
+                  {r.name}
+                </h2>
+                <span class="subt">{r.subtitle}</span>
+                <div class="coords">
+                  <span>{lat(c.lat)}</span>
+                  <span>{lon(c.lon)}</span>
+                </div>
+                <p>{r.text}</p>
+                <dl class="dtab">
+                  <div><dt class="mono">Días</dt><dd>{pad2(t.days)}</dd></div>
+                  <div><dt class="mono">km</dt><dd>{t.distanceKm}</dd></div>
+                  <div><dt class="mono">m máx.</dt><dd>{num(t.maxAltitudeM ?? 0)}</dd></div>
+                </dl>
+                <div class="buy">
+                  <div>
+                    <span class="mono">Desde, por persona</span>
+                    <b>{usd(t.priceFrom)}</b>
+                    <small>
+                      Próxima salida: {shortDate(t.nextDeparture)} · Quedan {t.seatsLeft} cupos
+                    </small>
+                  </div>
+                  <a class="btn" href="#contacto">
+                    Reservar cupo<span class="sr-only"> en {r.name}</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .exp {
+    position: relative;
+  }
+  .sticky {
+    position: relative;
+    padding: 80px 0 40px;
+    overflow: hidden;
+  }
+  .sticky :global(.exp-topo) {
+    opacity: 0.7;
+  }
+  .rail {
+    display: none;
+  }
+  .track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    padding: 0 16px;
+  }
+  .panel {
+    display: grid;
+    gap: clamp(28px, 4vw, 64px);
+    align-items: center;
+  }
+  .media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--dark);
+  }
+  .media :global(picture),
+  .media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.18) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .cross {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px;
+    color: #fff;
+  }
+  .ref {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    padding: 5px 9px;
+    border-radius: 2px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 11px;
+  }
+  .locator {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: rgb(11 20 24 / 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgb(255 255 255 / 0.2);
+  }
+  .idx {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--accent);
+  }
+  .idx b {
+    font-family: var(--f-display);
+    font-size: 20px;
+  }
+  .idx i {
+    flex: 0 0 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+  h2 {
+    font-size: clamp(46px, 5.2vw, 88px);
+    margin: 10px 0 4px;
+  }
+  .subt {
+    display: block;
+    margin-bottom: 12px;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(22px, 2vw, 30px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .coords {
+    display: inline-flex;
+    gap: 14px;
+    font-family: var(--f-mono);
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .coords span {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--card);
+  }
+  .text p {
+    margin: 14px 0 16px;
+    max-width: 46ch;
+    font-size: 16px;
+    color: var(--ink-2);
+  }
+  .dtab {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 460px;
+    margin: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dtab div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding: 10px 14px;
+    border-right: 1px solid var(--line);
+  }
+  .dtab div:last-child {
+    border: 0;
+  }
+  .dtab dd {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: 26px;
+    line-height: 1;
+  }
+  .dtab dt {
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 460px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .buy .mono {
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .buy b {
+    display: block;
+    font-family: var(--f-display);
+    font-size: 34px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .buy small {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-2);
+  }
+
+  /* Escritorio con JS y movimiento: sección fijada con desplazamiento horizontal */
+  @media (min-width: 900px) {
+    .track {
+      padding: 0;
+      width: min(1240px, 100% - 96px);
+      margin-inline: auto;
+    }
+    .panel {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+  @media (min-width: 900px) and (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .exp {
+      height: 340vh;
+    }
+    .sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 90px 0 0;
+    }
+    .rail {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0 7vw 24px;
+    }
+    .rail .mono {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .line {
+      position: relative;
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+    .fill {
+      position: absolute;
+      left: 0;
+      top: -0.5px;
+      height: 2px;
+      width: 100%;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+    }
+    .km {
+      min-width: 120px;
+      font-family: var(--f-mono);
+      font-size: 13px;
+      text-align: right;
+    }
+    .km b {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .track {
+      flex: 1;
+      min-height: 0;
+      flex-direction: row;
+      gap: 7vw;
+      width: auto;
+      margin: 0;
+      padding: 20px 7vw 0;
+      will-change: transform;
+    }
+    .panel {
+      flex: 0 0 min(1180px, 84vw);
+      height: calc(100vh - 200px);
+    }
+    .media {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 0;
+    }
+  }
+  /* Pantallas bajas (p. ej. notebooks de 720 px): compacta el texto para que quepa sobre el selector */
+  @media (min-width: 900px) and (max-height: 860px) and (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .sticky {
+      padding-top: 80px;
+    }
+    .rail {
+      padding-bottom: 12px;
+    }
+    .panel {
+      height: calc(100vh - 190px);
+    }
+    h2 {
+      font-size: clamp(40px, 4.2vw, 64px);
+    }
+    .subt {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+    .text p {
+      margin: 10px 0 12px;
+      font-size: 15px;
+    }
+    .dtab dd {
+      font-size: 22px;
+    }
+    .buy {
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+    .buy b {
+      font-size: 28px;
+    }
+  }
+</style>

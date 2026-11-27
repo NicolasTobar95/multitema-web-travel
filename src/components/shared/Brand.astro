@@ -1,0 +1,14 @@
+---
+/** Marca de Cordada. Comparte transition:name para que se transforme entre temas. */
+import { AGENCY } from '@/lib/catalog';
+
+type Props = { class?: string };
+const { class: className } = Astro.props;
+---
+
+<a href="#inicio" class:list={['inline-flex items-center gap-2 font-display text-xl font-bold tracking-tight', className]} transition:name="brand">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M2 20 9 7l4 6 3-4 6 11z" stroke-linejoin="round"></path>
+  </svg>
+  {AGENCY.name}
+</a>

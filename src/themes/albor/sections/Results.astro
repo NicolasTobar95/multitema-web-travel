@@ -1,0 +1,310 @@
+---
+/**
+ * Viajes del planificador. Cada tarjeta lleva en data-* lo que filtra la frase
+ * del hero; las que no calzan se apagan, bajan al final y dicen por qué.
+ */
+import { Image, Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import empty from '@/assets/img/albor/sin-resultados.png';
+import { days, num, usd } from '@/lib/format';
+import { tripPhoto } from '@/lib/images';
+import { bucket, CARD_TEXT, LAND_LABEL, levels } from '../data';
+
+interface Props {
+  trips: CollectionEntry<'trips'>[];
+}
+const { trips } = Astro.props;
+---
+
+<section class="results" id="resultados" aria-labelledby="res-title">
+  <div class="wrap">
+    <h2 class="sr-only" id="res-title">Viajes</h2>
+    <div class="grid" data-grid>
+      {
+        trips.map((t, i) => {
+          const d = t.data;
+          const p = tripPhoto(t.id);
+          const wide = d.landscape === 'todos';
+          const text = CARD_TEXT[t.id];
+          return (
+            <article
+              class:list={['card', 'rv', { wide }, i % 3 === 1 && 'd1', i % 3 === 2 && 'd2']}
+              style={`--vtn: c-${t.id}`}
+              data-card={t.id}
+              data-days={bucket(d.days)}
+              data-land={d.landscape === 'todos' ? 'any' : d.landscape}
+              data-level={levels(d.difficulty)}
+              data-price={d.priceFrom}
+              aria-labelledby={`al-${t.id}`}
+            >
+              <div class="img">
+                <Picture
+                  src={p.src}
+                  alt={p.alt}
+                  formats={['avif', 'webp']}
+                  fallbackFormat="webp"
+                  widths={wide ? [640, 960, 1280] : [480, 720]}
+                  sizes={wide ? '(min-width: 1100px) 680px, (min-width: 760px) 90vw, 100vw' : '(min-width: 1100px) 400px, (min-width: 760px) 45vw, 100vw'}
+                  loading="lazy"
+                />
+                {d.tag && <span class="flag">{d.tag}</span>}
+                <span class="why" data-why />
+              </div>
+              <div class="body">
+                <div class="tags">
+                  <span data-k="days">{days(d.days)}</span>
+                  <span data-k="land">{LAND_LABEL[d.landscape]}</span>
+                  <span data-k="level">Exigencia {d.difficulty.toLowerCase()}</span>
+                </div>
+                <h3 id={`al-${t.id}`} transition:name={`trip-${t.id}`}>
+                  {text?.title ?? d.title}
+                </h3>
+                <p>
+                  {text?.text ?? d.description}
+                  {d.transfersKm && ` (${num(d.transfersKm)} km).`}
+                </p>
+                <div class="foot">
+                  <span>
+                    <small>Desde{wide && ', por persona'}</small>
+                    <b>{usd(d.priceFrom)}</b>
+                  </span>
+                  <a class:list={['btn', { dark: !wide }]} href="#contacto">
+                    {wide ? 'Reservar' : 'Ver salida'}
+                    <span class="sr-only"> · {d.title}</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+      <div class="empty" data-empty hidden>
+        <Image src={empty} alt="" width={240} height={240} format="webp" loading="lazy" />
+        <div>
+          <p class="disp">Ningún viaje calza con todo eso</p>
+          <p>
+            Prueba subir el presupuesto o cambiar la exigencia, o <a href="#contacto">escríbenos</a> y armamos uno a tu medida.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .results {
+    padding: 30px 0 120px;
+  }
+  .grid {
+    display: grid;
+    gap: 18px;
+    grid-auto-flow: dense;
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition:
+      opacity 0.5s,
+      filter 0.5s,
+      transform 0.4s var(--ease),
+      box-shadow 0.4s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px -28px rgb(22 21 29 / 0.4);
+  }
+  /* Nombres para la View Transition del filtro (solo mientras ocurre) */
+  .grid:global(.vt) .card {
+    view-transition-name: var(--vtn);
+  }
+  /* Apagada: la foto se destiñe, el texto baja a --muted pero conserva el contraste AA */
+  .card:global(.off) {
+    background: color-mix(in srgb, var(--card) 55%, transparent);
+  }
+  .card:global(.off) .img :global(picture) {
+    display: block;
+    height: 100%;
+    opacity: 0.4;
+    filter: grayscale(1);
+    transition:
+      opacity 0.5s,
+      filter 0.5s;
+  }
+  .card:global(.off) h3,
+  .card:global(.off) .foot b {
+    color: var(--muted);
+  }
+  .card:global(.off) .flag {
+    background: var(--soft);
+  }
+  .card:global(.off) .btn {
+    background: var(--muted);
+  }
+  .card:global(.off):hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .wide {
+    grid-column: 1 / -1;
+  }
+  .img {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s var(--ease);
+  }
+  .card:hover .img :global(img) {
+    transform: scale(1.05);
+  }
+  .flag {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: var(--accent-2);
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .why {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgb(22 21 29 / 0.82);
+    color: #fff;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:global(.off) .why {
+    opacity: 1;
+  }
+  .body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 22px 22px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tags span {
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: var(--soft);
+    font-size: 12.5px;
+    color: var(--ink-2);
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+  .tags span:global(.hit) {
+    background: var(--accent);
+    color: #fff;
+  }
+  h3 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .body p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .foot b {
+    font-family: var(--f-display);
+    font-size: 28px;
+    line-height: 1;
+  }
+  .foot small {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 28px;
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px dashed color-mix(in srgb, var(--ink) 25%, transparent);
+    color: var(--ink-2);
+  }
+  .empty[hidden] {
+    display: none;
+  }
+  .empty :global(img) {
+    width: 140px;
+    height: 140px;
+  }
+  .empty div {
+    max-width: 46ch;
+  }
+  .empty .disp {
+    margin: 0 0 6px;
+    font-size: 28px;
+    color: var(--ink);
+  }
+  .empty p {
+    margin: 0;
+  }
+  .empty a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  @media (min-width: 760px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .wide {
+      flex-direction: row;
+    }
+    .wide .img {
+      flex: 1.2;
+      aspect-ratio: auto;
+      min-height: 320px;
+    }
+    .wide .body {
+      flex: 1;
+    }
+  }
+</style>

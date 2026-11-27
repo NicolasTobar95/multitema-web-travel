@@ -1,0 +1,452 @@
+---
+/**
+ * Hero de Cúmulo: titular enorme en la grilla, figura nocturna que pasa del
+ * blanco y negro al color y buscador con pestañas (search.json). Abajo, la
+ * cinta de parques.
+ *
+ * Buscador: cada pestaña tiene su panel; sin JS se ve solo "Rutas" y las
+ * pestañas se ocultan. Al buscar, cumulo.client.ts lleva a la fila del índice
+ * del viaje elegido (data-go) o al contacto en "A medida".
+ */
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import fig from '@/assets/img/cumulo/fig-01-paine.jpg';
+import { AGENCY } from '@/lib/catalog';
+
+interface Props {
+  search: CollectionEntry<'search'>[];
+  parks: CollectionEntry<'parks'>[];
+  trips: CollectionEntry<'trips'>[];
+  /** Destino fijo por pestaña (gran-travesia → travesia, a-medida → contacto) */
+  targets: Record<string, string>;
+}
+const { search, parks, trips, targets } = Astro.props;
+
+const paine = trips.find((t) => t.id === 'paine');
+const lat = paine?.data.coords ? `${Math.abs(paine.data.coords.lat).toFixed(2)}° S` : '';
+const lats = trips.flatMap((t) => (t.data.coords ? [Math.abs(t.data.coords.lat)] : []));
+const span = `${Math.floor(Math.min(...lats))}° S → ${Math.floor(Math.max(...lats))}° S`;
+
+/** "Torres del Paine · 5 días" → id del viaje cuyo nombre corto aparece antes del "·" */
+const tripFor = (option: string) => {
+  const name = option.split(' · ')[0] ?? '';
+  return trips.find((t) => name.includes(t.data.shortTitle))?.id;
+};
+---
+
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div class="h-meta mono">
+      <span>{AGENCY.name} — Trekking guiado</span>
+      <span>Patagonia chilena</span>
+      <span>Grupos de {AGENCY.maxGroup} como máximo</span>
+      <span>{span}</span>
+    </div>
+    <h1 class="big" id="hero-title" transition:name="hero-title">
+      <span class="mask"><span>Patagonia</span></span>
+      <span class="mask"><span class="grad">sin atajos</span></span>
+    </h1>
+    <div class="h-grid">
+      <figure class="h-img">
+        <Picture
+          src={fig}
+          alt="Las tres Torres del Paine bajo la Vía Láctea, con dos caminantes de espaldas y sus linternas frontales encendidas"
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          widths={[640, 960, 1400]}
+          sizes="(min-width: 1000px) 58vw, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          quality={70}
+        />
+        <figcaption class="cap mono">Fig. 01 — Torres del Paine, {lat}</figcaption>
+      </figure>
+      <div class="h-right">
+        <p class="lede">
+          Caminamos en grupos de máximo {AGENCY.maxGroup} personas, con guías locales y todo resuelto: traslados, refugios, comidas y permisos. Tú solo te preocupas de caminar.
+        </p>
+        <form class="search" action="#destinos" aria-label="Buscar viaje" data-search>
+          <div class="s-tabs" role="tablist" aria-label="Tipo de viaje">
+            {
+              search.map((tab, i) => (
+                <button
+                  type="button"
+                  role="tab"
+                  id={`cu-tab-${tab.id}`}
+                  aria-controls={`cu-panel-${tab.id}`}
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  tabindex={i === 0 ? 0 : -1}
+                >
+                  <span class="tn" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  {tab.data.label}
+                </button>
+              ))
+            }
+          </div>
+          {
+            search.map((tab, i) => (
+              <div
+                class="s-fields"
+                role="tabpanel"
+                id={`cu-panel-${tab.id}`}
+                aria-labelledby={`cu-tab-${tab.id}`}
+                data-go={targets[tab.id]}
+                hidden={i > 0}
+              >
+                {tab.data.fields.map((f, j) => (
+                  <div class="s-field">
+                    <label for={`cu-${tab.id}-${j}`}>{f.label}</label>
+                    <select id={`cu-${tab.id}-${j}`}>
+                      {f.options.map((o) => (
+                        <option data-go={j === 0 ? tripFor(o) : undefined}>{o}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+          <button class="btn go" type="submit">
+            Buscar salidas
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </button>
+          <p class="sr-only" role="status" data-search-status></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="parks" data-marq>
+    <ul class="marq" aria-label="Parques donde caminamos">
+      {parks.map((p) => <li>{p.data.name}</li>)}
+      {parks.map((p) => <li aria-hidden="true">{p.data.name}</li>)}
+    </ul>
+    <button class="mq-pause" type="button" aria-pressed="false" data-marq-pause hidden>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path class="i-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"></path><path class="i-play" d="M8 5l11 7-11 7z"></path></svg>
+      <span class="sr-only">Pausar la cinta de parques</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 26px 0 0;
+  }
+  .h-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .h-meta span:last-child {
+    color: var(--gold);
+  }
+  h1 {
+    margin: 26px 0 30px;
+    font-size: clamp(56px, 13vw, 212px);
+  }
+  .mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
+  }
+  .mask > span {
+    display: block;
+  }
+  .h-grid {
+    display: grid;
+    gap: 30px;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+  .h-img {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--gline);
+    border-radius: 24px;
+  }
+  .h-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgb(8 11 20 / 0.55));
+    pointer-events: none;
+  }
+  .h-img :global(picture),
+  .h-img :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cap {
+    position: absolute;
+    z-index: 1;
+    left: 14px;
+    bottom: 14px;
+    padding: 8px 12px;
+    border: 1px solid var(--gline);
+    border-radius: 99px;
+    background: rgb(8 11 20 / 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .h-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .lede {
+    margin: 0;
+    font-size: clamp(19px, 1.8vw, 26px);
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+
+  /* ---------- buscador ---------- */
+  .search {
+    overflow: hidden;
+    border: 1px solid var(--gline);
+    border-radius: 24px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    backdrop-filter: blur(18px) saturate(1.3);
+  }
+  .s-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--gline);
+  }
+  .s-tabs button {
+    min-height: 48px;
+    padding: 6px 10px;
+    border-right: 1px solid var(--gline);
+    font-size: 13.5px;
+    line-height: 1.2;
+    text-align: left;
+    color: var(--ink-2);
+    transition:
+      background 0.2s,
+      color 0.2s,
+      box-shadow 0.2s;
+  }
+  .s-tabs button:last-child {
+    border-right: 0;
+  }
+  .s-tabs button:hover {
+    color: var(--ink);
+  }
+  .s-tabs button[aria-selected='true'] {
+    background: rgb(255 255 255 / 0.1);
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--ice);
+  }
+  .s-tabs button:focus-visible {
+    outline-offset: -4px;
+  }
+  .tn {
+    margin-right: 4px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--gold);
+  }
+  .s-field {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    border-bottom: 1px solid var(--gline);
+  }
+  .s-field label {
+    padding: 0 14px;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .s-field select {
+    min-width: 0;
+    min-height: 50px;
+    padding: 0 40px 0 14px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--ice) 50%),
+      linear-gradient(-45deg, transparent 50%, var(--ice) 50%);
+    background-position:
+      calc(100% - 20px) 50%,
+      calc(100% - 15px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+  .s-field select:focus-visible {
+    outline-offset: -3px;
+  }
+  .s-field option {
+    background: var(--panel);
+    color: var(--ink);
+  }
+  .go {
+    width: 100%;
+    min-height: 56px;
+    justify-content: space-between;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(100deg, var(--ice), #d8ecff);
+  }
+  .go:hover {
+    transform: none;
+    box-shadow: inset 0 0 0 999px rgb(255 255 255 / 0.15);
+  }
+  .go:focus-visible {
+    outline-color: var(--gold);
+    outline-offset: -4px;
+  }
+  /* Sin JS las pestañas no cambian nada: se ocultan y queda el primer panel */
+  @media (scripting: none) {
+    .s-tabs {
+      display: none;
+    }
+  }
+
+  /* ---------- parques ---------- */
+  .parks {
+    position: relative;
+    margin-top: 80px;
+    padding: 18px 0;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .marq {
+    display: flex;
+    width: max-content;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .marq li {
+    font-weight: 600;
+    font-size: clamp(36px, 5vw, 72px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(238 242 255 / 0.45);
+  }
+  .marq li:nth-child(odd) {
+    background: linear-gradient(100deg, var(--ice), #fff 50%, var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 0;
+  }
+  .mq-pause {
+    position: absolute;
+    right: 16px;
+    bottom: 10px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gline);
+    border-radius: 50%;
+    background: rgb(8 11 20 / 0.8);
+    color: var(--ink-2);
+  }
+  .mq-pause[hidden] {
+    display: none;
+  }
+  .mq-pause svg {
+    width: 14px;
+    height: 14px;
+  }
+  .mq-pause .i-play,
+  .mq-pause[aria-pressed='true'] .i-pause {
+    display: none;
+  }
+  .mq-pause[aria-pressed='true'] .i-play {
+    display: inline;
+  }
+  .parks:global(.paused) .marq {
+    animation-play-state: paused;
+  }
+
+  @media (min-width: 900px) {
+    .h-meta {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .h-grid {
+      grid-template-columns: 7fr 5fr;
+      gap: 36px;
+    }
+  }
+  @media (max-width: 520px) {
+    .s-tabs {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .s-tabs button:nth-child(2) {
+      border-right: 0;
+    }
+    .s-tabs button:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--gline);
+    }
+    .s-field {
+      grid-template-columns: 92px 1fr;
+    }
+    .s-field label {
+      padding-right: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mask > span {
+      transform: translateY(102%);
+      animation: rise 1.1s var(--ease) forwards;
+    }
+    .mask:nth-child(2) > span {
+      animation-delay: 0.12s;
+    }
+    .h-img :global(img) {
+      filter: grayscale(1);
+      animation: color 2.6s ease 0.6s forwards;
+    }
+    .marq {
+      animation: marq 50s linear infinite;
+    }
+    .parks:hover .marq {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes rise {
+    to {
+      transform: none;
+    }
+  }
+  @keyframes color {
+    to {
+      filter: grayscale(0);
+    }
+  }
+  @keyframes marq {
+    to {
+      transform: translateX(calc(-50% - 20px));
+    }
+  }
+</style>

@@ -1,0 +1,4 @@
+# Cloudflare Pages (proyecto conectado a GitHub: NicolasTobar95/multitema-web-travel)
+name = "multitema-web-travel"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "./dist"

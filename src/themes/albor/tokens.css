@@ -1,0 +1,32 @@
+/* Albor — planificador. Violeta + lima. */
+@import '@fontsource-variable/bricolage-grotesque/wght.css';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+
+[data-theme='albor'] {
+  --bg: #f7f6f3;
+  --card: #fff;
+  --soft: #efedf8;
+  --ink: #16151d;
+  --ink-2: #4b4a57;
+  --muted: #6d6b7a;
+  --line: rgb(22 21 29 / 0.1);
+  --accent: #5b4be8;
+  --on-accent: #fff;
+  --accent-2: #c9f27a;
+  --sf-accent: #5b4be8;
+
+  --f-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --f-body: 'Geist Variable', system-ui, sans-serif;
+  --f-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --radius: 24px;
+  --ease: cubic-bezier(0.22, 0.7, 0.12, 1);
+
+  --dock-bg: #16151d;
+  --dock-fg: rgb(247 246 243 / 0.72);
+  --dock-active-bg: #c9f27a;
+  --dock-active-fg: #16151d;
+  --dock-radius: 999px;
+  --dock-btn-radius: 999px;
+  --dock-font: var(--f-body);
+}

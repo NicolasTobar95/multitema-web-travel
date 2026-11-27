@@ -1,0 +1,40 @@
+/* Cordada — cartográfico. Acento azul glaciar. */
+@import '@fontsource/barlow-condensed/latin-600';
+@import '@fontsource/barlow-condensed/latin-700';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource/ibm-plex-mono/latin-400';
+@import '@fontsource/ibm-plex-mono/latin-500';
+
+[data-theme='cordada'] {
+  --bg: #eceFea;
+  --bg-2: #e0e5de;
+  --card: #f6f8f4;
+  --ink: #0f1a20;
+  --ink-2: #34434b;
+  --muted: #56646c;
+  --line: rgb(15 26 32 / 0.14);
+  --accent: #2f6fdb;
+  --on-accent: #fff;
+  --accent-2: #2f6fdb;
+  --accent-soft: rgb(47 111 219 / 0.12);
+  --contour: rgb(15 26 32 / 0.16);
+  --dark: #0b1418;
+  --on-dark: #e9eeea;
+  --on-dark-muted: rgb(233 238 234 / 0.62);
+  --sf-accent: var(--accent);
+
+  --f-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --f-body: 'Geist Variable', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --radius: 4px;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+
+  --dock-bg: rgb(11 20 24 / 0.9);
+  --dock-fg: var(--on-dark-muted);
+  --dock-active-bg: var(--accent);
+  --dock-active-fg: #fff;
+  --dock-border: rgb(233 238 234 / 0.12);
+  --dock-radius: 6px;
+  --dock-btn-radius: 3px;
+  --dock-font: var(--f-mono);
+}

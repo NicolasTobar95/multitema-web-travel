@@ -1,0 +1,42 @@
+/* Brisa — afiche de parque nacional. Bosque y mostaza. */
+@import '@fontsource/big-shoulders-display/latin-800';
+@import '@fontsource/big-shoulders-display/latin-900';
+@import '@fontsource-variable/work-sans/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+
+[data-theme='brisa'] {
+  --cream: #f2e8d0;
+  --paper: #f8f1df;
+  --forest: #23402f;
+  --pine: #345a3f;
+  --teal: #2e6b6a;
+  --slate: #7fa9a4;
+  --sky: #a9cfc7;
+  --mustard: #e0a93b;
+
+  --bg: var(--cream);
+  --card: var(--paper);
+  --ink: #1e2b24;
+  --ink-2: #44524a;
+  --muted: #5e6a5c;
+  --line: rgb(30 43 36 / 0.18);
+  /* Mostaza no alcanza AA sobre crema: el acento interactivo es el bosque */
+  --accent: var(--forest);
+  --on-accent: var(--cream);
+  --accent-2: var(--mustard);
+  --sf-accent: var(--mustard);
+
+  --f-display: 'Big Shoulders Display', Impact, sans-serif;
+  --f-body: 'Work Sans Variable', system-ui, sans-serif;
+  --f-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --radius: 6px;
+  --ease: cubic-bezier(0.22, 0.7, 0.12, 1);
+
+  --dock-bg: var(--forest);
+  --dock-fg: rgb(242 232 208 / 0.75);
+  --dock-active-bg: var(--mustard);
+  --dock-active-fg: #1e2b24;
+  --dock-radius: 6px;
+  --dock-btn-radius: 3px;
+  --dock-font: var(--f-mono);
+}

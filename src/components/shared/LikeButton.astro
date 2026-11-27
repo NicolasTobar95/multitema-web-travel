@@ -1,0 +1,107 @@
+---
+/**
+ * Botón "me gusta" compartido. Todos los botones de la página (el del footer y
+ * la píldora del header de cada tema) comparten el mismo estado, que se guarda
+ * en localStorage y sobrevive al cambio de tema.
+ *
+ * variant="footer": botón claro del footer · variant="pill": píldora del header
+ * (cada tema la estiliza con .like-pill en la fase 3).
+ */
+import { AUTHOR } from '@/lib/author';
+import { num } from '@/lib/format';
+
+interface Props {
+  variant?: 'footer' | 'pill';
+  class?: string;
+}
+const { variant = 'pill', class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={['like', variant === 'pill' ? 'like-pill' : 'like-footer', className]}
+  data-like
+  data-base={AUTHOR.likes}
+  aria-pressed="false"
+>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.2 5.2 3 1.6-1.8 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path>
+  </svg>
+  <span data-like-count>{num(AUTHOR.likes)}</span>
+  <span class="sr-only">me gusta</span>
+</button>
+
+<script>
+  const KEY = 'cordada:like';
+  const nf = new Intl.NumberFormat('es-CL');
+
+  const read = (): boolean => {
+    try {
+      return localStorage.getItem(KEY) === '1';
+    } catch {
+      return false;
+    }
+  };
+  let liked = read();
+
+  const paint = () => {
+    document.querySelectorAll<HTMLButtonElement>('[data-like]').forEach((b) => {
+      const base = Number(b.dataset['base'] ?? 0);
+      b.setAttribute('aria-pressed', String(liked));
+      const count = b.querySelector('[data-like-count]');
+      if (count) count.textContent = nf.format(base + (liked ? 1 : 0));
+    });
+  };
+
+  // Delegado en document: sirve para todos los botones, también los que llegan
+  // con cada navegación de View Transitions, sin volver a enlazar nada.
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest('[data-like]')) return;
+    liked = !liked;
+    try {
+      localStorage.setItem(KEY, liked ? '1' : '0');
+    } catch {
+      /* almacenamiento bloqueado: el estado dura lo que dure la página */
+    }
+    paint();
+  });
+  document.addEventListener('astro:page-load', paint);
+</script>
+
+<style>
+  .like {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-family: var(--f-mono);
+    font-size: 13px;
+    transition: transform 0.2s;
+  }
+  .like:active {
+    transform: scale(0.95);
+  }
+  .like svg {
+    width: 17px;
+    height: 17px;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  .like[aria-pressed='true'] svg {
+    fill: currentColor;
+    transform: scale(1.2);
+  }
+  .like-footer {
+    background: #edebe6;
+    color: #0f100f;
+  }
+  .like-pill {
+    min-height: 40px;
+    border: 1px solid var(--line);
+    color: inherit;
+  }
+  .like-pill svg {
+    color: var(--accent-2);
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+/**
+ * Hero de Brisa: afiche de parque con la cordillera en 5 capas (parallax con
+ * el scroll y el cursor en brisa.client.ts), cóndor que cruza el cielo y
+ * emblema giratorio. Debajo, el ticket "Admite 1" para recibir salidas.
+ */
+import { Image, Picture } from 'astro:assets';
+import capa1 from '@/assets/img/brisa/capa-1-cielo.png';
+import capa2 from '@/assets/img/brisa/capa-2-lejana.png';
+import capa3 from '@/assets/img/brisa/capa-3-media.png';
+import capa4 from '@/assets/img/brisa/capa-4-lago.png';
+import capa5 from '@/assets/img/brisa/capa-5-bosque.png';
+import condor from '@/assets/img/brisa/condor.png';
+import { AGENCY } from '@/lib/catalog';
+import DemoForm from '../components/DemoForm.astro';
+
+// Profundidad de cada capa: cuánto se mueve con el scroll y el cursor
+const LAYERS = [
+  [capa1, 0.05],
+  [capa2, 0.12],
+  [capa3, 0.22],
+  [capa4, 0.34],
+  [capa5, 0.5],
+] as const;
+---
+
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div class="poster" data-poster>
+      <div class="scene" aria-hidden="true">
+        {
+          LAYERS.map(([src, d], i) => (
+            <div class="layer" data-d={d}>
+              <Picture
+                src={src}
+                alt=""
+                formats={['avif', 'webp']}
+                fallbackFormat="webp"
+                widths={[960, 1600]}
+                sizes="(min-width: 1340px) 1220px, 100vw"
+                loading="eager"
+                fetchpriority={i === 0 ? 'high' : 'auto'}
+                quality={i === 0 ? 55 : 65}
+              />
+            </div>
+          ))
+        }
+        <Image class="condor" src={condor} alt="" width={200} format="webp" />
+      </div>
+      <div class="p-title">
+        <span class="mono">Parques de la Patagonia chilena</span>
+        <h1 class="disp" id="hero-title" transition:name="hero-title">Patagonia</h1>
+        <span class="ribbon">{AGENCY.motto.replace('Patagonia ', '')} · Trekking guiado</span>
+      </div>
+      <svg class="emblem" viewBox="0 0 160 160" aria-hidden="true">
+        <defs><path id="br-ring" d="M80 80m-60 0a60 60 0 1 1 120 0a60 60 0 1 1-120 0"></path></defs>
+        <circle cx="80" cy="80" r="78" fill="#F2E8D0" stroke="#1E2B24" stroke-width="3"></circle>
+        <circle cx="80" cy="80" r="44" fill="#E0A93B" stroke="#1E2B24" stroke-width="2"></circle>
+        <text class="t" font-size="17" letter-spacing="4"><textPath href="#br-ring">GRUPOS DE {AGENCY.maxGroup} · GUÍAS LOCALES · TODO INCLUIDO ·</textPath></text>
+        <text class="t" x="80" y="80" text-anchor="middle" font-size="34">{AGENCY.maxGroup}</text>
+        <text class="t" x="80" y="99" text-anchor="middle" font-size="13" letter-spacing="2">MÁX.</text>
+      </svg>
+      <div class="p-foot" aria-hidden="true"><span>{AGENCY.name}</span><span>Temporada 2026–27</span></div>
+    </div>
+
+    <div class="under">
+      <p class="rv">
+        Caminamos en grupos de máximo {AGENCY.maxGroup} personas, con guías locales y todo resuelto: traslados, refugios, comidas y permisos. Tú solo te preocupas de caminar.
+      </p>
+      <div class="ticket rv d1">
+        <span class="stub" aria-hidden="true">Admite 1</span>
+        <DemoForm id="br-mail-1" label="Recibe las próximas salidas" placeholder="Tu correo" button="Avísame" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 22px 0 60px;
+  }
+  .poster {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    min-height: 520px;
+    max-height: 86vh;
+    overflow: hidden;
+    border: 10px solid var(--forest);
+    outline: 2px solid var(--forest);
+    outline-offset: 6px;
+    background: var(--sky);
+  }
+  .scene,
+  .layer {
+    position: absolute;
+    inset: 0;
+  }
+  .layer {
+    will-change: transform;
+  }
+  /* Todas las capas comparten encuadre: se recortan igual (abajo, un poco a la derecha, donde están las Torres) */
+  .layer :global(picture),
+  .layer :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 58% 100%;
+  }
+  /* Margen para que el parallax no deje ver bordes */
+  .layer :global(img) {
+    transform: scale(1.06);
+    transform-origin: 58% 100%;
+  }
+  .scene :global(.condor) {
+    position: absolute;
+    left: 0;
+    top: 14%;
+    width: clamp(70px, 9vw, 130px);
+    height: auto;
+    opacity: 0.9;
+    animation: fly 34s linear infinite;
+  }
+  @keyframes fly {
+    from {
+      transform: translate(-20vw, 40px) rotate(-4deg);
+    }
+    50% {
+      transform: translate(45vw, 0) rotate(3deg);
+    }
+    to {
+      transform: translate(110vw, 30px) rotate(-2deg);
+    }
+  }
+  .p-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6%;
+    z-index: 3;
+    text-align: center;
+    color: var(--cream);
+    pointer-events: none;
+  }
+  .p-title .mono {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--forest);
+    color: var(--cream);
+  }
+  h1 {
+    margin: 10px 0 0;
+    font-size: clamp(44px, 12.5vw, 215px);
+    letter-spacing: 0.04em;
+    text-shadow: 5px 5px 0 var(--forest);
+    animation: print 1.4s var(--ease) both;
+  }
+  @keyframes print {
+    from {
+      opacity: 0;
+      letter-spacing: 0.3em;
+    }
+    to {
+      opacity: 1;
+      letter-spacing: 0.04em;
+    }
+  }
+  .ribbon {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 26px;
+    background: var(--mustard);
+    color: var(--ink);
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: clamp(18px, 2vw, 28px);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 100% 0, 96% 50%, 100% 100%, 0 100%, 4% 50%);
+  }
+  .p-foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+    padding: 22px 28px;
+    color: var(--cream);
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: clamp(16px, 1.6vw, 22px);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .emblem {
+    position: absolute;
+    z-index: 4;
+    right: 5%;
+    top: 40%;
+    width: clamp(96px, 11vw, 160px);
+    aspect-ratio: 1;
+    animation: spin 40s linear infinite;
+  }
+  .t {
+    font-family: var(--f-display);
+    font-weight: 900;
+    fill: var(--ink);
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .under {
+    display: grid;
+    gap: 30px;
+    align-items: center;
+    margin-top: 44px;
+  }
+  .under p {
+    max-width: 52ch;
+    margin: 0;
+    font-size: clamp(17px, 1.4vw, 20px);
+    color: var(--ink-2);
+  }
+  .ticket {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .ticket::before,
+  .ticket::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--ink);
+    transform: translateY(-50%);
+  }
+  .ticket::before {
+    left: -11px;
+    clip-path: inset(0 0 0 50%);
+  }
+  .ticket::after {
+    right: -11px;
+    clip-path: inset(0 50% 0 0);
+  }
+  .stub {
+    display: grid;
+    place-items: center;
+    padding: 0 16px;
+    border-right: 2px dashed var(--ink);
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .ticket :global(form) {
+    flex: 1;
+    padding: 16px;
+  }
+  @media (max-width: 699px) {
+    .poster {
+      min-height: 480px;
+      border-width: 6px;
+      outline-offset: 4px;
+    }
+    .emblem {
+      top: auto;
+      bottom: 64px;
+    }
+  }
+  @media (min-width: 960px) {
+    .under {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 60px;
+    }
+  }
+</style>

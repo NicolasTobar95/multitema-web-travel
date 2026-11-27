@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import './tokens.css';
+import './theme.css';
+
+type Props = { title?: string; description?: string };
+---
+
+<BaseLayout theme="albor" {...Astro.props}>
+  <slot />
+</BaseLayout>

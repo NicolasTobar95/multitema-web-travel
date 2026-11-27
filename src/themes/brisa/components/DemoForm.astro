@@ -1,0 +1,54 @@
+---
+/**
+ * Formulario de correo de la demo: no envía nada. method="dialog" evita que,
+ * sin JS, el correo termine en la URL; con JS se muestra un aviso (brisa.client.ts).
+ */
+interface Props {
+  id: string;
+  label: string;
+  placeholder: string;
+  button: string;
+  dark?: boolean;
+}
+const { id, label, placeholder, button, dark = false } = Astro.props;
+---
+
+<form class="demo" method="dialog" data-demo-form>
+  <label for={id}>{label}</label>
+  <div class="row">
+    <input class="field" id={id} name="email" type="email" autocomplete="email" placeholder={placeholder} required />
+    <button class:list={['btn', { dark }]} type="submit">{button}</button>
+  </div>
+  <p class="msg" role="status" data-msg></p>
+</form>
+
+<style>
+  .demo {
+    display: grid;
+    gap: 10px;
+  }
+  label {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  input {
+    flex: 1;
+    min-width: 180px;
+  }
+  .msg {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .msg:empty {
+    display: none;
+  }
+</style>

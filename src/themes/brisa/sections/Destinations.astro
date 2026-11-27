@@ -1,0 +1,81 @@
+---
+/** "Elige tu afiche": el carrusel compartido con la tarjeta de mini afiche. */
+import TripCarousel from '@/components/shared/TripCarousel.astro';
+import PosterCard from '../components/PosterCard.astro';
+---
+
+<section class="dest" id="destinos" aria-labelledby="dest-title">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="mono">La colección 2026–27</span>
+      <h2 class="disp" id="dest-title">Elige tu <span>afiche</span></h2>
+      <p>Cada ruta, un paisaje distinto. Pasa el cursor para ver la foto a todo color.</p>
+    </div>
+    <TripCarousel label="Afiches de los viajes" card={PosterCard} class="br-carousel" />
+  </div>
+</section>
+
+<style>
+  .dest {
+    padding: clamp(80px, 10vw, 130px) 0;
+    background: var(--forest);
+    color: var(--cream);
+    /* El foco por defecto (bosque) no se vería sobre el fondo */
+    --focus: var(--mustard);
+  }
+  .dest .head .mono,
+  .dest .head h2 span {
+    color: var(--mustard);
+  }
+  .dest .head p {
+    color: rgb(242 232 208 / 0.78);
+  }
+  /* Ajustes del carrusel compartido sobre fondo bosque */
+  .dest :global(.br-carousel .tc-bar) {
+    justify-content: center;
+  }
+  .dest :global(.br-carousel .tc-chips) {
+    justify-content: center;
+  }
+  .dest :global(.br-carousel .tc-chips button[data-filter]) {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 2px solid var(--cream);
+    border-radius: 0;
+    color: var(--cream);
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .dest :global(.br-carousel .tc-chips button[data-filter][aria-pressed='true']) {
+    background: var(--mustard);
+    border-color: var(--mustard);
+    color: var(--ink);
+  }
+  .dest :global(.br-carousel .tc-nav button[data-prev]),
+  .dest :global(.br-carousel .tc-nav button[data-next]) {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--cream);
+    border-radius: 0;
+    color: var(--cream);
+  }
+  .dest :global(.br-carousel .tc-nav button:hover:not(:disabled)) {
+    background: var(--mustard);
+    border-color: var(--mustard);
+    color: var(--ink);
+  }
+  .dest :global(.br-carousel .tc-track) {
+    gap: 22px;
+    padding: 6px 6px 26px;
+    scrollbar-color: var(--mustard) transparent;
+  }
+  .dest :global(.br-carousel .tc-item) {
+    flex-basis: min(300px, 80vw);
+  }
+  .dest :global(.br-carousel .tc-track:focus-visible) {
+    outline-color: var(--mustard);
+  }
+</style>

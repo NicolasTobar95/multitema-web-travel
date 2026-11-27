@@ -1,0 +1,128 @@
+---
+/** Escapadas cortas: Exploradores, Puyuhuapi y Última Esperanza. */
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { days, usd } from '@/lib/format';
+import { tripPhoto } from '@/lib/images';
+import { ESCAPES } from '../data';
+
+interface Props {
+  trips: Map<string, CollectionEntry<'trips'>['data']>;
+}
+const { trips } = Astro.props;
+---
+
+<section class="more" id="mas" aria-labelledby="mas-title">
+  <div class="wrap">
+    <div class="sec rv">
+      <span class="mono">Si tienes pocos días</span>
+      <h2 class="display" id="mas-title">Escapadas cortas</h2>
+    </div>
+    <ul class="cards rv" role="list">
+      {
+        ESCAPES.map((e) => {
+          const t = trips.get(e.id)!;
+          const img = tripPhoto(e.id);
+          return (
+            <li transition:name={`trip-${e.id}`}>
+              <a href="#contacto" class="xp">
+                <div class="top mono">
+                  <span>{e.code}</span>
+                  <span>{Math.abs(t.coords!.lat).toFixed(1)}° S</span>
+                </div>
+                <div class="img">
+                  <Picture src={img.src} alt={img.alt} formats={['avif', 'webp']} fallbackFormat="webp" width={760} widths={[400, 760]} sizes="(min-width: 760px) 33vw, 100vw" loading="lazy" />
+                </div>
+                <h3>{e.title}</h3>
+                <span class="meta">
+                  {t.region} · {days(t.days)} · desde {usd(t.priceFrom)}
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .more {
+    position: relative;
+    padding: clamp(90px, 10vw, 140px) 0;
+  }
+  .sec {
+    margin-bottom: 34px;
+  }
+  .sec .mono {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--muted);
+  }
+  h2 {
+    font-size: clamp(46px, 5.4vw, 84px);
+  }
+  .cards {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .xp {
+    display: block;
+    height: 100%;
+    padding: 16px 16px 22px;
+    background: var(--bg);
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  .xp:hover {
+    background: var(--card);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: var(--muted);
+  }
+  .img {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+  .img :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85);
+    transition:
+      transform 1s var(--ease),
+      filter 0.5s;
+  }
+  .xp:hover .img :global(img) {
+    transform: scale(1.05);
+    filter: none;
+  }
+  h3 {
+    margin: 16px 0 8px;
+    font-family: var(--f-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .meta {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (min-width: 760px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

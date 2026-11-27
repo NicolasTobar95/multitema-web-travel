@@ -1,0 +1,42 @@
+---
+/**
+ * "/" redirige al último tema visto (localStorage) o al tema por defecto.
+ * Sin JS, el <noscript> hace la redirección con meta refresh.
+ */
+import { DEFAULT_THEME, THEME_IDS, THEME_STORAGE_KEY, THEMES } from '@/lib/themes';
+
+const config = JSON.stringify({ key: THEME_STORAGE_KEY, ids: THEME_IDS, fallback: DEFAULT_THEME });
+---
+
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cordada — Trekking guiado en la Patagonia</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(`/${DEFAULT_THEME}`, Astro.site)} />
+    <script is:inline define:vars={{ config }}>
+      (() => {
+        const { key, ids, fallback } = JSON.parse(config);
+        let theme = fallback;
+        try {
+          const saved = localStorage.getItem(key);
+          if (saved && ids.includes(saved)) theme = saved;
+        } catch {}
+        location.replace('/' + theme + location.hash);
+      })();
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0; url=/${DEFAULT_THEME}`} /></noscript>
+    <style>
+      body { font: 16px/1.6 system-ui, sans-serif; display: grid; place-items: center; min-height: 100svh; margin: 0; background: #eceFea; color: #0f1a20; }
+      a { color: #2056b8; }
+    </style>
+  </head>
+  <body>
+    <p>
+      Abriendo Cordada… Elige un tema:
+      {THEME_IDS.map((id, i) => (<>{i > 0 && ' · '}<a href={`/${id}`}>{THEMES[id].label}</a></>))}
+    </p>
+  </body>
+</html>

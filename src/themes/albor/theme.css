@@ -1,0 +1,110 @@
+/* Albor — piezas de estilo que comparten sus secciones. */
+[data-theme='albor'] {
+  --soft-hover: #e4e0fa;
+
+  .mono {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .disp {
+    font-family: var(--f-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 22px;
+    border-radius: 14px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    transition:
+      transform 0.25s var(--ease),
+      box-shadow 0.25s;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px -12px var(--accent);
+  }
+  .btn.dark {
+    background: var(--ink);
+  }
+  .btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  /* Botón con flecha en un cuadro lima */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 6px 0 18px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  .cta > span {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--accent-2);
+    color: var(--ink);
+    transition: transform 0.4s var(--ease);
+  }
+  .cta svg {
+    width: 16px;
+    height: 16px;
+  }
+  .cta:hover {
+    background: var(--accent);
+  }
+  .cta:hover > span {
+    transform: rotate(45deg);
+  }
+  a {
+    color: inherit;
+  }
+  section[id] {
+    scroll-margin-top: 90px;
+  }
+}
+
+/* Aparición al hacer scroll: solo si hay JS (sin JS el contenido se ve igual) */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-theme='albor'] .rv {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.9s var(--ease),
+      transform 0.9s var(--ease);
+  }
+  [data-theme='albor'] .rv.in {
+    opacity: 1;
+    transform: none;
+  }
+  [data-theme='albor'] .d1 {
+    transition-delay: 0.08s;
+  }
+  [data-theme='albor'] .d2 {
+    transition-delay: 0.16s;
+  }
+  [data-theme='albor'] .d3 {
+    transition-delay: 0.24s;
+  }
+}

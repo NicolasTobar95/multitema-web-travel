@@ -1,0 +1,10 @@
+[
+  { "id": "torres-del-paine", "name": "Parque Nacional Torres del Paine" },
+  { "id": "cerro-castillo", "name": "Reserva Nacional Cerro Castillo" },
+  { "id": "pumalin", "name": "Parque Nacional Pumalín" },
+  { "id": "exploradores", "name": "Glaciar Exploradores" },
+  { "id": "queulat", "name": "Parque Nacional Queulat" },
+  { "id": "san-rafael", "name": "Laguna San Rafael" },
+  { "id": "patagonia", "name": "Parque Patagonia" },
+  { "id": "puyuhuapi", "name": "Fiordo de Puyuhuapi" }
+]

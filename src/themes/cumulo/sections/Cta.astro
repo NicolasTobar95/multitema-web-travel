@@ -1,0 +1,110 @@
+---
+/** Llamado final "Elige tu aventura" con la panorámica del valle. */
+import { Picture } from 'astro:assets';
+import cta from '@/assets/img/cumulo/cta.jpg';
+
+interface Props {
+  /** "18 nov 2026" */
+  next: string;
+}
+const { next } = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="wrap">
+    <div class="grid rv">
+      <div>
+        <span class="mono">04 — Próxima salida: {next}</span>
+        <h2 class="big" id="cta-title">Elige tu <span class="grad">aventura</span></h2>
+      </div>
+      <div class="r">
+        <a class="btn inv" href="#destinos">
+          Ver salidas
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+        <a class="btn ghost" href="#contacto">Hablar con un guía</a>
+      </div>
+    </div>
+    <figure class="img-bw rv">
+      <Picture
+        src={cta}
+        alt="Río trenzado que cruza un valle patagónico bajo la luna, con cumbres nevadas en el horizonte"
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        widths={[800, 1300, 2000]}
+        sizes="(min-width: 1384px) 1320px, 100vw"
+        loading="lazy"
+        quality={66}
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(70px, 9vw, 120px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .cta::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 30%;
+    width: 70vw;
+    height: 50vw;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(159 216 255 / 0.14), transparent);
+    transform: translateX(-50%);
+  }
+  .grid {
+    display: grid;
+    gap: 30px;
+    align-items: end;
+  }
+  .mono {
+    color: var(--gold);
+  }
+  h2 {
+    margin: 10px 0 0;
+    font-size: clamp(56px, 9vw, 150px);
+  }
+  .r {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .img-bw {
+    margin-top: 40px;
+    aspect-ratio: 21 / 7;
+    border: 1px solid var(--gline);
+    border-radius: 28px;
+  }
+  .img-bw :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  /* El brillo del horizonte se lleva hacia el dorado (sin naranja) */
+  .cta .img-bw:hover :global(img) {
+    filter: hue-rotate(10deg) saturate(0.85);
+  }
+  @media (hover: none) {
+    .cta .img-bw:global(.in) :global(img) {
+      filter: hue-rotate(10deg) saturate(0.85);
+    }
+  }
+  @media (min-width: 1000px) {
+    .grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  @media (max-width: 699px) {
+    .img-bw {
+      aspect-ratio: 2 / 1;
+      border-radius: 20px;
+    }
+  }
+</style>

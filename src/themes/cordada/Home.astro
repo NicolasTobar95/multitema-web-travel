@@ -1,0 +1,42 @@
+---
+/** Cordada (cartográfico): réplica de mockups-finales/1-cordada.html. */
+import { getTrips } from '@/lib/content';
+import RouteHud from './components/RouteHud.astro';
+import { coord, ROUTES } from './data';
+import Layout from './Layout.astro';
+import CircuitW from './sections/CircuitW.astro';
+import Escapes from './sections/Escapes.astro';
+import Header from './sections/Header.astro';
+import Hero from './sections/Hero.astro';
+import Prologue from './sections/Prologue.astro';
+import Routes from './sections/Routes.astro';
+import Travesia from './sections/Travesia.astro';
+
+const all = await getTrips();
+const trips = new Map(all.map((t) => [t.id, t.data]));
+const get = (id: string) => {
+  const t = trips.get(id);
+  if (!t) throw new Error(`Falta el viaje "${id}" en trips.json`);
+  return t;
+};
+const paine = get('paine');
+const routeTrips = ROUTES.map((r) => get(r.id));
+const heroCoord = coord(paine.coords!);
+---
+
+<Layout>
+  <Header coord={heroCoord} />
+  <RouteHud coords={routeTrips.map((t) => t.coords!)} />
+  <main id="contenido" tabindex="-1">
+    <Hero routes={ROUTES.length} priceFrom={Math.min(...routeTrips.map((t) => t.priceFrom))} coord={heroCoord} />
+    <Prologue />
+    <Routes trips={trips} />
+    <Travesia trips={trips} travesia={get('travesia')} />
+    <CircuitW trip={paine} />
+    <Escapes trips={trips} />
+  </main>
+</Layout>
+
+<script>
+  import './cordada.client';
+</script>

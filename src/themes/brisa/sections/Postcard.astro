@@ -1,0 +1,210 @@
+---
+/** "Saludos desde el sendero": testimonio en una postal, con estampilla y matasellos. */
+import { getImage, Image, Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import matasellos from '@/assets/img/brisa/matasellos.png';
+import papel from '@/assets/img/brisa/papel-postal.png';
+import postalW from '@/assets/img/brisa/postal-w.jpg';
+import sello from '@/assets/img/brisa/sello.png';
+
+interface Props {
+  main: CollectionEntry<'testimonials'>;
+  more: CollectionEntry<'testimonials'>[];
+}
+const { main, more } = Astro.props;
+const back = await getImage({ src: papel, width: 900, format: 'webp', quality: 70 });
+const stars = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n);
+---
+
+<section class="voices" aria-labelledby="voices-title">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="mono">Viajeros</span>
+      <h2 class="disp" id="voices-title">Saludos desde <span>el sendero</span></h2>
+    </div>
+    <article class="postal rv">
+      <div class="img">
+        <Picture
+          src={postalW}
+          alt="Postal antigua de las Torres del Paine sobre el lago Pehoé, en tonos teal y mostaza"
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          widths={[480, 800]}
+          sizes="(min-width: 900px) 500px, 100vw"
+          loading="lazy"
+        />
+        <span class="greet" aria-hidden="true">Saludos<br />desde el W</span>
+      </div>
+      <div class="txt" style={`--paper-img:url(${back.src})`}>
+        <Image class="stamp" src={sello} alt="" width={180} format="webp" loading="lazy" />
+        <Image class="cancel" src={matasellos} alt="" width={200} format="webp" loading="lazy" />
+        <blockquote>“{main.data.quote}”</blockquote>
+        <div class="who">
+          <span class="av" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.8"></circle><path d="M4.5 20c1.2-3.8 4.2-5.8 7.5-5.8s6.3 2 7.5 5.8"></path></svg>
+          </span>
+          <span><b>{main.data.name}</b><small>{main.data.trip} · {main.data.city}</small></span>
+        </div>
+        <p class="lines">
+          <span aria-label={`${main.data.rating} de 5 estrellas`} role="img">{stars(main.data.rating)}</span> · Testimonio de ejemplo para el sitio demo
+        </p>
+      </div>
+    </article>
+    <div class="quotes">
+      {
+        more.map((q, i) => (
+          <figure class:list={['q', 'rv', i > 0 && 'd1']}>
+            <span class="av" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20c1.2-3.8 4.2-5.8 7.5-5.8s6.3 2 7.5 5.8" /></svg>
+            </span>
+            <div>
+              <blockquote>“{q.data.quote}”</blockquote>
+              <p class="by">{q.data.name} · {q.data.trip} · {q.data.city} (ejemplo)</p>
+            </div>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .voices {
+    padding: clamp(80px, 10vw, 130px) 0;
+  }
+  .postal {
+    display: grid;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    transform: rotate(-1deg);
+  }
+  .img {
+    position: relative;
+    min-height: 340px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .img :global(picture),
+  .img :global(img) {
+    position: absolute;
+    inset: 14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    object-fit: cover;
+  }
+  .greet {
+    position: absolute;
+    left: 28px;
+    bottom: 26px;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 54px;
+    line-height: 0.85;
+    color: var(--cream);
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 var(--forest);
+  }
+  .txt {
+    position: relative;
+    padding: 34px 30px;
+    /* Solo la mitad izquierda del reverso: así su línea divisoria no cruza el texto */
+    background: var(--paper-img) left center / auto 100% no-repeat, var(--paper);
+  }
+  .txt :global(.stamp) {
+    position: absolute;
+    right: 24px;
+    top: 20px;
+    width: 92px;
+    height: auto;
+    transform: rotate(4deg);
+  }
+  .txt :global(.cancel) {
+    position: absolute;
+    right: 70px;
+    top: 34px;
+    width: 120px;
+    height: auto;
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  blockquote {
+    max-width: 30ch;
+    margin: 128px 0 22px;
+    font-style: italic;
+    font-size: clamp(19px, 1.7vw, 23px);
+    line-height: 1.5;
+  }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14.5px;
+  }
+  .who small {
+    display: block;
+    color: var(--muted);
+  }
+  .av {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--sky);
+    color: var(--forest);
+    border: 2px solid var(--ink);
+  }
+  .av svg {
+    width: 24px;
+    height: 24px;
+  }
+  .lines {
+    margin: 22px 0 0;
+    padding-top: 12px;
+    border-top: 1.5px solid var(--line);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .quotes {
+    display: grid;
+    gap: 18px;
+    margin-top: 40px;
+  }
+  .q {
+    display: flex;
+    gap: 14px;
+    margin: 0;
+    padding: 20px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .q blockquote {
+    max-width: none;
+    margin: 0;
+    font-size: 17px;
+  }
+  .q .by {
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  @media (min-width: 900px) {
+    .postal {
+      grid-template-columns: 1fr 1fr;
+    }
+    .img {
+      border-bottom: 0;
+      border-right: 2px dashed var(--ink);
+    }
+    .quotes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

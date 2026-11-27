@@ -1,0 +1,118 @@
+---
+/**
+ * Layout de Cúmulo: fondo nocturno fijo (estrellas, dos brillos difusos y las
+ * 12 columnas de la grilla). Las estrellas se calculan en el build con una
+ * semilla fija: 3 capas de box-shadow que titilan desfasadas, sin JS.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import './tokens.css';
+import './theme.css';
+
+type Props = { title?: string; description?: string };
+
+// Generador con semilla: las mismas estrellas en cada build
+let seed = 26;
+const rand = () => {
+  seed = (seed * 16807) % 2147483647;
+  return (seed - 1) / 2147483646;
+};
+const layer = (n: number) =>
+  Array.from({ length: n }, () => {
+    const a = (0.25 + rand() * 0.7).toFixed(2);
+    return `${(rand() * 100).toFixed(1)}vw ${(rand() * 100).toFixed(1)}vh 0 ${rand() < 0.2 ? '0.5px' : '0'} rgb(255 255 255 / ${a})`;
+  }).join(',');
+const STARS = [layer(40), layer(40), layer(30)];
+---
+
+<BaseLayout theme="cumulo" {...Astro.props}>
+  <div class="sky" aria-hidden="true">
+    {STARS.map((s) => <i style={`box-shadow:${s}`} />)}
+    <b class="glow a"></b>
+    <b class="glow b"></b>
+    <div class="cols">{Array.from({ length: 12 }, () => <span />)}</div>
+  </div>
+  <slot />
+</BaseLayout>
+
+<style>
+  .sky {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .sky i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.5px;
+    height: 1.5px;
+    border-radius: 50%;
+    animation: tw 4s ease-in-out infinite;
+  }
+  .sky i:nth-child(2) {
+    animation-delay: -1.4s;
+    animation-duration: 5s;
+  }
+  .sky i:nth-child(3) {
+    width: 2px;
+    height: 2px;
+    animation-delay: -2.8s;
+    animation-duration: 6s;
+  }
+  @keyframes tw {
+    50% {
+      opacity: 0.2;
+    }
+  }
+  .glow {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.16;
+  }
+  .glow.a {
+    left: -22vw;
+    top: 10vh;
+    background: #3b6fd8;
+  }
+  /* Dorado suave (sin tirar a naranja) */
+  .glow.b {
+    right: -22vw;
+    top: 55vh;
+    background: #b89a52;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    width: min(1320px, 100% - 64px);
+    height: 100%;
+    margin-inline: auto;
+  }
+  .cols span {
+    border-left: 1px solid rgb(238 242 255 / 0.04);
+  }
+  .cols span:last-child {
+    border-right: 1px solid rgb(238 242 255 / 0.04);
+  }
+  @media (max-width: 699px) {
+    .cols {
+      width: calc(100% - 32px);
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .cols span:nth-child(n + 5) {
+      display: none;
+    }
+    .cols span:nth-child(4) {
+      border-right: 1px solid rgb(238 242 255 / 0.04);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sky i {
+      animation: none;
+    }
+  }
+</style>

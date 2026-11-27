@@ -1,0 +1,188 @@
+---
+/**
+ * Tarjeta de Brisa para el carrusel compartido: mini afiche ilustrado; al pasar
+ * el cursor (o con foco) aparece la foto a todo color del viaje.
+ */
+import type { ImageMetadata } from 'astro';
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { days, shortDate, usd } from '@/lib/format';
+import { tripPhoto } from '@/lib/images';
+
+export interface Props {
+  trip: CollectionEntry<'trips'>;
+  index: number;
+}
+const { trip, index } = Astro.props;
+const d = trip.data;
+
+const posters = import.meta.glob<{ default: ImageMetadata }>('../../../assets/img/brisa/afiche-*.png', { eager: true });
+const poster = posters[`../../../assets/img/brisa/afiche-${trip.id}.png`]?.default;
+if (!poster) throw new Error(`Falta el afiche "${trip.id}" en src/assets/img/brisa`);
+const photo = tripPhoto(trip.id);
+const [price] = usd(d.priceFrom).split(' ').slice(1);
+const [line1, line2] = d.title.split(' · ');
+---
+
+<a class="mini" href="#contacto">
+  <div class="img">
+    <Picture
+      src={poster}
+      alt=""
+      formats={['avif', 'webp']}
+      fallbackFormat="webp"
+      widths={[320, 600]}
+      sizes="(min-width: 700px) 300px, 80vw"
+      loading={index < 4 ? 'eager' : 'lazy'}
+      pictureAttributes={{ class: 'poster' }}
+    />
+    <Picture src={photo.src} alt="" formats={['avif', 'webp']} fallbackFormat="webp" widths={[320, 600]} sizes="(min-width: 700px) 300px, 80vw" loading="lazy" pictureAttributes={{ class: 'photo' }} />
+    <span class="stamp" aria-hidden="true"><span><small>Desde</small>US$<br />{price}</span></span>
+    <div class="ttl">
+      <span class="sub">{d.region} · {days(d.days)}</span>
+      <b>{line1}{line2 && <><br />{line2}</>}</b>
+    </div>
+  </div>
+  <div class="row">
+    <span>{shortDate(d.nextDeparture)} · {d.seatsLeft} cupos</span>
+    <b>{d.difficulty}</b>
+  </div>
+  <span class="sr-only">. Desde {usd(d.priceFrom)}. Reservar.</span>
+</a>
+
+<style>
+  .mini {
+    display: block;
+    height: 100%;
+    padding: 12px;
+    background: var(--cream);
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 6px 6px 0 rgb(0 0 0 / 0.35);
+    transition: transform 0.4s var(--ease);
+  }
+  .mini:hover,
+  .mini:focus-visible {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+  .img {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .img :global(picture),
+  .img :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .img :global(.photo) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .img :global(.photo img) {
+    transform: scale(1.08);
+    transition: transform 1s var(--ease);
+  }
+  .mini:hover :global(.photo),
+  .mini:focus-visible :global(.photo) {
+    opacity: 1;
+  }
+  .mini:hover :global(.photo img),
+  .mini:focus-visible :global(.photo img) {
+    transform: none;
+  }
+  .stamp {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: var(--mustard);
+    text-align: center;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 19px;
+    line-height: 0.9;
+    transform: rotate(10deg);
+    box-shadow:
+      0 0 0 3px var(--cream),
+      0 0 0 5px var(--ink);
+  }
+  .stamp small {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  /* El título va en el tercio inferior del afiche, que viene libre (crema) */
+  .ttl {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 14px;
+    transition: color 0.4s;
+  }
+  .ttl b {
+    display: block;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 31px;
+    line-height: 0.92;
+    text-transform: uppercase;
+    color: var(--forest);
+  }
+  .sub {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  /* Sobre la foto, el título pasa a crema con una sombra de tinta */
+  .ttl::before {
+    content: '';
+    position: absolute;
+    inset: -30px 0 0;
+    z-index: -1;
+    background: linear-gradient(transparent, rgb(30 43 36 / 0.88));
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .mini:hover .ttl::before,
+  .mini:focus-visible .ttl::before {
+    opacity: 1;
+  }
+  .mini:hover .ttl b,
+  .mini:hover .sub,
+  .mini:focus-visible .ttl b,
+  .mini:focus-visible .sub {
+    color: var(--cream);
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 2px 2px;
+    font-size: 13.5px;
+  }
+  .row b {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,5 @@
+[
+  { "id": "recomendacion", "order": 1, "question": "¿Qué ruta me recomiendan?", "answer": "Si es tu primera vez, Bosques de Pumalín (exigencia baja). Si ya caminas seguido, Torres del Paine o Cerro Castillo." },
+  { "id": "incluye", "order": 2, "question": "¿Qué incluye el precio?", "answer": "Guía local, traslados, refugios o cabañas, todas las comidas, permisos y seguro de viaje." },
+  { "id": "reserva", "order": 3, "question": "¿Cómo reservo?", "answer": "Eliges la salida, abonas el 30 % y pagas el resto hasta 30 días antes. Te ayudamos por este chat o por correo." }
+]

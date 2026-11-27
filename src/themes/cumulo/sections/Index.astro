@@ -1,0 +1,334 @@
+---
+/**
+ * Índice de salidas: tabla suiza con filtros por paisaje. Cada fila es un
+ * botón que despliega la vista previa (3 miniaturas nocturnas, descripción y
+ * próxima salida). Con cursor, la fila también se abre al pasar por encima.
+ * Sin JS las vistas previas se ven abiertas y los filtros no aparecen.
+ */
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { LANDSCAPE_FILTERS } from '@/lib/catalog';
+import { days, shortDate, usd } from '@/lib/format';
+import { indexPhoto } from '../data';
+
+interface Props {
+  trips: CollectionEntry<'trips'>[];
+}
+const { trips } = Astro.props;
+
+const matches = (t: CollectionEntry<'trips'>, f: string) => f === 'todos' || t.data.landscape === f || t.data.landscape === 'todos';
+const filters = LANDSCAPE_FILTERS.map(([key, text]) => ({ key, text, count: trips.filter((t) => matches(t, key)).length }));
+// Las otras dos miniaturas de cada fila: los viajes siguientes en el índice
+const others = (i: number) => [trips[(i + 1) % trips.length]!, trips[(i + 2) % trips.length]!];
+const pic = { formats: ['avif', 'webp'] as Array<'avif' | 'webp'>, fallbackFormat: 'webp' as const, widths: [440, 880], sizes: '(min-width: 900px) 420px, 33vw', loading: 'lazy' as const, quality: 68 };
+---
+
+<section id="destinos" class="idx" aria-labelledby="idx-title">
+  <div class="wrap">
+    <div class="s-head rv">
+      <span class="mono">01 — Destinos</span>
+      <h2 class="big" id="idx-title">Índice de <span class="grad">salidas</span></h2>
+      <p>Siete viajes, de dos a quince días. Abre una fila para ver el paisaje.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filtrar por paisaje" data-chips>
+      {
+        filters.map((f) => (
+          <button type="button" data-filter={f.key} aria-pressed={f.key === 'todos' ? 'true' : 'false'}>
+            {f.text}
+            <span aria-label={`${f.count} viajes`}>{f.count}</span>
+          </button>
+        ))
+      }
+    </div>
+    <p class="sr-only" aria-live="polite" data-idx-status></p>
+    <ol class="list" data-list>
+      {
+        trips.map((t, i) => {
+          const own = indexPhoto(t.id);
+          return (
+            <li class="row" id={`fila-${t.id}`} data-landscape={t.data.landscape} style={`--vtn: r-${t.id}`}>
+              <button class="head" type="button" aria-expanded="false" aria-controls={`prev-${t.id}`}>
+                <span class="n mono" data-n>{String(i + 1).padStart(2, '0')}</span>
+                <span class="tt">
+                  <span class="t" transition:name={`trip-${t.id}`}>{t.data.title}</span>
+                  <span class="m">{t.data.region} · {days(t.data.days)} · {t.data.difficulty}</span>
+                </span>
+                <span class="c">{t.data.region}</span>
+                <span class="c">{days(t.data.days)}</span>
+                <span class="c">{t.data.difficulty}</span>
+                <span class="p">
+                  <span class="sr-only">Desde </span>
+                  {usd(t.data.priceFrom)}
+                </span>
+                <svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+              <div class="prev" id={`prev-${t.id}`}>
+                <div class="inner">
+                <div class="pics">
+                  <Picture src={own.src} alt={own.alt} {...pic} />
+                  {others(i).map((o) => (
+                    <Picture class="bw" src={indexPhoto(o.id).src} alt="" {...pic} />
+                  ))}
+                </div>
+                <div class="info">
+                  <p>
+                    {t.data.description} Próxima salida: {shortDate(t.data.nextDeparture)} · quedan {t.data.seatsLeft} cupos.
+                  </p>
+                  <a class="btn ghost" href="#contacto">
+                    Consultar esta salida
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                </div>
+                </div>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+    <p class="empty mono" data-empty hidden>No hay salidas con ese paisaje.</p>
+  </div>
+</section>
+
+<style>
+  .idx {
+    padding: clamp(80px, 10vw, 130px) 0;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .filters button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--gline);
+    border-radius: 99px;
+    background: var(--glass);
+    font-size: 14px;
+    color: var(--ink-2);
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .filters button:hover {
+    color: var(--ink);
+    border-color: rgb(159 216 255 / 0.4);
+  }
+  .filters button span {
+    margin-left: 6px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .filters button[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--on-accent);
+  }
+  .filters button[aria-pressed='true'] span {
+    color: #4a5470;
+  }
+  @media (scripting: none) {
+    .filters {
+      display: none;
+    }
+  }
+  .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .list:global(.vt) .row {
+    view-transition-name: var(--vtn);
+  }
+  .row {
+    border-bottom: 1px solid var(--line);
+    transition: background 0.4s;
+  }
+  /* Fila a la que lleva el buscador */
+  .row:global(.hit) {
+    box-shadow: inset 3px 0 0 var(--ice);
+  }
+  .row[hidden] {
+    display: none;
+  }
+  .head {
+    display: grid;
+    grid-template-columns: 26px 1fr auto 18px;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    padding: 20px 10px;
+    text-align: left;
+    transition: padding 0.5s var(--ease);
+  }
+  .head:focus-visible {
+    outline-offset: -2px;
+  }
+  .n {
+    color: var(--gold);
+  }
+  .t {
+    font-weight: 600;
+    font-size: clamp(22px, 2.6vw, 40px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .t {
+    display: block;
+  }
+  .m {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .c {
+    display: none;
+    font-size: 14.5px;
+    color: var(--ink-2);
+  }
+  .p {
+    font-weight: 600;
+    font-size: 17px;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--gold);
+    text-shadow: 0 0 24px rgb(242 200 121 / 0.35);
+  }
+  .ar {
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    transition: transform 0.4s var(--ease);
+  }
+  .prev {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.6s var(--ease);
+  }
+  .prev > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .pics {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .pics :global(picture),
+  .pics :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .pics :global(img) {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+  .pics :global(.bw) {
+    filter: grayscale(1) brightness(0.8);
+  }
+  .info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 0 10px;
+  }
+  .info p {
+    max-width: 70ch;
+    margin: 14px 0 0;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .info .btn {
+    margin: 14px 0 24px;
+    min-height: 42px;
+  }
+
+  /* Abierta: por botón (aria-expanded), con foco dentro o, con cursor, al pasar por encima */
+  .row:has(.head[aria-expanded='true']),
+  .row:focus-within {
+    background: linear-gradient(90deg, rgb(159 216 255 / 0.06), rgb(242 200 121 / 0.05));
+  }
+  .row:has(.head[aria-expanded='true']) .prev,
+  .row:focus-within .prev {
+    grid-template-rows: 1fr;
+  }
+  .row:has(.head[aria-expanded='true']) .ar {
+    transform: rotate(90deg);
+  }
+  @media (hover: hover) {
+    .row:hover {
+      background: linear-gradient(90deg, rgb(159 216 255 / 0.06), rgb(242 200 121 / 0.05));
+    }
+    .row:hover .prev {
+      grid-template-rows: 1fr;
+    }
+    .row:hover .head {
+      padding: 28px 10px 22px;
+    }
+    .row:hover .ar {
+      transform: rotate(-45deg);
+    }
+  }
+  /* Sin JS el botón no hace nada: todo queda abierto */
+  @media (scripting: none) {
+    .prev {
+      grid-template-rows: 1fr;
+    }
+  }
+  .empty {
+    padding: 30px 10px;
+    color: var(--muted);
+  }
+  .empty[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .head {
+      grid-template-columns: 60px 3fr 2fr 1fr 1fr 1fr 40px;
+    }
+    .c {
+      display: block;
+    }
+    .m {
+      display: none;
+    }
+    .ar {
+      width: 26px;
+      height: 26px;
+      color: inherit;
+    }
+    .p {
+      font-size: 18px;
+    }
+  }
+  @media (max-width: 520px) {
+    .pics {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pics :global(picture:first-child) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .prev,
+    .head,
+    .ar {
+      transition: none;
+    }
+  }
+</style>

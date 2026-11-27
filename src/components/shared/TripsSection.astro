@@ -1,0 +1,16 @@
+---
+/** Sección de viajes provisional, igual en todos los temas (cambia solo por tokens). En la fase 3 cada tema arma la suya. */
+import TripCarousel from './TripCarousel.astro';
+
+type Props = { eyebrow?: string; title?: string };
+const { eyebrow = 'Temporada octubre – abril', title = 'Salidas de la temporada' } = Astro.props;
+---
+
+<section id="destinos" aria-labelledby="destinos-title" class="py-20">
+  <div class="wrap">
+    <p class="font-mono text-xs tracking-widest text-muted uppercase">{eyebrow}</p>
+    <h2 id="destinos-title" class="mt-2 mb-10 font-display text-4xl leading-none font-bold sm:text-5xl">{title}</h2>
+    <TripCarousel />
+    <p class="mt-6 text-sm text-muted">Sitio demo: precios en USD, fechas y cupos son de ejemplo.</p>
+  </div>
+</section>

@@ -1,0 +1,90 @@
+---
+/** HUD de ruta (escritorio ancho): aparece abajo a la izquierda mientras se recorren las hojas de ruta. */
+import { coord, ROUTES } from '../data';
+
+interface Props {
+  coords: { lat: number; lon: number }[];
+}
+const { coords } = Astro.props;
+const stops = ROUTES.map((r, i) => ({ name: r.name, coord: coord(coords[i]!) }));
+---
+
+<aside class="rhud" aria-hidden="true" data-rhud data-stops={JSON.stringify(stops)}>
+  <div class="track">
+    <div class="fill" data-rhud-fill></div>
+    {stops.map((_, i) => <div class:list={['nd', { on: i === 0 }]} style={`left:${(i / (stops.length - 1)) * 100}%`} />)}
+  </div>
+  <div class="now" data-rhud-now><b>01 · {stops[0]!.name}</b>{stops[0]!.coord}</div>
+</aside>
+
+<style>
+  .rhud {
+    position: fixed;
+    left: 22px;
+    bottom: 16px;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 12px 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card);
+    box-shadow: 0 10px 30px -14px rgb(0 0 0 / 0.35);
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.5s,
+      transform 0.5s var(--ease);
+    pointer-events: none;
+  }
+  .rhud:global(.show) {
+    opacity: 1;
+    transform: none;
+  }
+  @media (min-width: 1100px) {
+    .rhud {
+      display: flex;
+    }
+  }
+  .track {
+    position: relative;
+    width: 120px;
+    height: 2px;
+    background: var(--line);
+  }
+  .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .nd {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--bg);
+    transition: 0.3s;
+  }
+  .nd:global(.on) {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .now {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .now :global(b) {
+    display: block;
+    font-family: var(--f-display);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+</style>

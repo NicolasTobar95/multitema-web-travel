@@ -1,0 +1,155 @@
+---
+/**
+ * "A medida": serie de 3 afiches que rotan solos (se pausa con el botón, al
+ * pasar el cursor o con foco). Sin JS o con movimiento reducido no rota solo;
+ * sin JS se ven los tres uno debajo del otro.
+ */
+import { Picture } from 'astro:assets';
+import { TAILOR } from '../data';
+---
+
+<section class="tailor" id="a-medida" aria-labelledby="tailor-title" data-slider>
+  <h2 class="sr-only" id="tailor-title">Viajes a medida</h2>
+  <div class="wrap">
+    <div class="slides">
+      {
+        TAILOR.map((s, i) => (
+          <div class:list={['slide', { on: i === 0 }]} role="group" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${TAILOR.length}`} data-slide>
+            <div>
+              <span class="mono">Serie a medida · Nº {i + 1}</span>
+              <h3 class="disp">{s.title}</h3>
+              <p>{s.text}</p>
+              <a class="btn" href="#contacto">{s.cta}</a>
+            </div>
+            <div class="frame">
+              <Picture src={s.img} alt={s.alt} formats={['avif', 'webp']} fallbackFormat="webp" widths={[420, 640, 900]} sizes="(min-width: 960px) 540px, 100vw" loading="lazy" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="ctrl" data-ctrl hidden>
+      <button type="button" data-prev aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      </button>
+      <button type="button" data-next aria-label="Siguiente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+      </button>
+      <button type="button" class="play" aria-pressed="false" data-pause>
+        <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"></path></svg>
+        <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+        <span class="sr-only">Pausar la rotación</span>
+      </button>
+      <span aria-live="polite" data-count>1 / {TAILOR.length}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tailor {
+    padding: clamp(80px, 10vw, 130px) 0;
+    background: var(--teal);
+    color: var(--cream);
+    --focus: var(--mustard);
+  }
+  .slides {
+    display: grid;
+    gap: 90px;
+  }
+  .slide {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  /* Con JS: las diapositivas se apilan y solo se ve la activa */
+  @media (scripting: enabled) {
+    .slides {
+      gap: 0;
+    }
+    .slide {
+      grid-area: 1 / 1;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.7s,
+        visibility 0.7s;
+    }
+    .slide:global(.on) {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  .mono {
+    color: var(--mustard);
+  }
+  h3 {
+    margin: 12px 0 16px;
+    font-size: clamp(56px, 6.8vw, 104px);
+  }
+  .slide p {
+    max-width: 44ch;
+    margin: 0 0 26px;
+    color: rgb(242 232 208 / 0.88);
+  }
+  .frame {
+    padding: 12px;
+    background: var(--cream);
+    box-shadow: 8px 8px 0 var(--forest);
+    transform: rotate(1.5deg);
+  }
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    border: 2px solid var(--ink);
+  }
+  .ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  .ctrl[hidden] {
+    display: none;
+  }
+  .ctrl button {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid currentColor;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .ctrl button:hover {
+    background: var(--mustard);
+    border-color: var(--mustard);
+    color: var(--ink);
+  }
+  .ctrl svg {
+    width: 18px;
+    height: 18px;
+  }
+  .i-play,
+  .play[aria-pressed='true'] .i-pause {
+    display: none;
+  }
+  .play[aria-pressed='true'] .i-play {
+    display: block;
+  }
+  .ctrl span[data-count] {
+    margin-left: 6px;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: 0.08em;
+  }
+  @media (min-width: 960px) {
+    .slide {
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+    }
+  }
+</style>

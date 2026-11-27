@@ -1,0 +1,55 @@
+---
+/** "Regla de cordada": la idea de la marca, con la foto del prólogo de fondo. */
+import { Picture } from 'astro:assets';
+import prologo from '@/assets/img/cordada/prologo.jpg';
+import Topo from '../components/Topo.astro';
+---
+
+<section class="prologue">
+  <Picture src={prologo} alt="" formats={['avif', 'webp']} fallbackFormat="webp" width={1600} widths={[800, 1600]} sizes="100vw" loading="lazy" class="ghost" pictureAttributes={{ class: 'ghost', 'aria-hidden': 'true' }} />
+  <Topo peaks={[[1400, 200, 2], [100, 600, 5]]} rings={12} step={36} height={700} />
+  <div class="wrap grid rv">
+    <span class="mono">Cómo viajamos · Regla de cordada</span>
+    <p>
+      En la montaña, una cordada avanza al ritmo de quien va más lento. <em>Por eso nuestros grupos son chicos, nuestros guías son de la zona y nadie se queda atrás.</em> Así armamos cada una de nuestras rutas.
+    </p>
+  </div>
+</section>
+
+<style>
+  .prologue {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(100px, 13vw, 170px) 0;
+    overflow: hidden;
+  }
+  .prologue :global(picture.ghost img) {
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    filter: grayscale(1);
+  }
+  .grid {
+    position: relative;
+    display: grid;
+    gap: 24px;
+  }
+  .mono {
+    color: var(--muted);
+    padding-top: 12px;
+  }
+  p {
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: 220px 1fr;
+      gap: 60px;
+    }
+  }
+</style>

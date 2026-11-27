@@ -1,0 +1,205 @@
+---
+/**
+ * Chat flotante con respuestas rápidas (shared/data.js → setupChat).
+ * Las preguntas vienen de src/content/faq.json. Es una demo: no envía nada.
+ * El aspecto sale de los tokens del tema; cada tema puede afinarlo en la fase 3.
+ */
+import { getCollection } from 'astro:content';
+import { AGENCY } from '@/lib/catalog';
+
+const faq = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<div class="chat" data-chat>
+  <div class="chat-panel" id="chat-panel" role="dialog" aria-labelledby="chat-title" hidden>
+    <div class="chat-head">
+      <p id="chat-title">{AGENCY.name}</p>
+      <small>Respondemos en minutos (demo)</small>
+    </div>
+    <div class="chat-log" aria-live="polite" data-log>
+      <p class="bot">¡Hola! ¿En qué te ayudamos?</p>
+    </div>
+    <div class="chat-qs" role="group" aria-label="Preguntas frecuentes">
+      {
+        faq.map((f) => (
+          <button type="button" data-q={f.id}>
+            {f.data.question}
+          </button>
+        ))
+      }
+    </div>
+    <template data-answers>
+      {faq.map((f) => <p data-a={f.id}>{f.data.answer}</p>)}
+    </template>
+  </div>
+  <button class="chat-btn" type="button" aria-expanded="false" aria-controls="chat-panel" aria-label="Abrir chat" data-toggle>
+    <svg class="i-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg>
+    <svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+  </button>
+</div>
+
+<script>
+  function setup(root: HTMLElement) {
+    if (root.dataset['ready']) return;
+    root.dataset['ready'] = '1';
+
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]');
+    const panel = root.querySelector<HTMLElement>('.chat-panel');
+    const log = root.querySelector<HTMLElement>('[data-log]');
+    const answers = root.querySelector<HTMLTemplateElement>('[data-answers]');
+    if (!toggle || !panel || !log || !answers) return;
+
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      root.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Cerrar chat' : 'Abrir chat');
+      if (open) panel.querySelector<HTMLButtonElement>('.chat-qs button')?.focus();
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    const say = (who: 'me' | 'bot', text: string) => {
+      const p = document.createElement('p');
+      p.className = who;
+      p.textContent = text;
+      log.append(p);
+      log.scrollTop = log.scrollHeight;
+    };
+    root.querySelector('.chat-qs')?.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element ? e.target.closest<HTMLButtonElement>('[data-q]') : null;
+      if (!btn) return;
+      const answer = answers.content.querySelector(`[data-a="${btn.dataset['q']}"]`)?.textContent ?? '';
+      say('me', btn.textContent?.trim() ?? '');
+      setTimeout(() => say('bot', answer), 450);
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-chat]').forEach(setup);
+  });
+</script>
+
+<style>
+  .chat {
+    position: fixed;
+    right: 16px;
+    /* En móvil queda sobre el selector de tema, que va centrado abajo */
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 64px);
+    z-index: 61;
+  }
+  @media (min-width: 760px) {
+    .chat {
+      right: 20px;
+      bottom: max(20px, env(safe-area-inset-bottom));
+    }
+  }
+  .chat-btn {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.5);
+    transition: transform 0.2s;
+  }
+  .chat-btn:hover {
+    transform: translateY(-2px);
+  }
+  .chat-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+  .i-close,
+  .open .i-open {
+    display: none;
+  }
+  .open .i-close {
+    display: block;
+  }
+  .chat-panel {
+    position: absolute;
+    right: 0;
+    bottom: 70px;
+    width: min(340px, calc(100vw - 32px));
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.45);
+    animation: chat-in 0.3s var(--ease);
+  }
+  @keyframes chat-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  .chat-head {
+    padding: 14px 18px;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .chat-head p {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.1;
+  }
+  .chat-head small {
+    display: block;
+    font-size: 12.5px;
+    opacity: 0.8;
+  }
+  .chat-log {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 240px;
+    overflow: auto;
+    padding: 14px;
+  }
+  .chat-log :global(p) {
+    max-width: 85%;
+    padding: 9px 13px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .chat-log :global(.bot) {
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .chat-log :global(.me) {
+    align-self: flex-end;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .chat-qs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 14px;
+  }
+  .chat-qs button {
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 13px;
+    text-align: left;
+  }
+  .chat-qs button:hover {
+    border-color: var(--accent);
+  }
+</style>

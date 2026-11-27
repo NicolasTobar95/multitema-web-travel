@@ -1,40 +1,13 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+dist/
+.astro/
+node_modules/
+.env
+.env.*
+!.env.example
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+npm-debug.log*
 
-# Internal tooling (not for public repo)
-.atl/
-
-# Internal working docs (not for public repo)
-ANALYSIS.md
-Proyecto.md
-UPGRADE_GUIDE.md
-temas-plan/
-CLEANUP_TODO.md
-
-# Internal design sources (Astro snippets / raw SVG, referenced in comments only)
-src/docs/
-
-# Migration artifacts (obsolete)
-src/assets/images/
+# Material de diseño que no se publica (el repo es público):
+# referencias/ trae la plantilla original y mockups-descartados/ direcciones no elegidas
+referencias/
+mockups-descartados/

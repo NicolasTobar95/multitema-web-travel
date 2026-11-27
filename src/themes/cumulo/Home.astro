@@ -1,0 +1,42 @@
+---
+/** Cúmulo (suizo nocturno): réplica de mockups-finales/4-cumulo.html. */
+import { getCollection } from 'astro:content';
+import parksJson from '@/content/parks.json';
+import searchJson from '@/content/search.json';
+import testimonialsJson from '@/content/testimonials.json';
+import { getTrips } from '@/lib/content';
+import { shortDate } from '@/lib/format';
+import { SEARCH_TARGET } from './data';
+import Layout from './Layout.astro';
+import Cta from './sections/Cta.astro';
+import Header from './sections/Header.astro';
+import Hero from './sections/Hero.astro';
+import Index from './sections/Index.astro';
+import Voices from './sections/Voices.astro';
+import Why from './sections/Why.astro';
+
+const trips = await getTrips();
+// getCollection no garantiza el orden: se respeta el del JSON
+const inOrder = <T extends { id: string }>(items: T[], src: { id: string }[]) =>
+  [...items].sort((a, b) => src.findIndex((x) => x.id === a.id) - src.findIndex((x) => x.id === b.id));
+const search = inOrder(await getCollection('search'), searchJson);
+const parks = inOrder(await getCollection('parks'), parksJson);
+const testimonials = inOrder(await getCollection('testimonials'), testimonialsJson);
+
+const soonest = [...trips].sort((a, b) => a.data.nextDeparture.localeCompare(b.data.nextDeparture))[0]!;
+---
+
+<Layout>
+  <Header />
+  <main id="contenido" tabindex="-1">
+    <Hero search={search} parks={parks} trips={trips} targets={SEARCH_TARGET} />
+    <Index trips={trips} />
+    <Why />
+    <Voices items={testimonials} />
+    <Cta next={shortDate(soonest.data.nextDeparture)} />
+  </main>
+</Layout>
+
+<script>
+  import './cumulo.client';
+</script>

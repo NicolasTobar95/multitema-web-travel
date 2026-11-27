@@ -1,0 +1,185 @@
+---
+/** Header de Cúmulo: barra de vidrio fija arriba, menú numerado y temporada. */
+import LikeButton from '@/components/shared/LikeButton.astro';
+import { AGENCY } from '@/lib/catalog';
+import { NAV } from '../data';
+---
+
+<header class="hdr">
+  <div class="wrap">
+    <a href="#inicio" class="logo" aria-label={`${AGENCY.name}, inicio`} transition:name="brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="cu-lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#9FD8FF"></stop>
+            <stop offset="1" stop-color="#F2C879"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M2 27L11 10l5 8 4-6 10 15z" fill="url(#cu-lg)"></path>
+      </svg>
+      {AGENCY.name}
+    </a>
+    <nav class="nav" id="cu-nav" aria-label="Principal">
+      {
+        NAV.map(([href, label], i) => (
+          <a href={href}>
+            <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+    <span class="meta mono">Temporada 2026–27</span>
+    <div class="tools">
+      <LikeButton class="pill" />
+      <a class="btn" href="#destinos">Reservar</a>
+      <button class="menu" type="button" aria-expanded="false" aria-controls="cu-nav" data-menu>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8h16M4 16h16"></path></svg>
+        <span class="sr-only">Menú</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(8 11 20 / 0.72);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    backdrop-filter: blur(16px) saturate(1.3);
+    border-bottom: 1px solid var(--line);
+  }
+  .wrap {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    height: 62px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .logo svg {
+    width: 26px;
+    height: 26px;
+  }
+  .nav {
+    display: none;
+    gap: 22px;
+    font-size: 14.5px;
+  }
+  .nav a {
+    color: var(--ink-2);
+    transition: color 0.3s;
+  }
+  .nav a:hover {
+    color: var(--ink);
+  }
+  .n {
+    margin-right: 6px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    color: var(--gold);
+  }
+  .meta {
+    display: none;
+    color: var(--muted);
+  }
+  .tools {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+  }
+  .hdr :global(.pill) {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--gline);
+    border-radius: 99px;
+    background: var(--glass);
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .hdr :global(.pill svg) {
+    width: 14px;
+    height: 14px;
+    color: var(--gold);
+  }
+  .tools .btn {
+    min-height: 40px;
+  }
+  .menu {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--gline);
+    border-radius: 50%;
+    background: var(--glass);
+    color: var(--ink);
+  }
+  .menu svg {
+    width: 20px;
+    height: 20px;
+  }
+  @media (min-width: 600px) {
+    .hdr :global(.pill) {
+      display: inline-flex;
+    }
+  }
+  @media (max-width: 400px) {
+    .tools .btn {
+      display: none;
+    }
+  }
+  @media (min-width: 960px) {
+    .wrap {
+      grid-template-columns: 2fr 5fr 3fr 2fr;
+    }
+    .nav {
+      display: flex;
+    }
+    .meta {
+      display: block;
+    }
+    .menu {
+      display: none;
+    }
+  }
+  @media (max-width: 959px) {
+    .nav:global(.open) {
+      position: absolute;
+      top: 62px;
+      left: 0;
+      right: 0;
+      display: grid;
+      gap: 0;
+      padding: 6px 0 10px;
+      background: var(--panel);
+      border: 1px solid var(--gline);
+      border-top: 0;
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+    }
+    .nav:global(.open) a {
+      padding: 14px 18px;
+      font-size: 17px;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav:global(.open) a:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>

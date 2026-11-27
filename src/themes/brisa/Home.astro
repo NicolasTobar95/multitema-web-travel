@@ -1,0 +1,46 @@
+---
+/** Brisa (afiche de parque nacional): réplica de mockups-finales/3-brisa.html. */
+import { getCollection } from 'astro:content';
+import { getTrips } from '@/lib/content';
+import { GALLERY, POSTAL, QUOTES } from './data';
+import Layout from './Layout.astro';
+import Destinations from './sections/Destinations.astro';
+import Gallery from './sections/Gallery.astro';
+import Header from './sections/Header.astro';
+import Hero from './sections/Hero.astro';
+import Pass from './sections/Pass.astro';
+import Postcard from './sections/Postcard.astro';
+import Services from './sections/Services.astro';
+import Tailor from './sections/Tailor.astro';
+
+const trips = await getTrips();
+const gallery = GALLERY.map((id) => {
+  const t = trips.find((x) => x.id === id);
+  if (!t) throw new Error(`Falta el viaje "${id}" en trips.json`);
+  return t;
+});
+
+const testimonials = await getCollection('testimonials');
+const byId = (id: string) => {
+  const t = testimonials.find((x) => x.id === id);
+  if (!t) throw new Error(`Falta el testimonio "${id}"`);
+  return t;
+};
+---
+
+<Layout>
+  <Header />
+  <main id="contenido" tabindex="-1">
+    <Hero />
+    <Services />
+    <Destinations />
+    <Postcard main={byId(POSTAL)} more={QUOTES.map(byId)} />
+    <Tailor />
+    <Gallery trips={gallery} />
+    <Pass />
+  </main>
+</Layout>
+
+<script>
+  import './brisa.client';
+</script>

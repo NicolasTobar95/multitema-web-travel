@@ -1,0 +1,226 @@
+---
+/**
+ * Carrusel de viajes con filtros por paisaje (shared/data.js → setupCarousel).
+ *
+ * - Todas las tarjetas se renderizan en el build: sin JS se ve el carrusel
+ *   completo y se puede desplazar; los filtros aparecen solo con JS.
+ * - Filtrar oculta tarjetas con [hidden] dentro de una View Transition, y cada
+ *   tarjeta conserva transition:name="trip-<id>" para el morphing entre temas.
+ * - card: componente de tarjeta del tema (por defecto, TripCard).
+ */
+import type { CollectionEntry } from 'astro:content';
+import { LANDSCAPE_FILTERS, type Landscape } from '@/lib/catalog';
+import { getTrips } from '@/lib/content';
+import TripCard from './TripCard.astro';
+
+type Trip = CollectionEntry<'trips'>;
+
+interface Props {
+  /** Nombre accesible del carrusel */
+  label?: string;
+  card?: (props: { trip: Trip; index: number }) => unknown;
+  class?: string;
+}
+const { label = 'Viajes de la temporada', card: Card = TripCard, class: className } = Astro.props;
+
+const trips = await getTrips();
+const matches = (t: Trip, f: Landscape) => f === 'todos' || t.data.landscape === f || t.data.landscape === 'todos';
+const filters = LANDSCAPE_FILTERS.map(([key, text]) => ({ key, text, count: trips.filter((t) => matches(t, key)).length }));
+---
+
+<div class:list={['tc', className]} data-carousel>
+  <div class="tc-bar">
+    <div class="tc-chips" role="group" aria-label="Filtrar por paisaje" data-chips hidden>
+      {
+        filters.map((f) => (
+          <button type="button" data-filter={f.key} aria-pressed={f.key === 'todos' ? 'true' : 'false'}>
+            {f.text}
+            <span class="tc-n" aria-label={`${f.count} viajes`}>{f.count}</span>
+          </button>
+        ))
+      }
+    </div>
+    <div class="tc-nav">
+      <button type="button" data-prev aria-label="Viajes anteriores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+      </button>
+      <button type="button" data-next aria-label="Viajes siguientes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <ul class="tc-track" role="list" aria-label={label} tabindex="0" data-track>
+    {
+      trips.map((trip, index) => (
+        <li class="tc-item" data-landscape={trip.data.landscape} transition:name={`trip-${trip.id}`}>
+          <Card trip={trip} index={index} />
+        </li>
+      ))
+    }
+  </ul>
+  <p class="sr-only" aria-live="polite" data-status></p>
+</div>
+
+<script>
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setup(root: HTMLElement) {
+    if (root.dataset['ready']) return;
+    root.dataset['ready'] = '1';
+
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    const chips = root.querySelector<HTMLElement>('[data-chips]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-next]');
+    const status = root.querySelector<HTMLElement>('[data-status]');
+    if (!track || !chips || !prev || !next) return;
+    const items = [...track.querySelectorAll<HTMLElement>('.tc-item')];
+
+    const updateNav = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max;
+    };
+
+    const apply = (filter: string) => {
+      let shown = 0;
+      for (const li of items) {
+        const land = li.dataset['landscape'];
+        const show = filter === 'todos' || land === filter || land === 'todos';
+        li.hidden = !show;
+        if (show) shown++;
+      }
+      track.scrollTo({ left: 0 });
+      updateNav();
+      if (status) status.textContent = `${shown} ${shown === 1 ? 'viaje' : 'viajes'}`;
+    };
+
+    chips.hidden = false;
+    chips.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element ? e.target.closest<HTMLButtonElement>('[data-filter]') : null;
+      if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
+      chips.querySelectorAll('[data-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      const run = () => apply(btn.dataset['filter'] ?? 'todos');
+      if (document.startViewTransition && !reduce()) document.startViewTransition(run);
+      else run();
+    });
+
+    const step = () => {
+      const first = items.find((li) => !li.hidden);
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return first ? first.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
+    };
+    const behavior = (): ScrollBehavior => (reduce() ? 'auto' : 'smooth');
+    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: behavior() }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: behavior() }));
+    track.addEventListener('scroll', updateNav, { passive: true });
+    // El listener de window vive más que la página: se suelta al navegar.
+    const ac = new AbortController();
+    addEventListener('resize', updateNav, { passive: true, signal: ac.signal });
+    document.addEventListener('astro:before-swap', () => ac.abort(), { once: true });
+    updateNav();
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach(setup);
+  });
+</script>
+
+<style>
+  .tc-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .tc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tc-chips[hidden] {
+    display: none;
+  }
+  .tc-chips button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .tc-chips button:hover {
+    border-color: var(--accent);
+  }
+  .tc-chips button[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+  }
+  .tc-n {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    opacity: 0.75;
+  }
+  .tc-nav {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .tc-nav button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    transition:
+      background-color 0.2s,
+      opacity 0.2s;
+  }
+  .tc-nav button:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+  }
+  .tc-nav button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .tc-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+  .tc-track {
+    display: flex;
+    gap: 18px;
+    margin: 0;
+    padding: 4px 4px 20px;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+  .tc-item {
+    /* Contiene a los hijos absolutos (p. ej. .sr-only): si no, escapan del recorte del carril y ensanchan la página */
+    position: relative;
+    flex: 0 0 min(340px, 82%);
+    scroll-snap-align: start;
+  }
+  .tc-item[hidden] {
+    display: none;
+  }
+</style>

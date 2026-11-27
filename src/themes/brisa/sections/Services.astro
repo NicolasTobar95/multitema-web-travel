@@ -1,0 +1,99 @@
+---
+/** "Caminar liviano": tres parches bordados con su leyenda en anillo (SVG). */
+import { Image } from 'astro:assets';
+import { BADGES } from '../data';
+---
+
+<section id="servicios" class="services" aria-labelledby="serv-title">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="mono">Qué incluye cada viaje</span>
+      <h2 class="disp" id="serv-title">Caminar <span>liviano</span></h2>
+      <p>En la montaña, una cordada avanza al ritmo de quien va más lento. Por eso cuidamos cada detalle antes del primer paso.</p>
+    </div>
+    <div class="badges">
+      {
+        BADGES.map((b, i) => (
+          <article class:list={['badge', 'rv', i > 0 && `d${i}`]}>
+            <div class="ring" aria-hidden="true">
+              <svg viewBox="0 0 190 190">
+                <defs>
+                  <path id={`br-r${i}`} d="M95 95m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0" />
+                </defs>
+                <circle cx="95" cy="95" r="93" style={`fill:${b.color}`} />
+                <circle cx="95" cy="95" r="86" fill="none" stroke="#F2E8D0" stroke-width="2" />
+                <text class="t" font-size="17" letter-spacing="5">
+                  <textPath href={`#br-r${i}`}>{b.ring}</textPath>
+                </text>
+              </svg>
+              <Image src={b.patch} alt="" width={240} format="webp" loading="lazy" class="patch" />
+            </div>
+            <h3>{b.title}</h3>
+            <p>{b.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    padding: 40px 0 clamp(80px, 10vw, 130px);
+  }
+  .badges {
+    display: grid;
+    gap: 30px;
+  }
+  .badge {
+    text-align: center;
+  }
+  .ring {
+    position: relative;
+    width: 200px;
+    aspect-ratio: 1;
+    margin: 0 auto 18px;
+    transition: transform 0.8s var(--ease);
+  }
+  .badge:hover .ring {
+    transform: rotate(-12deg) scale(1.05);
+  }
+  .ring svg {
+    width: 100%;
+    height: 100%;
+  }
+  .t {
+    font-family: var(--f-display);
+    font-weight: 900;
+    fill: var(--cream);
+  }
+  .ring :global(.patch) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 62%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(2px 3px 0 rgb(0 0 0 / 0.25));
+  }
+  h3 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge p {
+    max-width: 32ch;
+    margin: 8px auto 0;
+    font-size: 15.5px;
+    color: var(--ink-2);
+  }
+  @media (min-width: 900px) {
+    .badges {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

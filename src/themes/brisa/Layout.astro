@@ -1,0 +1,18 @@
+---
+import { getImage } from 'astro:assets';
+import paper from '@/assets/img/brisa/textura-papel.png';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import './tokens.css';
+import './theme.css';
+
+type Props = { title?: string; description?: string };
+
+// Papel crema repetible: la textura trae transparencia parcial, así que va sobre el color de fondo
+const tile = await getImage({ src: paper, width: 640, format: 'webp', quality: 70 });
+const css = `[data-theme='brisa'] body{background-image:url(${tile.src});background-size:640px}`;
+---
+
+<BaseLayout theme="brisa" chat {...Astro.props}>
+  <style is:inline set:html={css} />
+  <slot />
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+/** Albor (planificador): réplica de mockups-finales/2-albor.html. */
+import { getCollection } from 'astro:content';
+import { getTrips } from '@/lib/content';
+import { shortDate } from '@/lib/format';
+import Layout from './Layout.astro';
+import Header from './sections/Header.astro';
+import Hero from './sections/Hero.astro';
+import How from './sections/How.astro';
+import Results from './sections/Results.astro';
+import Voices from './sections/Voices.astro';
+
+// El viaje completo ("todos" los paisajes) va primero, como tarjeta ancha
+const all = await getTrips();
+const trips = [...all.filter((t) => t.data.landscape === 'todos'), ...all.filter((t) => t.data.landscape !== 'todos')];
+
+const soonest = [...all].sort((a, b) => a.data.nextDeparture.localeCompare(b.data.nextDeparture))[0]!;
+const next = {
+  date: shortDate(soonest.data.nextDeparture).replace(/ \d{4}$/, ''),
+  trip: soonest.data.shortTitle,
+  seats: soonest.data.seatsLeft,
+};
+
+const VOICES = ['camila', 'laura', 'tomas'];
+const testimonials = await getCollection('testimonials');
+const voices = VOICES.map((id) => testimonials.find((t) => t.id === id)).filter((t) => t !== undefined);
+const avg = testimonials.reduce((s, t) => s + t.data.rating, 0) / testimonials.length;
+const rating = new Intl.NumberFormat('es-CL', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(avg);
+---
+
+<Layout>
+  <Header next={`${next.trip} · ${next.date} · ${next.seats} cupos`} />
+  <main id="contenido" tabindex="-1">
+    <Hero trips={trips} next={next} rating={rating} />
+    <Results trips={trips} />
+    <How />
+    <Voices items={voices} />
+  </main>
+</Layout>
+
+<script>
+  import './albor.client';
+</script>

@@ -1,0 +1,37 @@
+/* Cúmulo — estructura suiza, estética nocturna. Degradado hielo → dorado. */
+@import '@fontsource-variable/sora/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+
+[data-theme='cumulo'] {
+  color-scheme: dark;
+  --bg: #080b14;
+  --card: rgb(255 255 255 / 0.05);
+  --panel: #0e1322;
+  --ink: #eef2ff;
+  --ink-2: #b9c2da;
+  --muted: #8c97b4;
+  --line: rgb(238 242 255 / 0.12);
+  --ice: #9fd8ff;
+  --gold: #f2c879;
+  --glass: rgb(255 255 255 / 0.05);
+  --gline: rgb(255 255 255 / 0.1);
+  --accent: var(--ice);
+  --on-accent: #0b0f1a;
+  --accent-2: var(--gold);
+  --sf-accent: var(--ice);
+
+  --f-display: 'Sora Variable', system-ui, sans-serif;
+  --f-body: 'Sora Variable', system-ui, sans-serif;
+  --f-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --radius: 0px;
+  --ease: cubic-bezier(0.7, 0, 0.2, 1);
+
+  --dock-bg: rgb(14 19 34 / 0.8);
+  --dock-fg: var(--muted);
+  --dock-active-bg: var(--ink);
+  --dock-active-fg: #0b0f1a;
+  --dock-border: var(--gline);
+  --dock-radius: 999px;
+  --dock-btn-radius: 999px;
+  --dock-font: var(--f-body);
+}

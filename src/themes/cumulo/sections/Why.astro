@@ -1,0 +1,117 @@
+---
+/** "Por qué Cordada": foto vertical nocturna y tres razones numeradas. */
+import { Picture } from 'astro:assets';
+import porQue from '@/assets/img/cumulo/por-que.jpg';
+import { FEATS } from '../data';
+---
+
+<section id="paquetes" class="why" aria-labelledby="why-title">
+  <div class="wrap">
+    <div class="s-head rv">
+      <span class="mono">02 — Por qué Cordada</span>
+      <h2 class="big" id="why-title">Hecho para <span class="grad">cada caminante</span></h2>
+      <p>En la montaña, una cordada avanza al ritmo de quien va más lento.</p>
+    </div>
+    <div class="pack">
+      <figure class="img-bw rv">
+        <Picture
+          src={porQue}
+          alt="Un grupo camina de noche en fila por la orilla de un lago, con sus linternas frontales; el guía espera atrás a la última persona"
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          widths={[480, 960]}
+          sizes="(min-width: 1000px) 40vw, 100vw"
+          loading="lazy"
+          quality={68}
+        />
+      </figure>
+      <div class="rv">
+        <p class="intro">
+          Así armamos cada salida, de la primera caminata a la Gran Travesía: pocas personas, guías de la zona y cero sorpresas logísticas.
+        </p>
+        <ol class="feats">
+          {
+            FEATS.map((f, i) => (
+              <li>
+                <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <b>{f.title}</b>
+                <p>{f.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    padding: 20px 0 clamp(80px, 10vw, 130px);
+  }
+  .pack {
+    display: grid;
+    gap: 36px;
+    padding-top: 36px;
+  }
+  .img-bw {
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--gline);
+    border-radius: 24px;
+  }
+  .img-bw :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .intro {
+    margin: 0 0 26px;
+    font-size: clamp(19px, 1.8vw, 26px);
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+  .feats {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .feats li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 24px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .num {
+    grid-row: span 2;
+    min-width: 2.1ch;
+    padding-right: 0.08em;
+    font-weight: 600;
+    font-size: clamp(52px, 6vw, 72px);
+    line-height: 0.8;
+    background: linear-gradient(180deg, var(--ice), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  b {
+    font-weight: 600;
+    font-size: clamp(20px, 2vw, 24px);
+  }
+  .feats p {
+    max-width: 52ch;
+    margin: 0;
+    font-size: 15.5px;
+    color: var(--ink-2);
+  }
+  @media (min-width: 1000px) {
+    .pack {
+      grid-template-columns: 5fr 7fr;
+    }
+  }
+  @media (max-width: 999px) {
+    .img-bw {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>
